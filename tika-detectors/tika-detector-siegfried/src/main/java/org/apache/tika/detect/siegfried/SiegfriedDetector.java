@@ -16,11 +16,7 @@
  */
 package org.apache.tika.detect.siegfried;
 
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
-
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -29,15 +25,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.apache.tika.config.Field;
+import org.apache.tika.config.ConfigDeserializer;
+import org.apache.tika.config.JsonConfig;
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.detect.Detector;
-import org.apache.tika.io.BoundedInputStream;
-import org.apache.tika.io.TemporaryResources;
 import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.ExternalProcess;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.Property;
 import org.apache.tika.mime.MediaType;
+import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.external.ExternalParser;
 import org.apache.tika.utils.FileProcessResult;
 import org.apache.tika.utils.ProcessUtils;
@@ -48,6 +45,7 @@ import org.apache.tika.utils.StringUtils;
  * The default behavior is to run detection, report the results in the
  * metadata and then return null so that other detectors will be used.
  */
+@TikaComponent
 public class SiegfriedDetector implements Detector {
 
     enum STATUS {
@@ -90,11 +88,35 @@ public class SiegfriedDetector implements Detector {
     private static ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static boolean HAS_WARNED = false;
     private Boolean hasSiegfriedCommand = null;
-    private String siegfriedPath = DEFAULT_SIEGFRIED_PATH;
-    private int maxBytes = 1_000_000;
-    private long timeoutMs = DEFAULT_TIMEOUT_MS;
 
-    private boolean useMime = false;
+    /**
+     * Configuration class for JSON deserialization.
+     */
+    public static class Config {
+        public String siegfriedPath = DEFAULT_SIEGFRIED_PATH;
+        public int maxBytes = 1_000_000;
+        public long timeoutMs = DEFAULT_TIMEOUT_MS;
+        public boolean useMime = false;
+    }
+
+    private final Config config;
+
+    /**
+     * Default constructor.
+     */
+    public SiegfriedDetector() {
+        this.config = new Config();
+    }
+
+    /**
+     * Constructor for JSON configuration.
+     * Requires tika-serialization on the classpath.
+     *
+     * @param jsonConfig JSON configuration
+     */
+    public SiegfriedDetector(JsonConfig jsonConfig) {
+        this.config = ConfigDeserializer.buildConfig(jsonConfig, Config.class);
+    }
 
     public static boolean checkHasSiegfried(String siegfriedCommandPath) {
         String[] commandline = new String[]{siegfriedCommandPath, "-version"};
@@ -102,38 +124,27 @@ public class SiegfriedDetector implements Detector {
     }
 
     /**
-     * @param input    document input stream, or <code>null</code>
+     * @param tis      document input stream, or <code>null</code>
      * @param metadata input metadata for the document
+     * @param parseContext the parse context
      * @return mime as identified by the file command or application/octet-stream otherwise
      * @throws IOException
      */
     @Override
-    public MediaType detect(InputStream input, Metadata metadata) throws IOException {
+    public MediaType detect(TikaInputStream tis, Metadata metadata, ParseContext parseContext)
+            throws IOException {
         if (hasSiegfriedCommand == null) {
-            hasSiegfriedCommand = checkHasSiegfried(this.siegfriedPath);
+            hasSiegfriedCommand = checkHasSiegfried(this.config.siegfriedPath);
         }
         if (!hasSiegfriedCommand) {
             if (!HAS_WARNED) {
-                LOGGER.warn("'siegfried' command isn't working: '" + siegfriedPath + "'");
+                LOGGER.warn("'siegfried' command isn't working: '" + config.siegfriedPath + "'");
                 HAS_WARNED = true;
             }
             return MediaType.OCTET_STREAM;
         }
-        TikaInputStream tis = TikaInputStream.cast(input);
-        if (tis != null) {
-            //spool the full file to disk, if called with a TikaInputStream
-            //and there is no underlying file
-            return detectOnPath(tis.getPath(), metadata);
-        }
-
-        input.mark(maxBytes);
-        try (TemporaryResources tmp = new TemporaryResources()) {
-            Path tmpFile = tmp.createTempFile();
-            Files.copy(new BoundedInputStream(maxBytes, input), tmpFile, REPLACE_EXISTING);
-            return detectOnPath(tmpFile, metadata);
-        } finally {
-            input.reset();
-        }
+        //spool the full file to disk if there is no underlying file
+        return detectOnPath(tis.getPath(), metadata);
     }
 
     /**
@@ -146,22 +157,21 @@ public class SiegfriedDetector implements Detector {
      *
      * @param useMime
      */
-    @Field
     public void setUseMime(boolean useMime) {
-        this.useMime = useMime;
+        this.config.useMime = useMime;
     }
 
     public boolean isUseMime() {
-        return useMime;
+        return config.useMime;
     }
 
     private MediaType detectOnPath(Path path, Metadata metadata) throws IOException {
 
-        String[] args = new String[]{ProcessUtils.escapeCommandLine(siegfriedPath), "-json",
+        String[] args = new String[]{ProcessUtils.escapeCommandLine(config.siegfriedPath), "-json",
                 ProcessUtils.escapeCommandLine(path.toAbsolutePath().toString())};
         ProcessBuilder builder = new ProcessBuilder(args);
-        FileProcessResult result = ProcessUtils.execute(builder, timeoutMs, 1000000, 1000);
-        return processResult(result, metadata, useMime);
+        FileProcessResult result = ProcessUtils.execute(builder, config.timeoutMs, 1000000, 1000);
+        return processResult(result, metadata, config.useMime);
     }
 
     protected static MediaType processResult(FileProcessResult result, Metadata metadata,
@@ -257,12 +267,11 @@ public class SiegfriedDetector implements Detector {
         }
     }
 
-    @Field
     public void setSiegfriedPath(String fileCommandPath) {
         //this opens up a potential command vulnerability.
         //Don't ever let an untrusted user set this.
-        this.siegfriedPath = fileCommandPath;
-        checkHasSiegfried(this.siegfriedPath);
+        this.config.siegfriedPath = fileCommandPath;
+        checkHasSiegfried(this.config.siegfriedPath);
     }
 
     /**
@@ -272,13 +281,11 @@ public class SiegfriedDetector implements Detector {
      *
      * @param maxBytes
      */
-    @Field
     public void setMaxBytes(int maxBytes) {
-        this.maxBytes = maxBytes;
+        this.config.maxBytes = maxBytes;
     }
 
-    @Field
     public void setTimeoutMs(long timeoutMs) {
-        this.timeoutMs = timeoutMs;
+        this.config.timeoutMs = timeoutMs;
     }
 }

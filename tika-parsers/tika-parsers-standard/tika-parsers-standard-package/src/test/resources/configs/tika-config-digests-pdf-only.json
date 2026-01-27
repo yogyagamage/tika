@@ -1,0 +1,23 @@
+{
+  "parsers": [
+    {
+      "default-parser": {
+        "exclude": [
+          "pdf-parser"
+        ]
+      }
+    }
+  ],
+  "auto-detect-parser": {
+    "outputThreshold": 1000000,
+    "digesterFactory": {
+      "commons-digester-factory": {
+        "digests": [
+          { "algorithm": "SHA256", "encoding": "BASE32" },
+          { "algorithm": "MD5" }
+        ]
+      }
+    },
+    "throwOnZeroBytes": false
+  }
+}

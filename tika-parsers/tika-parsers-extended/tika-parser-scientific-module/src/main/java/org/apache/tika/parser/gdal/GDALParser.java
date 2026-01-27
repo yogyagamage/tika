@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.tika.parser.gdal;
 
 //JDK imports
@@ -22,7 +21,6 @@ package org.apache.tika.parser.gdal;
 import static org.apache.tika.parser.external.ExternalParser.INPUT_FILE_TOKEN;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Arrays;
@@ -40,7 +38,7 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
-import org.apache.tika.config.Field;
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.config.TikaTaskTimeout;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.io.TemporaryResources;
@@ -74,6 +72,7 @@ import org.apache.tika.utils.ProcessUtils;
  * {@link ContentHandler} in the
  * {@link #parse(InputStream, ContentHandler, Metadata, ParseContext)} method.
  */
+@TikaComponent
 public class GDALParser implements Parser {
 
     private static final long serialVersionUID = -3869130527323941401L;
@@ -163,8 +162,7 @@ public class GDALParser implements Parser {
         this.command = command;
     }
 
-    public String processCommand(InputStream stream) {
-        TikaInputStream tis = (TikaInputStream) stream;
+    public String processCommand(TikaInputStream tis) {
         String pCommand = this.command;
         try {
             if (this.command.contains(INPUT_FILE_TOKEN)) {
@@ -183,7 +181,7 @@ public class GDALParser implements Parser {
     }
 
     @Override
-    public void parse(InputStream stream, ContentHandler handler, Metadata metadata,
+    public void parse(TikaInputStream tis, ContentHandler handler, Metadata metadata,
                       ParseContext context) throws IOException, SAXException, TikaException {
 
         if (!ExternalParser.check("gdalinfo")) {
@@ -192,8 +190,7 @@ public class GDALParser implements Parser {
 
         // first set up and run GDAL
         // process the command
-        TemporaryResources tmp = new TemporaryResources();
-        TikaInputStream tis = TikaInputStream.get(stream, tmp, metadata);
+        TemporaryResources tmp = null;
 
         String[] runCommand = processCommand(tis).split("\\s+", -1);
 
@@ -334,17 +331,14 @@ public class GDALParser implements Parser {
 
     }
 
-    @Field
     public void setTimeoutMs(long timeoutMs) {
         this.timeoutMs = timeoutMs;
     }
 
-    @Field
     public void setMaxStdErr(int maxStdErr) {
         this.maxStdErr = maxStdErr;
     }
 
-    @Field
     public void setMaxStdOut(int maxStdOut) {
         this.maxStdOut = maxStdOut;
     }

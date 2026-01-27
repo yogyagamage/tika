@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.tika.server.standard;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,7 +25,9 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import javax.imageio.ImageIO;
@@ -35,18 +36,22 @@ import jakarta.ws.rs.core.Response;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.cxf.jaxrs.client.WebClient;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.cxf.jaxrs.ext.multipart.ContentDisposition;
+import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.apache.cxf.jaxrs.lifecycle.SingletonResourceProvider;
 import org.junit.jupiter.api.Test;
 
-import org.apache.tika.config.TikaConfig;
+import org.apache.tika.config.loader.TikaLoader;
+import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
+import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.ocr.TesseractOCRParser;
 import org.apache.tika.server.core.CXFTestBase;
 import org.apache.tika.server.core.TikaServerParseExceptionMapper;
 import org.apache.tika.server.core.resource.UnpackerResource;
 import org.apache.tika.server.core.writer.TarWriter;
 import org.apache.tika.server.core.writer.ZipWriter;
-import org.apache.tika.server.standard.config.PDFServerConfig;
 
 public class UnpackerResourceTest extends CXFTestBase {
     private static final String BASE_PATH = "/unpack";
@@ -159,6 +164,7 @@ public class UnpackerResourceTest extends CXFTestBase {
 
     @Test
     public void test204() throws Exception {
+        //this tests that the type overrides normal detection
         Response response = WebClient
                 .create(CXFTestBase.endPoint + UNPACKER_PATH)
                 .type("xxx/xxx")
@@ -234,11 +240,24 @@ public class UnpackerResourceTest extends CXFTestBase {
 
     @Test
     public void testPDFImages() throws Exception {
+        String configJson = """
+                {
+                  "pdf-parser": {
+                    "extractInlineImages": true
+                  }
+                }
+                """;
+        ContentDisposition fileCd = new ContentDisposition("form-data; name=\"file\"; filename=\"testOCR.pdf\"");
+        Attachment fileAtt = new Attachment("file",
+                ClassLoader.getSystemResourceAsStream("test-documents/testOCR.pdf"), fileCd);
+        Attachment configAtt = new Attachment("config", "application/json",
+                new ByteArrayInputStream(configJson.getBytes(StandardCharsets.UTF_8)));
+
         Response response = WebClient
-                .create(CXFTestBase.endPoint + UNPACKER_PATH)
-                .header(PDFServerConfig.X_TIKA_PDF_HEADER_PREFIX + "ExtractInlineImages", "true")
+                .create(CXFTestBase.endPoint + UNPACKER_PATH + "/config")
+                .type("multipart/form-data")
                 .accept("application/zip")
-                .put(ClassLoader.getSystemResourceAsStream("test-documents/testOCR.pdf"));
+                .post(new MultipartBody(Arrays.asList(fileAtt, configAtt)));
         Map<String, String> results = readZipArchive((InputStream) response.getEntity());
         assertTrue(results.containsKey("image0.png"));
         String md5 = results.get("image0.png");
@@ -253,24 +272,49 @@ public class UnpackerResourceTest extends CXFTestBase {
     public void testPDFRenderOCR() throws Exception {
         assumeTrue(new TesseractOCRParser().hasTesseract());
 
+        String configJson = """
+                {
+                  "pdf-parser": {
+                    "ocrStrategy": "OCR_ONLY"
+                  }
+                }
+                """;
+        ContentDisposition fileCd = new ContentDisposition("form-data; name=\"file\"; filename=\"testOCR.pdf\"");
+        Attachment fileAtt = new Attachment("file",
+                ClassLoader.getSystemResourceAsStream("test-documents/testOCR.pdf"), fileCd);
+        Attachment configAtt = new Attachment("config", "application/json",
+                new ByteArrayInputStream(configJson.getBytes(StandardCharsets.UTF_8)));
+
         Response response = WebClient
-                .create(CXFTestBase.endPoint + ALL_PATH)
-                .header(PDFServerConfig.X_TIKA_PDF_HEADER_PREFIX + "ocrStrategy", "ocr_only")
+                .create(CXFTestBase.endPoint + ALL_PATH + "/config")
+                .type("multipart/form-data")
                 .accept("application/zip")
-                .put(ClassLoader.getSystemResourceAsStream("test-documents/testOCR.pdf"));
+                .post(new MultipartBody(Arrays.asList(fileAtt, configAtt)));
         String txt = readArchiveText((InputStream) response.getEntity());
         CXFTestBase.assertContains("Happy New Year", txt);
     }
 
     @Test
     public void testPDFPerPageRenderColor() throws Exception {
+        String configJson = """
+                {
+                  "pdf-parser": {
+                    "imageStrategy": "RENDER_PAGES_AT_PAGE_END",
+                    "ocrImageType": "RGB"
+                  }
+                }
+                """;
+        ContentDisposition fileCd = new ContentDisposition("form-data; name=\"file\"; filename=\"testColorRendering.pdf\"");
+        Attachment fileAtt = new Attachment("file",
+                ClassLoader.getSystemResourceAsStream("test-documents/testColorRendering.pdf"), fileCd);
+        Attachment configAtt = new Attachment("config", "application/json",
+                new ByteArrayInputStream(configJson.getBytes(StandardCharsets.UTF_8)));
 
         Response response = WebClient
-                .create(CXFTestBase.endPoint + ALL_PATH)
-                .header(PDFServerConfig.X_TIKA_PDF_HEADER_PREFIX + "imageStrategy", "RenderPagesAtPageEnd")
-                .header(PDFServerConfig.X_TIKA_PDF_HEADER_PREFIX + "ocrImageType", "rgb")
+                .create(CXFTestBase.endPoint + ALL_PATH + "/config")
+                .type("multipart/form-data")
                 .accept("application/zip")
-                .put(ClassLoader.getSystemResourceAsStream("test-documents/testColorRendering.pdf"));
+                .post(new MultipartBody(Arrays.asList(fileAtt, configAtt)));
         Map<String, byte[]> results = readZipArchiveBytes((InputStream) response.getEntity());
         byte[] renderedImage = null;
         for (Map.Entry<String, byte[]> e : results.entrySet()) {
@@ -281,11 +325,13 @@ public class UnpackerResourceTest extends CXFTestBase {
                 break;
             }
         }
-        assertEquals("image/png", TikaConfig
-                .getDefaultConfig()
-                .getDetector()
-                .detect(new ByteArrayInputStream(renderedImage), new Metadata())
-                .toString());
+        try (TikaInputStream tis = TikaInputStream.get(renderedImage)) {
+            assertEquals("image/png", TikaLoader
+                    .loadDefault()
+                    .loadDetectors()
+                    .detect(tis, new Metadata(), new ParseContext())
+                    .toString());
+        }
 
         try (InputStream is = new ByteArrayInputStream(renderedImage)) {
             BufferedImage image = ImageIO.read(is);

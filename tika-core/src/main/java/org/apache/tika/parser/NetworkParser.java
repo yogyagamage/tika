@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -35,7 +35,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import org.apache.tika.exception.TikaException;
-import org.apache.tika.io.TemporaryResources;
 import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
@@ -63,22 +62,11 @@ public class NetworkParser implements Parser {
         return supportedTypes;
     }
 
-    public void parse(InputStream stream, ContentHandler handler, Metadata metadata,
+    public void parse(TikaInputStream tis, ContentHandler handler, Metadata metadata,
                       ParseContext context) throws IOException, SAXException, TikaException {
-        TemporaryResources tmp = new TemporaryResources();
-        try {
-            TikaInputStream tis = TikaInputStream.get(stream, tmp, metadata);
-            parse(tis, handler, metadata, context);
-        } finally {
-            tmp.dispose();
-        }
-    }
-
-    private void parse(TikaInputStream stream, ContentHandler handler, Metadata metadata,
-                       ParseContext context) throws IOException, SAXException, TikaException {
         if ("telnet".equals(uri.getScheme())) {
             try (Socket socket = new Socket(uri.getHost(), uri.getPort())) {
-                new ParsingTask(stream, new FilterOutputStream(socket.getOutputStream()) {
+                new ParsingTask(tis, new FilterOutputStream(socket.getOutputStream()) {
                     @Override
                     public void close() throws IOException {
                         socket.shutdownOutput();
@@ -91,7 +79,7 @@ public class NetworkParser implements Parser {
             connection.setDoOutput(true);
             connection.connect();
             try (InputStream input = connection.getInputStream()) {
-                new ParsingTask(stream, connection.getOutputStream())
+                new ParsingTask(tis, connection.getOutputStream())
                         .parse(CloseShieldInputStream.wrap(input), handler, metadata, context);
             }
         }

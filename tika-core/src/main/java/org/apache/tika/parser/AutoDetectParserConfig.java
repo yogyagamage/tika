@@ -16,14 +16,13 @@
  */
 package org.apache.tika.parser;
 
-import java.io.IOException;
 import java.io.Serializable;
 
-import org.w3c.dom.Element;
 import org.xml.sax.ContentHandler;
 
-import org.apache.tika.config.ConfigBase;
-import org.apache.tika.exception.TikaConfigException;
+import org.apache.tika.config.TikaComponent;
+import org.apache.tika.digest.Digester;
+import org.apache.tika.digest.DigesterFactory;
 import org.apache.tika.extractor.EmbeddedDocumentExtractorFactory;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.writefilter.MetadataWriteFilterFactory;
@@ -35,10 +34,12 @@ import org.apache.tika.sax.ContentHandlerDecoratorFactory;
  * bomb. Null values will be ignored and will not affect the default values
  * in SecureContentHandler.
  * <p>
- *     See <a href="https://cwiki.apache.org/confluence/display/TIKA/ModifyingContentWithHandlersAndMetadataFilters"/>ModifyingContentWithHandlersAndMetadataFilters</a>
- *     for documentation and examples for configuring this with a tika-config.xml file.
+ * This is a config POJO. It uses standard Jackson deserialization for its
+ * primitive fields, but component fields (like embeddedDocumentExtractorFactory)
+ * use compact format.
  */
-public class AutoDetectParserConfig extends ConfigBase implements Serializable {
+@TikaComponent(spi = false)
+public class AutoDetectParserConfig implements Serializable {
 
     private static ContentHandlerDecoratorFactory NOOP_CONTENT_HANDLER_DECORATOR_FACTORY =
             new ContentHandlerDecoratorFactory() {
@@ -50,19 +51,6 @@ public class AutoDetectParserConfig extends ConfigBase implements Serializable {
             };
 
     public static AutoDetectParserConfig DEFAULT = new AutoDetectParserConfig();
-
-    public static AutoDetectParserConfig load(Element element)
-            throws TikaConfigException, IOException {
-        return AutoDetectParserConfig.buildSingle("autoDetectParserConfig",
-                AutoDetectParserConfig.class, element, AutoDetectParserConfig.DEFAULT);
-    }
-
-    /**
-     * If this is not null and greater than -1, the AutoDetectParser
-     * will spool the stream to disk if the length of the stream is known
-     * ahead of time.
-     */
-    private Long spoolToDisk = null;
 
     /**
      * SecureContentHandler -- Desired output threshold in characters.
@@ -91,23 +79,30 @@ public class AutoDetectParserConfig extends ConfigBase implements Serializable {
     private ContentHandlerDecoratorFactory contentHandlerDecoratorFactory =
             NOOP_CONTENT_HANDLER_DECORATOR_FACTORY;
 
-    private DigestingParser.DigesterFactory digesterFactory = null;
+    private DigesterFactory digesterFactory = null;
+
+    // Lazily built digester from the factory
+    private transient Digester digester = null;
+
+    /**
+     * If true, skip digesting for container (top-level) documents.
+     * Only embedded documents will be digested.
+     */
+    private boolean skipContainerDocumentDigest = false;
 
     private boolean throwOnZeroBytes = true;
 
     /**
      * Creates a SecureContentHandlerConfig using the passed in parameters.
      *
-     * @param spoolToDisk
      * @param outputThreshold          SecureContentHandler - character output threshold.
      * @param maximumCompressionRatio  SecureContentHandler - max compression ratio allowed.
      * @param maximumDepth             SecureContentHandler - maximum XML element nesting level.
      * @param maximumPackageEntryDepth SecureContentHandler - maximum package entry nesting level.
      */
-    public AutoDetectParserConfig(Long spoolToDisk, Long outputThreshold,
+    public AutoDetectParserConfig(Long outputThreshold,
                                   Long maximumCompressionRatio, Integer maximumDepth,
                                   Integer maximumPackageEntryDepth) {
-        this.spoolToDisk = spoolToDisk;
         this.outputThreshold = outputThreshold;
         this.maximumCompressionRatio = maximumCompressionRatio;
         this.maximumDepth = maximumDepth;
@@ -118,19 +113,11 @@ public class AutoDetectParserConfig extends ConfigBase implements Serializable {
 
     }
 
-    public Long getSpoolToDisk() {
-        return spoolToDisk;
-    }
-
-    public void setSpoolToDisk(long spoolToDisk) {
-        this.spoolToDisk = spoolToDisk;
-    }
-
     public Long getOutputThreshold() {
         return outputThreshold;
     }
 
-    public void setOutputThreshold(long outputThreshold) {
+    public void setOutputThreshold(Long outputThreshold) {
         this.outputThreshold = outputThreshold;
     }
 
@@ -138,7 +125,7 @@ public class AutoDetectParserConfig extends ConfigBase implements Serializable {
         return maximumCompressionRatio;
     }
 
-    public void setMaximumCompressionRatio(long maximumCompressionRatio) {
+    public void setMaximumCompressionRatio(Long maximumCompressionRatio) {
         this.maximumCompressionRatio = maximumCompressionRatio;
     }
 
@@ -146,7 +133,7 @@ public class AutoDetectParserConfig extends ConfigBase implements Serializable {
         return maximumDepth;
     }
 
-    public void setMaximumDepth(int maximumDepth) {
+    public void setMaximumDepth(Integer maximumDepth) {
         this.maximumDepth = maximumDepth;
     }
 
@@ -154,7 +141,7 @@ public class AutoDetectParserConfig extends ConfigBase implements Serializable {
         return maximumPackageEntryDepth;
     }
 
-    public void setMaximumPackageEntryDepth(int maximumPackageEntryDepth) {
+    public void setMaximumPackageEntryDepth(Integer maximumPackageEntryDepth) {
         this.maximumPackageEntryDepth = maximumPackageEntryDepth;
     }
 
@@ -185,12 +172,69 @@ public class AutoDetectParserConfig extends ConfigBase implements Serializable {
         return contentHandlerDecoratorFactory;
     }
 
-    public void setDigesterFactory(DigestingParser.DigesterFactory digesterFactory) {
+    /**
+     * Sets the digester factory.
+     * This is the preferred method for configuring digesting via JSON serialization.
+     *
+     * @param digesterFactory the digester factory
+     */
+    public void setDigesterFactory(DigesterFactory digesterFactory) {
         this.digesterFactory = digesterFactory;
     }
 
-    public DigestingParser.DigesterFactory getDigesterFactory() {
-        return this.digesterFactory;
+    /**
+     * Gets the digester factory.
+     *
+     * @return the digester factory, or null if not configured
+     */
+    public DigesterFactory getDigesterFactory() {
+        return digesterFactory;
+    }
+
+    /**
+     * Returns the Digester, lazily building it from the factory if needed.
+     * <p>
+     * Note: This method is intentionally not named getDigester() to avoid
+     * Jackson treating it as a bean property during serialization.
+     *
+     * @return the Digester, or null if no factory is configured
+     */
+    public Digester digester() {
+        if (digester == null && digesterFactory != null) {
+            digester = digesterFactory.build();
+        }
+        return digester;
+    }
+
+    /**
+     * Sets the digester directly. This is useful for programmatic configuration
+     * (e.g., from command-line arguments) when you don't have a DigesterFactory.
+     * <p>
+     * Note: This method is intentionally not named setDigester() to avoid
+     * Jackson treating it as a bean property during deserialization.
+     *
+     * @param digester the digester to use
+     */
+    public void digester(Digester digester) {
+        this.digester = digester;
+    }
+
+    /**
+     * Returns whether to skip digesting for container (top-level) documents.
+     *
+     * @return true if container documents should be skipped, false otherwise
+     */
+    public boolean isSkipContainerDocumentDigest() {
+        return skipContainerDocumentDigest;
+    }
+
+    /**
+     * Sets whether to skip digesting for container (top-level) documents.
+     *
+     * @param skipContainerDocumentDigest if true, only embedded documents will be digested
+     */
+    public void setSkipContainerDocumentDigest(boolean skipContainerDocumentDigest) {
+        this.skipContainerDocumentDigest = skipContainerDocumentDigest;
     }
 
     public void setThrowOnZeroBytes(boolean throwOnZeroBytes) {
@@ -203,14 +247,14 @@ public class AutoDetectParserConfig extends ConfigBase implements Serializable {
 
     @Override
     public String toString() {
-        return "AutoDetectParserConfig{" + "spoolToDisk=" + spoolToDisk + ", outputThreshold=" +
+        return "AutoDetectParserConfig{" + "outputThreshold=" +
                 outputThreshold + ", maximumCompressionRatio=" + maximumCompressionRatio +
                 ", maximumDepth=" + maximumDepth + ", maximumPackageEntryDepth=" +
                 maximumPackageEntryDepth + ", metadataWriteFilterFactory=" +
                 metadataWriteFilterFactory + ", embeddedDocumentExtractorFactory=" +
                 embeddedDocumentExtractorFactory + ", contentHandlerDecoratorFactory=" +
                 contentHandlerDecoratorFactory + ", digesterFactory=" + digesterFactory +
+                ", skipContainerDocumentDigest=" + skipContainerDocumentDigest +
                 ", throwOnZeroBytes=" + throwOnZeroBytes + '}';
     }
 }
-

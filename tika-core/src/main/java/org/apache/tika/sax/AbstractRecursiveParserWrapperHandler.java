@@ -16,9 +16,7 @@
  */
 package org.apache.tika.sax;
 
-import java.io.OutputStream;
 import java.io.Serializable;
-import java.nio.charset.Charset;
 
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -39,6 +37,8 @@ public abstract class AbstractRecursiveParserWrapperHandler extends DefaultHandl
 
     public final static Property EMBEDDED_RESOURCE_LIMIT_REACHED = Property.internalBoolean(
             TikaCoreProperties.TIKA_META_EXCEPTION_PREFIX + "embedded_resource_limit_reached");
+    public final static Property EMBEDDED_DEPTH_LIMIT_REACHED = Property.internalBoolean(
+            TikaCoreProperties.TIKA_META_EXCEPTION_PREFIX + "embedded_depth_limit_reached");
     private static final int MAX_DEPTH = 100;
     private final ContentHandlerFactory contentHandlerFactory;
     private final int maxEmbeddedResources;
@@ -55,12 +55,8 @@ public abstract class AbstractRecursiveParserWrapperHandler extends DefaultHandl
         this.maxEmbeddedResources = maxEmbeddedResources;
     }
 
-    public ContentHandler getNewContentHandler() {
-        return contentHandlerFactory.getNewContentHandler();
-    }
-
-    public ContentHandler getNewContentHandler(OutputStream os, Charset charset) {
-        return contentHandlerFactory.getNewContentHandler(os, charset);
+    public ContentHandler createHandler() {
+        return contentHandlerFactory.createHandler();
     }
 
     /**

@@ -36,8 +36,22 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>tika-serialization</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
+    </dependency>
+    <!-- Annotation processor - contains @TikaComponent and ensures build order.
+         "provided" because it is only used at compile time -->
+    <dependency>
+      <groupId>org.apache.tika</groupId>
+      <artifactId>tika-annotation-processor</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
     </dependency>
     <!-- test dependencies -->
     <dependency>
@@ -70,9 +84,22 @@
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
         <configuration>
-          <excludes>
-            <exclude>src/test/resources/test-documents/testPDF.pdf</exclude>
-          </excludes>
+          <inputExcludes>
+            <inputExclude>src/test/resources/test-documents/testPDF.pdf</inputExclude>
+          </inputExcludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>org.apache.tika</groupId>
+              <artifactId>tika-annotation-processor</artifactId>
+              <version>${project.version}</version>
+            </path>
+          </annotationProcessorPaths>
         </configuration>
       </plugin>
       <plugin>

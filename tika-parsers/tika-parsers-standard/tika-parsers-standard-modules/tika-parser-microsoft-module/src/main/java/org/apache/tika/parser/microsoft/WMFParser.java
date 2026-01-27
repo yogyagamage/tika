@@ -14,16 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.tika.parser.microsoft;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.Set;
 
-import org.apache.commons.io.input.CloseShieldInputStream;
 import org.apache.poi.hwmf.record.HwmfFont;
 import org.apache.poi.hwmf.record.HwmfRecord;
 import org.apache.poi.hwmf.record.HwmfRecordType;
@@ -34,7 +31,9 @@ import org.apache.poi.util.RecordFormatException;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.exception.TikaException;
+import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
 import org.apache.tika.parser.ParseContext;
@@ -45,6 +44,7 @@ import org.apache.tika.sax.XHTMLContentHandler;
  * This parser offers a very rough capability to extract text if there
  * is text stored in the WMF files.
  */
+@TikaComponent
 public class WMFParser implements Parser {
 
     private static final MediaType MEDIA_TYPE = MediaType.image("wmf");
@@ -57,14 +57,15 @@ public class WMFParser implements Parser {
     }
 
     @Override
-    public void parse(InputStream stream, ContentHandler handler, Metadata metadata,
+    public void parse(TikaInputStream tis, ContentHandler handler, Metadata metadata,
                       ParseContext context) throws IOException, SAXException, TikaException {
         XHTMLContentHandler xhtml = new XHTMLContentHandler(handler, metadata);
         xhtml.startDocument();
+        tis.setCloseShield();
         try {
             HwmfPicture picture = null;
             try {
-                picture = new HwmfPicture(CloseShieldInputStream.wrap(stream));
+                picture = new HwmfPicture(tis);
             } catch (ArrayIndexOutOfBoundsException e) {
                 //POI can throw this on corrupt files
                 throw new TikaException(e.getClass().getSimpleName() + ": " + e.getMessage(), e);
@@ -101,6 +102,8 @@ public class WMFParser implements Parser {
             throw new TikaException(e.getMessage(), e);
         } catch (AssertionError e) { //POI's hwmfparser can throw these for parse exceptions
             throw new TikaException(e.getMessage(), e);
+        } finally {
+            tis.removeCloseShield();
         }
         xhtml.endDocument();
     }

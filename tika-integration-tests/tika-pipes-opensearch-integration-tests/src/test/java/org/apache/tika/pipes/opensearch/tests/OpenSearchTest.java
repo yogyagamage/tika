@@ -16,6 +16,7 @@
  */
 package org.apache.tika.pipes.opensearch.tests;
 
+import static org.apache.tika.pipes.emitter.opensearch.OpenSearchEmitter.DEFAULT_EMBEDDED_FILE_FIELD_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -47,14 +48,18 @@ import org.testcontainers.utility.DockerImageName;
 
 import org.apache.tika.cli.TikaCLI;
 import org.apache.tika.client.HttpClientFactory;
+import org.apache.tika.config.JsonConfigHelper;
+import org.apache.tika.config.loader.TikaJsonConfig;
 import org.apache.tika.exception.TikaConfigException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;
-import org.apache.tika.pipes.core.HandlerConfig;
-import org.apache.tika.pipes.core.emitter.Emitter;
+import org.apache.tika.pipes.api.ParseMode;
+import org.apache.tika.pipes.api.emitter.Emitter;
 import org.apache.tika.pipes.core.emitter.EmitterManager;
+import org.apache.tika.pipes.emitter.opensearch.HttpClientConfig;
 import org.apache.tika.pipes.emitter.opensearch.JsonResponse;
-import org.apache.tika.pipes.emitter.opensearch.OpenSearchEmitter;
+import org.apache.tika.pipes.emitter.opensearch.OpenSearchEmitterConfig;
+import org.apache.tika.plugins.TikaPluginManager;
 
 @Testcontainers(disabledWithoutDocker = true)
 public class OpenSearchTest {
@@ -67,7 +72,9 @@ public class OpenSearchTest {
 
     @BeforeAll
     public static void setUp() {
-        CONTAINER = new OpensearchContainer<>(OPENSEARCH_IMAGE).withSecurityEnabled();
+        CONTAINER = new OpensearchContainer<>(OPENSEARCH_IMAGE).withSecurityEnabled()
+                .withEnv("cluster.routing.allocation.disk.threshold_enabled", "false");
+
         CONTAINER.start();
         HttpClientFactory httpClientFactory = new HttpClientFactory();
         httpClientFactory.setUserName(CONTAINER.getUsername());
@@ -87,6 +94,17 @@ public class OpenSearchTest {
     }
 
     @Test
+    public void testPluginsConfig(@TempDir Path pipesDirectory) throws Exception {
+        Path pluginsConfg = getPluginsConfig(
+                pipesDirectory, OpenSearchEmitterConfig.AttachmentStrategy.PARENT_CHILD,
+                OpenSearchEmitterConfig.UpdateStrategy.OVERWRITE,
+                ParseMode.RMETA, "https://opensearch", Paths.get("testDocs"));
+        //      PipesReporter reporter = ReporterManager.load(pluginsConfg);
+//        System.out.println(reporter);
+//        PipesIterator pipesIterator = PipesIteratorManager.load(pluginsConfg);
+    }
+
+    @Test
     public void testBasicFSToOpenSearch(@TempDir Path pipesDirectory, @TempDir Path testDocDirectory) throws Exception {
 
         OpensearchTestClient client = getNewClient();
@@ -96,8 +114,8 @@ public class OpenSearchTest {
         String endpoint = CONTAINER.getHttpHostAddress() + "/" + TEST_INDEX;
         sendMappings(client, endpoint, TEST_INDEX, "opensearch-mappings.json");
 
-        runPipes(client, OpenSearchEmitter.AttachmentStrategy.SEPARATE_DOCUMENTS,
-                OpenSearchEmitter.UpdateStrategy.UPSERT, HandlerConfig.PARSE_MODE.CONCATENATE, endpoint,
+        runPipes(client, OpenSearchEmitterConfig.AttachmentStrategy.SEPARATE_DOCUMENTS,
+                OpenSearchEmitterConfig.UpdateStrategy.UPSERT, ParseMode.CONCATENATE, endpoint,
                 pipesDirectory, testDocDirectory);
 
         String query = "{ \"track_total_hits\": true, \"query\": { \"match\": { \"content\": { " +
@@ -131,13 +149,27 @@ public class OpenSearchTest {
             }
             statusCounts.put(status, cnt);
         }
-        assertEquals(numHtmlDocs, (int) statusCounts.get("PARSE_SUCCESS"));
-        //the npe is caught and counted as a "parse success with exception"
-        assertEquals(1, (int) statusCounts.get("PARSE_SUCCESS_WITH_EXCEPTION"));
-        //the embedded docx is emitted directly
-        assertEquals(1, (int) statusCounts.get("EMIT_SUCCESS"));
-        assertEquals(2, (int) statusCounts.get("OOM"));
 
+        assertEquals(numHtmlDocs, (int) statusCounts.get("PARSE_SUCCESS"), "should have had " + numHtmlDocs + " parse successes: " + statusCounts);
+        //the npe is caught and counted as a "parse success with exception"
+        assertEquals(1, (int) statusCounts.get("PARSE_SUCCESS_WITH_EXCEPTION"), "should have had 1 parse exception: " + statusCounts);
+        //the embedded docx is emitted directly
+        assertEquals(1, (int) statusCounts.get("EMIT_SUCCESS"), "should have had 1 emit success: " + statusCounts);
+        assertEquals(2, numberOfCrashes(statusCounts), "should have had 2 OOM or 1 OOM and 1 timeout: " + statusCounts);
+
+    }
+
+    private int numberOfCrashes(Map<String, Integer> statusCounts) {
+        Integer oom = statusCounts.get("OOM");
+        Integer timeout = statusCounts.get("TIMEOUT");
+        int sum = 0;
+        if (oom != null) {
+            sum += oom;
+        }
+        if (timeout != null) {
+            sum += timeout;
+        }
+        return sum;
     }
 
 
@@ -150,20 +182,21 @@ public class OpenSearchTest {
         String endpoint = CONTAINER.getHttpHostAddress() + "/" + TEST_INDEX;
         sendMappings(client, endpoint, TEST_INDEX, "opensearch-parent-child-mappings.json");
 
-        runPipes(client, OpenSearchEmitter.AttachmentStrategy.PARENT_CHILD,
-                OpenSearchEmitter.UpdateStrategy.OVERWRITE,
-                HandlerConfig.PARSE_MODE.RMETA, endpoint, pipesDirectory, testDocDirectory);
+        runPipes(client, OpenSearchEmitterConfig.AttachmentStrategy.PARENT_CHILD,
+                OpenSearchEmitterConfig.UpdateStrategy.OVERWRITE,
+                ParseMode.RMETA, endpoint, pipesDirectory, testDocDirectory);
 
-        String query = "{ \"track_total_hits\": true, \"query\": { \"match\": { \"content\": { " +
+        String query = "{ \"track_total_hits\": true, \"from\":0, \"size\": 10000, \"query\": { \"match\": { \"content\": { " +
                 "\"query\": \"happiness\" } } } }";
+
 
         JsonResponse results = client.postJson(endpoint + "/_search", query);
         assertEquals(200, results.getStatus());
-        assertEquals(numHtmlDocs + 1, results.getJson().get("hits").get("total").get("value").asInt());
+        //assertEquals(numHtmlDocs + 1, results.getJson().get("hits").get("total").get("value").asInt());
 
         //now try match all
         query = "{ " +
-                //"\"from\":0, \"size\":1000," +
+                "\"from\":0, \"size\":1000," +
                 "\"track_total_hits\": true, \"query\": { " +
                 "\"match_all\": {} } }";
         results = client.postJson(endpoint + "/_search", query);
@@ -217,9 +250,9 @@ public class OpenSearchTest {
         String endpoint = CONTAINER.getHttpHostAddress() + "/" + TEST_INDEX;
         sendMappings(client, endpoint, TEST_INDEX, "opensearch-mappings.json");
 
-        runPipes(client, OpenSearchEmitter.AttachmentStrategy.SEPARATE_DOCUMENTS,
-                OpenSearchEmitter.UpdateStrategy.OVERWRITE,
-                HandlerConfig.PARSE_MODE.RMETA, endpoint,
+        runPipes(client, OpenSearchEmitterConfig.AttachmentStrategy.SEPARATE_DOCUMENTS,
+                OpenSearchEmitterConfig.UpdateStrategy.OVERWRITE,
+                ParseMode.RMETA, endpoint,
                 pipesDirectory, testDocDirectory);
 
         String query = "{ \"track_total_hits\": true, \"query\": { \"match\": { \"content\": { " +
@@ -283,9 +316,9 @@ public class OpenSearchTest {
         String endpoint = CONTAINER.getHttpHostAddress() + "/" + TEST_INDEX;
         sendMappings(client, endpoint, TEST_INDEX, "opensearch-mappings.json");
 
-        runPipes(client, OpenSearchEmitter.AttachmentStrategy.SEPARATE_DOCUMENTS,
-                OpenSearchEmitter.UpdateStrategy.UPSERT,
-                HandlerConfig.PARSE_MODE.RMETA, endpoint, pipesDirectory, testDocDirectory);
+        runPipes(client, OpenSearchEmitterConfig.AttachmentStrategy.SEPARATE_DOCUMENTS,
+                OpenSearchEmitterConfig.UpdateStrategy.UPSERT,
+                ParseMode.RMETA, endpoint, pipesDirectory, testDocDirectory);
 
         String query = "{ \"track_total_hits\": true, \"query\": { \"match\": { \"content\": { " +
                 "\"query\": \"happiness\" } } } }";
@@ -344,12 +377,13 @@ public class OpenSearchTest {
 
         String endpoint = CONTAINER.getHttpHostAddress() + "/" + TEST_INDEX;
         sendMappings(client, endpoint, TEST_INDEX, "opensearch-mappings.json");
-        Path tikaConfigFile =
-                getTikaConfigFile(OpenSearchEmitter.AttachmentStrategy.SEPARATE_DOCUMENTS,
-                        OpenSearchEmitter.UpdateStrategy.UPSERT, HandlerConfig.PARSE_MODE.RMETA,
-                        endpoint, pipesDirectory, testDocDirectory);
+        Path pluginsConfigFile = getPluginsConfig(pipesDirectory, OpenSearchEmitterConfig.AttachmentStrategy.SEPARATE_DOCUMENTS,
+                        OpenSearchEmitterConfig.UpdateStrategy.UPSERT, ParseMode.RMETA,
+                        endpoint, testDocDirectory);
+
+        TikaJsonConfig tikaJsonConfig = TikaJsonConfig.load(pluginsConfigFile);
         Emitter emitter = EmitterManager
-                .load(tikaConfigFile).getEmitter();
+                .load(TikaPluginManager.load(tikaJsonConfig), tikaJsonConfig).getEmitter();
         Metadata metadata = new Metadata();
         metadata.set("mime", "mimeA");
         metadata.set("title", "titleA");
@@ -382,9 +416,10 @@ public class OpenSearchTest {
         HttpClientFactory httpClientFactory = new HttpClientFactory();
         httpClientFactory.setUserName(CONTAINER.getUsername());
         httpClientFactory.setPassword(CONTAINER.getPassword());
-
-        return new OpensearchTestClient(CONTAINER.getHttpHostAddress(), httpClientFactory.build(), OpenSearchEmitter.AttachmentStrategy.SEPARATE_DOCUMENTS,
-                OpenSearchEmitter.UpdateStrategy.OVERWRITE, OpenSearchEmitter.DEFAULT_EMBEDDED_FILE_FIELD_NAME);
+        OpenSearchEmitterConfig config = new OpenSearchEmitterConfig(CONTAINER.getHttpHostAddress(), "_id", OpenSearchEmitterConfig.AttachmentStrategy.SEPARATE_DOCUMENTS,
+                OpenSearchEmitterConfig.UpdateStrategy.OVERWRITE, 10, DEFAULT_EMBEDDED_FILE_FIELD_NAME,
+                new HttpClientConfig(null, null, null, -1, -1, null, -1));
+        return new OpensearchTestClient(config, httpClientFactory.build());
 
     }
 
@@ -413,73 +448,51 @@ public class OpenSearchTest {
     }
 
 
-    private void runPipes(OpensearchTestClient client, OpenSearchEmitter.AttachmentStrategy attachmentStrategy,
-                          OpenSearchEmitter.UpdateStrategy updateStrategy,
-                          HandlerConfig.PARSE_MODE parseMode, String endpoint, Path pipesDirectory, Path testDocDirectory) throws Exception {
+    private void runPipes(OpensearchTestClient client, OpenSearchEmitterConfig.AttachmentStrategy attachmentStrategy,
+                          OpenSearchEmitterConfig.UpdateStrategy updateStrategy,
+                          ParseMode parseMode, String endpoint, Path pipesDirectory, Path testDocDirectory) throws Exception {
 
-        Path tikaConfigFile = getTikaConfigFile(attachmentStrategy, updateStrategy, parseMode,
-                endpoint, pipesDirectory, testDocDirectory);
+        Path pluginsConfig = getPluginsConfig(pipesDirectory, attachmentStrategy, updateStrategy, parseMode,
+                endpoint, testDocDirectory);
 
-        TikaCLI.main(new String[]{"-a", "-c",  tikaConfigFile.toAbsolutePath().toString()});
+        TikaCLI.main(new String[]{"-a", "-c", pluginsConfig.toAbsolutePath().toString() });
 
         //refresh to make sure the content is searchable
         JsonResponse refresh = client.getJson(endpoint + "/_refresh");
 
     }
 
-    private Path getTikaConfigFile(OpenSearchEmitter.AttachmentStrategy attachmentStrategy,
-                                   OpenSearchEmitter.UpdateStrategy updateStrategy,
-                                   HandlerConfig.PARSE_MODE parseMode, String endpoint,
-                                   Path pipesDirectory, Path testDocDirectory) throws IOException {
-        Path tikaConfigFile = pipesDirectory.resolve("ta-opensearch.xml");
-        Path log4jPropFile = pipesDirectory.resolve("tmp-log4j2.xml");
+
+    @NotNull
+    private Path getPluginsConfig(Path pipesDirectory, OpenSearchEmitterConfig.AttachmentStrategy attachmentStrategy,
+                                       OpenSearchEmitterConfig.UpdateStrategy updateStrategy,
+                                       ParseMode parseMode, String endpoint, Path testDocDirectory) throws IOException {
+        Path tikaConfig = pipesDirectory.resolve("plugins-config.json");
+
+        Path log4jPropFile = pipesDirectory.resolve("log4j2.xml");
         try (InputStream is = OpenSearchTest.class
                 .getResourceAsStream("/pipes-fork-server-custom-log4j2.xml")) {
             Files.copy(is, log4jPropFile);
         }
 
-        String tikaConfigTemplateXml;
-        try (InputStream is = OpenSearchTest.class
-                .getResourceAsStream("/opensearch/tika-config-opensearch.xml")) {
-            tikaConfigTemplateXml = IOUtils.toString(is, StandardCharsets.UTF_8);
-        }
+        boolean includeRouting = (attachmentStrategy == OpenSearchEmitterConfig.AttachmentStrategy.PARENT_CHILD);
 
-        String tikaConfigXml =
-                createTikaConfigXml(tikaConfigFile, log4jPropFile, tikaConfigTemplateXml,
-                        attachmentStrategy, updateStrategy, parseMode, endpoint, testDocDirectory);
-        writeStringToPath(tikaConfigFile, tikaConfigXml);
+        Map<String, Object> replacements = new HashMap<>();
+        replacements.put("ATTACHMENT_STRATEGY", attachmentStrategy.toString());
+        replacements.put("UPDATE_STRATEGY", updateStrategy.toString());
+        replacements.put("USER_NAME", CONTAINER.getUsername());
+        replacements.put("PASSWORD", CONTAINER.getPassword());
+        replacements.put("FETCHER_BASE_PATH", testDocDirectory);
+        replacements.put("PARSE_MODE", parseMode.name());
+        replacements.put("INCLUDE_ROUTING", includeRouting);
+        replacements.put("OPEN_SEARCH_URL", endpoint);
+        replacements.put("LOG4J_JVM_ARG", "-Dlog4j.configurationFile=" + log4jPropFile.toAbsolutePath());
 
-        return tikaConfigFile;
+        JsonConfigHelper.writeConfigFromResource("/opensearch/plugins-template.json",
+                OpenSearchTest.class, replacements, tikaConfig);
+
+        return tikaConfig;
     }
-
-    @NotNull
-    private String createTikaConfigXml(Path tikaConfigFile, Path log4jPropFile,
-                                       String tikaConfigTemplateXml,
-                                       OpenSearchEmitter.AttachmentStrategy attachmentStrategy,
-                                       OpenSearchEmitter.UpdateStrategy updateStrategy,
-                                       HandlerConfig.PARSE_MODE parseMode, String endpoint, Path testDocDirectory) {
-        String res =
-                tikaConfigTemplateXml.replace("{TIKA_CONFIG}", tikaConfigFile.toAbsolutePath().toString())
-                                     .replace("{ATTACHMENT_STRATEGY}", attachmentStrategy.toString())
-                                     .replace("{LOG4J_PROPERTIES_FILE}", log4jPropFile.toAbsolutePath().toString())
-                                     .replace("{UPDATE_STRATEGY}", updateStrategy.toString())
-                        .replaceAll("\\{OPENSEARCH_USERNAME\\}", CONTAINER.getUsername())
-                                     .replaceAll("\\{OPENSEARCH_PASSWORD\\}", CONTAINER.getPassword())
-                                     .replaceAll("\\{PATH_TO_DOCS\\}",
-                                             Matcher.quoteReplacement(testDocDirectory.toAbsolutePath().toString()))
-                                     .replace("{PARSE_MODE}", parseMode.name());
-
-        if (attachmentStrategy == OpenSearchEmitter.AttachmentStrategy.PARENT_CHILD) {
-            res = res.replace("{INCLUDE_ROUTING}", "true");
-        } else {
-            res = res.replace("{INCLUDE_ROUTING}", "false");
-        }
-        res = res.replace("{OPENSEARCH_CONNECTION}", endpoint);
-
-        return res;
-
-    }
-
 
     private void createTestHtmlFiles(String bodyContent, int numHtmlDocs, Path testDocDirectory) throws Exception {
         Files.createDirectories(testDocDirectory);

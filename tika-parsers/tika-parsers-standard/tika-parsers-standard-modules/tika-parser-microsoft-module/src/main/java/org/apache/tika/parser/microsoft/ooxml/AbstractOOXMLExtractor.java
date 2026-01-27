@@ -55,6 +55,7 @@ import org.apache.tika.exception.TikaException;
 import org.apache.tika.exception.WriteLimitReachedException;
 import org.apache.tika.extractor.EmbeddedDocumentExtractor;
 import org.apache.tika.extractor.EmbeddedDocumentUtil;
+import org.apache.tika.io.FilenameUtils;
 import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.Office;
@@ -183,7 +184,9 @@ public abstract class AbstractOOXMLExtractor implements OOXMLExtractor {
                 try (InputStream tStream = tPart.getInputStream()) {
                     Metadata thumbnailMetadata = new Metadata();
                     String thumbName = tPart.getPartName().getName();
-                    thumbnailMetadata.set(TikaCoreProperties.RESOURCE_NAME_KEY, thumbName);
+                    thumbnailMetadata.set(TikaCoreProperties.INTERNAL_PATH, thumbName);
+                    thumbnailMetadata.set(TikaCoreProperties.RESOURCE_NAME_KEY,
+                            FilenameUtils.getName(thumbName));
 
                     AttributesImpl attributes = new AttributesImpl();
                     attributes.addAttribute(XHTML, "class", "class", "CDATA", "embedded");
@@ -198,8 +201,10 @@ public abstract class AbstractOOXMLExtractor implements OOXMLExtractor {
                             TikaCoreProperties.EmbeddedResourceType.THUMBNAIL.name());
 
                     if (embeddedExtractor.shouldParseEmbedded(thumbnailMetadata)) {
-                        embeddedExtractor.parseEmbedded(TikaInputStream.get(tStream),
-                                new EmbeddedContentHandler(handler), thumbnailMetadata, false);
+                        try (TikaInputStream tis = TikaInputStream.get(tStream)) {
+                            embeddedExtractor.parseEmbedded(tis,
+                                    new EmbeddedContentHandler(handler), thumbnailMetadata, context, false);
+                        }
                     }
                 }
             }
@@ -340,12 +345,13 @@ public abstract class AbstractOOXMLExtractor implements OOXMLExtractor {
             EmbeddedDocumentUtil.recordEmbeddedStreamException(e, parentMetadata);
             return;
         }
-        TikaInputStream stream = null;
+        TikaInputStream tis = null;
         try {
             Metadata metadata = new Metadata();
             metadata.set(TikaCoreProperties.EMBEDDED_RESOURCE_TYPE,
                     TikaCoreProperties.EmbeddedResourceType.ATTACHMENT.name());
             metadata.set(TikaCoreProperties.EMBEDDED_RELATIONSHIP_ID, rel);
+            metadata.set(TikaCoreProperties.INTERNAL_PATH, part.getPartName().getName());
 
             DirectoryNode root = fs.getRoot();
             POIFSDocumentType type = POIFSDocumentType.detectType(root);
@@ -361,11 +367,10 @@ public abstract class AbstractOOXMLExtractor implements OOXMLExtractor {
                 //OLE 2.0
                 updateMetadata(metadata, embeddedPartMetadata);
 
-                stream = TikaInputStream.get(fs.createDocumentInputStream(packageEntryName));
+                tis = TikaInputStream.get(fs.createDocumentInputStream(packageEntryName));
                 if (embeddedExtractor.shouldParseEmbedded(metadata)) {
                     embeddedExtractor
-                            .parseEmbedded(stream, xhtml, metadata,
-                                    true);
+                            .parseEmbedded(tis, xhtml, metadata, context, true);
                 }
             } else if (POIFSDocumentType.OLE10_NATIVE == type) {
                 // TIKA-704: OLE 1.0 embedded document
@@ -381,13 +386,12 @@ public abstract class AbstractOOXMLExtractor implements OOXMLExtractor {
                 }
                 byte[] data = ole.getDataBuffer();
                 if (data != null) {
-                    stream = TikaInputStream.get(data);
+                    tis = TikaInputStream.get(data);
                 }
 
-                if (stream != null && embeddedExtractor.shouldParseEmbedded(metadata)) {
+                if (tis != null && embeddedExtractor.shouldParseEmbedded(metadata)) {
                     embeddedExtractor
-                            .parseEmbedded(stream, xhtml, metadata,
-                                    true);
+                            .parseEmbedded(tis, xhtml, metadata, context, true);
                 }
             } else {
                 handleEmbeddedFile(part, xhtml, rel, embeddedPartMetadata,
@@ -401,8 +405,8 @@ public abstract class AbstractOOXMLExtractor implements OOXMLExtractor {
             EmbeddedDocumentUtil.recordEmbeddedStreamException(e, parentMetadata);
         } finally {
             fs.close();
-            if (stream != null) {
-                stream.close();
+            if (tis != null) {
+                tis.close();
             }
         }
     }
@@ -454,6 +458,7 @@ public abstract class AbstractOOXMLExtractor implements OOXMLExtractor {
         metadata.set(TikaCoreProperties.EMBEDDED_RELATIONSHIP_ID, rel);
         metadata.set(TikaCoreProperties.EMBEDDED_RESOURCE_TYPE,
                 embeddedResourceType.name());
+        metadata.set(TikaCoreProperties.INTERNAL_PATH, part.getPartName().getName());
 
         // Get the name
         updateResourceName(part, embeddedPartMetadata, metadata);
@@ -465,7 +470,7 @@ public abstract class AbstractOOXMLExtractor implements OOXMLExtractor {
         if (embeddedExtractor.shouldParseEmbedded(metadata)) {
             try (TikaInputStream tis = TikaInputStream.get(part.getInputStream())) {
                 embeddedExtractor
-                        .parseEmbedded(tis, xhtml, metadata, true);
+                        .parseEmbedded(tis, xhtml, metadata, context, true);
             }
         }
     }

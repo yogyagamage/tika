@@ -19,7 +19,6 @@ package org.apache.tika.parser.microsoft.pst;
 import static java.lang.String.valueOf;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Set;
 
@@ -31,6 +30,7 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.extractor.EmbeddedDocumentExtractor;
 import org.apache.tika.extractor.EmbeddedDocumentUtil;
@@ -50,6 +50,7 @@ import org.apache.tika.sax.EmbeddedContentHandler;
 import org.apache.tika.sax.XHTMLContentHandler;
 import org.apache.tika.utils.StringUtils;
 
+@TikaComponent
 public class PSTMailItemParser implements Parser {
 
     //this is a synthetic file type to represent a notional "pst item"
@@ -63,8 +64,7 @@ public class PSTMailItemParser implements Parser {
     }
 
     @Override
-    public void parse(InputStream stream, ContentHandler handler, Metadata metadata, ParseContext context) throws IOException, SAXException, TikaException {
-        TikaInputStream tis = TikaInputStream.cast(stream);
+    public void parse(TikaInputStream tis, ContentHandler handler, Metadata metadata, ParseContext context) throws IOException, SAXException, TikaException {
         if (tis == null) {
             throw new TikaException("Stream must be a TikaInputStream");
         }
@@ -210,7 +210,7 @@ public class PSTMailItemParser implements Parser {
         for (int i = 0; i < numberOfAttachments; i++) {
             try {
                 PSTAttachment attachment = email.getAttachment(i);
-                parseMailAttachment(xhtml, attachment, metadata, embeddedExtractor);
+                parseMailAttachment(xhtml, attachment, metadata, embeddedExtractor, context);
             } catch (Exception e) {
                 EmbeddedDocumentUtil.recordEmbeddedStreamException(e, metadata);
             }
@@ -218,8 +218,8 @@ public class PSTMailItemParser implements Parser {
     }
 
     private void parseMailAttachment(XHTMLContentHandler xhtml, PSTAttachment attachment, Metadata metadata,
-                                     EmbeddedDocumentExtractor embeddedExtractor) throws PSTException, IOException,
-            TikaException, SAXException {
+                                     EmbeddedDocumentExtractor embeddedExtractor, ParseContext context)
+            throws PSTException, IOException, TikaException, SAXException {
 
         PSTMessage attachedEmail = attachment.getEmbeddedPSTMessage();
         //check for whether this is a binary attachment or an embedded pst msg
@@ -230,7 +230,7 @@ public class PSTMailItemParser implements Parser {
                 attachMetadata.set(TikaCoreProperties.CONTENT_TYPE_PARSER_OVERRIDE, PSTMailItemParser.PST_MAIL_ITEM_STRING);
                 attachMetadata.set(TikaCoreProperties.RESOURCE_NAME_KEY, attachedEmail.getSubject() + ".msg");
                 attachMetadata.set(TikaCoreProperties.EMBEDDED_RESOURCE_TYPE, TikaCoreProperties.EmbeddedResourceType.ATTACHMENT.name());
-                embeddedExtractor.parseEmbedded(tis, xhtml, attachMetadata, true);
+                embeddedExtractor.parseEmbedded(tis, xhtml, attachMetadata, context, true);
             }
             return;
         }
@@ -262,7 +262,7 @@ public class PSTMailItemParser implements Parser {
             }
 
             try {
-                embeddedExtractor.parseEmbedded(tis, xhtml, attachMeta, false);
+                embeddedExtractor.parseEmbedded(tis, xhtml, attachMeta, context, false);
             } finally {
                 tis.close();
             }

@@ -17,16 +17,22 @@
 package org.apache.tika.parser.txt;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 
 import org.apache.commons.io.ByteOrderMark;
 import org.apache.commons.io.IOUtils;
 
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.detect.EncodingDetector;
+import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
+import org.apache.tika.parser.ParseContext;
 
+/*
+ This is an optional detector that is not loaded automatically by SPI. You need to configure it.
+ */
+@TikaComponent(spi = false)
 public class BOMDetector implements EncodingDetector {
 
     private static final ByteOrderMark[] BOMS =
@@ -53,11 +59,11 @@ public class BOMDetector implements EncodingDetector {
         }
     }
     @Override
-    public Charset detect(InputStream input, Metadata metadata) throws IOException {
-        input.mark(MAX_BYTES);
+    public Charset detect(TikaInputStream tis, Metadata metadata, ParseContext parseContext) throws IOException {
+        tis.mark(MAX_BYTES);
         byte[] bytes = new byte[MAX_BYTES];
         try {
-            int numRead = IOUtils.read(input, bytes);
+            int numRead = IOUtils.read(tis, bytes);
             if (numRead < MIN_BYTES) {
                 return null;
             } else if (numRead < MAX_BYTES) {
@@ -67,7 +73,7 @@ public class BOMDetector implements EncodingDetector {
                 bytes = tmpBytes;
             }
         } finally {
-            input.reset();
+            tis.reset();
         }
         for (int i = 0; i < BOMS.length; i++) {
             ByteOrderMark bom = BOMS[i];

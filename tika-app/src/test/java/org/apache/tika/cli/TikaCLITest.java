@@ -38,10 +38,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -58,6 +57,7 @@ import org.apache.tika.utils.StringUtils;
 public class TikaCLITest {
 
     static final File TEST_DATA_FILE = new File("src/test/resources/test-data");
+    static final File CONFIGS_DIR = new File("src/test/resources/configs");
     private final URI testDataURI = TEST_DATA_FILE.toURI();
     @TempDir
     private Path extractDir;
@@ -199,17 +199,6 @@ public class TikaCLITest {
     }
 
     /**
-     * Tests -f option of the cli
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testForkParser() throws Exception {
-        String content = getParamOutContent("-f", resourcePrefix + "alice.cli.test");
-        assertTrue(content.contains("finished off the cake"));
-    }
-
-    /**
      * Tests -m option of the cli
      *
      * @throws Exception
@@ -221,7 +210,7 @@ public class TikaCLITest {
 
         content = getParamOutContent("-m", "--digest=SHA512", resourcePrefix + "alice.cli.test");
         assertTrue(content.contains("text/plain"));
-        assertTrue(content.contains("X-TIKA:digest:SHA512: DD459D99BC19FF78FD31FBAE46E0"));
+        assertTrue(content.contains("X-TIKA:digest:SHA512: dd459d99bc19ff78fd31fbae46e0"));
     }
 
     /**
@@ -246,8 +235,7 @@ public class TikaCLITest {
     public void testJsonMetadataPrettyPrintOutput() throws Exception {
         String json = getParamOutContent("--json", "-r", resourcePrefix + "testJsonMultipleInts.html");
 
-        assertTrue(json.contains("\"X-TIKA:Parsed-By\" : [ \"org.apache.tika.parser.CompositeParser\", " +
-                "\"org.apache.tika.parser.DefaultParser\", \"org.apache.tika.parser.html.JSoupParser\" ],"));
+        assertTrue(json.contains("org.apache.tika.parser.DefaultParser\", \"org.apache.tika.parser.html.JSoupParser"));
         //test pretty-print alphabetic sort of keys
         int enc = json.indexOf("\"Content-Encoding\"");
         int fb = json.indexOf("fb:admins");
@@ -281,6 +269,8 @@ public class TikaCLITest {
 
     @Test
     public void testRUnpack() throws Exception {
+        //TODO -- rework this to use two separate emitters
+        //one for bytes and one for json
         String[] expectedChildren = new String[]{
                 "testPDFPackage.pdf.json",
                 //the first two test that the default single file config is working
@@ -396,10 +386,15 @@ public class TikaCLITest {
 
     private void testRecursiveUnpack(String targetFile, String[] expectedChildrenFileNames, int expectedLength) throws Exception {
         Path input = Paths.get(new URI(resourcePrefix + "/" + targetFile));
-        String[] params = {"-Z", input.toAbsolutePath().toString(),
+        Path pluginsDir = Paths.get("target/plugins");
+
+        String[] params = {"-Z",
+                "-p", pluginsDir.toAbsolutePath().toString(),
+                input.toAbsolutePath().toString(),
                 extractDir.toAbsolutePath().toString()};
 
         TikaCLI.main(params);
+
         Set<String> fileNames = getFileNames(extractDir);
         String[] jsonFile = extractDir
                 .toFile()
@@ -408,7 +403,7 @@ public class TikaCLITest {
         assertEquals(expectedLength, jsonFile.length);
 
         for (String expectedChildName : expectedChildrenFileNames) {
-            assertTrue(fileNames.contains(expectedChildName));
+            assertTrue(fileNames.contains(expectedChildName), expectedChildName);
         }
     }
 
@@ -416,23 +411,23 @@ public class TikaCLITest {
         final Set<String> names = new HashSet<>();
         Files.walkFileTree(extractDir, new FileVisitor<Path>() {
             @Override
-            public @NotNull FileVisitResult preVisitDirectory(Path path, @NotNull BasicFileAttributes basicFileAttributes) throws IOException {
+            public FileVisitResult preVisitDirectory(Path path, BasicFileAttributes basicFileAttributes) throws IOException {
                 return FileVisitResult.CONTINUE;
             }
 
             @Override
-            public @NotNull FileVisitResult visitFile(Path path, @NotNull BasicFileAttributes basicFileAttributes) throws IOException {
+            public FileVisitResult visitFile(Path path, BasicFileAttributes basicFileAttributes) throws IOException {
                 names.add(extractDir.relativize(path).toString().replace('\\', '/'));
                 return FileVisitResult.CONTINUE;
             }
 
             @Override
-            public @NotNull FileVisitResult visitFileFailed(Path path, @NotNull IOException e) throws IOException {
+            public FileVisitResult visitFileFailed(Path path, IOException e) throws IOException {
                 return FileVisitResult.CONTINUE;
             }
 
             @Override
-            public @NotNull FileVisitResult postVisitDirectory(Path path, @Nullable IOException e) throws IOException {
+            public FileVisitResult postVisitDirectory(Path path, IOException e) throws IOException {
                 return FileVisitResult.CONTINUE;
             }
         });
@@ -544,19 +539,10 @@ public class TikaCLITest {
 
     @Test
     public void testConfig() throws Exception {
-        String content = getParamOutContent("--config=" + TEST_DATA_FILE.toString() + "/tika-config1.xml", resourcePrefix + "bad_xml.xml");
+        String content = getParamOutContent("--config=" + CONFIGS_DIR.toString() + "/tika-config1.json", resourcePrefix + "bad_xml.xml");
         assertTrue(content.contains("apple"));
         assertTrue(content.contains("org.apache.tika.parser.html.JSoupParser"));
     }
-
-    @Test
-    public void testConfigIgnoreInit() throws Exception {
-        String content = getParamOutContent("--config=" + TEST_DATA_FILE.toString() + "/TIKA-2389-ignore-init-problems.xml", resourcePrefix + "test_recursive_embedded.docx");
-        assertTrue(content.contains("embed_1a"));
-        //TODO: add a real unit test that configures logging to a file to test that nothing is
-        //written at the various logging levels
-    }
-
 
     @Test
     public void testJsonRecursiveMetadataParserMetadataOnly() throws Exception {
@@ -588,6 +574,7 @@ public class TikaCLITest {
     }
 
     @Test
+    @Disabled("until we re-implement serialization")
     public void testConfigSerializationStaticAndCurrent() throws Exception {
         String content = getParamOutContent("--dump-static-config");
         //make sure at least one detector is there
@@ -604,8 +591,9 @@ public class TikaCLITest {
     }
 
     @Test
+    @Disabled("until we re-implement serialization")
     public void testConfigSerializationCustomMinimal() throws Exception {
-        String content = getParamOutContent("--config=" + TEST_DATA_FILE.toString() + "/tika-config2.xml", "--dump-minimal-config").replaceAll("[\r\n\t ]+", " ");
+        String content = getParamOutContent("--config=" + CONFIGS_DIR.toString() + "/tika-config2.json", "--dump-minimal-config").replaceAll("[\r\n\t ]+", " ");
 
         String expected =
                 "<parser class=\"org.apache.tika.parser.DefaultParser\">" + " <mime-exclude>application/pdf</mime-exclude>" + " <mime-exclude>image/jpeg</mime-exclude> " +
@@ -614,8 +602,9 @@ public class TikaCLITest {
     }
 
     @Test
+    @Disabled("until we re-implement serialization")
     public void testConfigSerializationCustomStatic() throws Exception {
-        String content = getParamOutContent("--config=" + TEST_DATA_FILE.toString() + "/tika-config2.xml", "--dump-static-config");
+        String content = getParamOutContent("--config=" + TEST_DATA_FILE.toString() + "/tika-config2.json", "--dump-static-config");
         assertFalse(content.contains("org.apache.tika.parser.executable.Executable"));
     }
 

@@ -26,8 +26,9 @@ import java.util.TimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.apache.tika.config.Field;
-import org.apache.tika.exception.TikaException;
+import org.apache.tika.config.ConfigDeserializer;
+import org.apache.tika.config.JsonConfig;
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.Property;
 
@@ -43,7 +44,15 @@ import org.apache.tika.metadata.Property;
  * if the file format does not specify a timezone.
  *
  */
-public class DateNormalizingMetadataFilter extends MetadataFilter {
+@TikaComponent
+public class DateNormalizingMetadataFilter extends MetadataFilterBase {
+
+    /**
+     * Configuration class for JSON deserialization.
+     */
+    public static class Config {
+        public String defaultTimeZone = "UTC";
+    }
 
     private static TimeZone UTC = TimeZone.getTimeZone("UTC");
 
@@ -51,8 +60,29 @@ public class DateNormalizingMetadataFilter extends MetadataFilter {
 
     private TimeZone defaultTimeZone = UTC;
 
-    @Override
-    public void filter(Metadata metadata) throws TikaException {
+    public DateNormalizingMetadataFilter() {
+    }
+
+    /**
+     * Constructor with explicit Config object.
+     *
+     * @param config the configuration
+     */
+    public DateNormalizingMetadataFilter(Config config) {
+        this.defaultTimeZone = TimeZone.getTimeZone(ZoneId.of(config.defaultTimeZone));
+    }
+
+    /**
+     * Constructor for JSON configuration.
+     * Requires Jackson on the classpath.
+     *
+     * @param jsonConfig JSON configuration
+     */
+    public DateNormalizingMetadataFilter(JsonConfig jsonConfig) {
+        this(ConfigDeserializer.buildConfig(jsonConfig, Config.class));
+    }
+
+    protected void filter(Metadata metadata) {
         SimpleDateFormat dateFormatter = null;
         SimpleDateFormat utcFormatter = null;
         for (String n : metadata.names()) {
@@ -83,7 +113,6 @@ public class DateNormalizingMetadataFilter extends MetadataFilter {
         }
     }
 
-    @Field
     public void setDefaultTimeZone(String timeZoneId) {
         this.defaultTimeZone = TimeZone.getTimeZone(ZoneId.of(timeZoneId));
     }

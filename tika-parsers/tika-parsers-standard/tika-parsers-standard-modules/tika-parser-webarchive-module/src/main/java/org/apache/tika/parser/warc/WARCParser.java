@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,7 +17,6 @@
 package org.apache.tika.parser.warc;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -34,6 +33,7 @@ import org.netpreserve.jwarc.WarcResponse;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.exception.WriteLimitReachedException;
 import org.apache.tika.extractor.EmbeddedDocumentExtractor;
@@ -52,6 +52,7 @@ import org.apache.tika.utils.StringUtils;
 /**
  * This uses jwarc to parse warc files and arc files
  */
+@TikaComponent
 public class WARCParser implements Parser {
 
     private static final Set<MediaType> SUPPORTED_TYPES = Collections.unmodifiableSet(
@@ -76,19 +77,21 @@ public class WARCParser implements Parser {
     }
 
     @Override
-    public void parse(InputStream stream, ContentHandler handler, Metadata metadata,
+    public void parse(TikaInputStream tis, ContentHandler handler, Metadata metadata,
                       ParseContext context) throws IOException, SAXException, TikaException {
 
         XHTMLContentHandler xhtml = new XHTMLContentHandler(handler, metadata);
         xhtml.startDocument();
         EmbeddedDocumentExtractor embeddedDocumentExtractor =
                 EmbeddedDocumentUtil.getEmbeddedDocumentExtractor(context);
-        try (WarcReader warcreader = new WarcReader(stream)) {
+        tis.setCloseShield();
+        try (WarcReader warcreader = new WarcReader(tis)) {
             //TODO: record warnings in metadata: warcreader.onWarning();
             for (WarcRecord record : warcreader) {
                 processRecord(record, xhtml, metadata, context, embeddedDocumentExtractor);
             }
         } finally {
+            tis.removeCloseShield();
             xhtml.endDocument();
         }
     }
@@ -144,10 +147,10 @@ public class WARCParser implements Parser {
         metadata.set(Metadata.CONTENT_LENGTH, Long.toString(payload.body().size()));
 
         if (embeddedDocumentExtractor.shouldParseEmbedded(metadata)) {
-            //TODO check Content-Encoding on the warcResponse.http.headers and wrap the stream.
+            //TODO check Content-Encoding on the warcResponse.http.headers and wrap the tis.
             //May need to sniff first few bytes to confirm accuracy, e.g. gzip compression ?
             try (TikaInputStream tis = TikaInputStream.get(payload.body().stream())) {
-                embeddedDocumentExtractor.parseEmbedded(tis, xhtml, metadata, true);
+                embeddedDocumentExtractor.parseEmbedded(tis, xhtml, metadata, context, true);
             }
         }
 

@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -292,9 +292,11 @@ public class FilenameUtils {
 
     //may return null
     private static String getEmbeddedPath(Metadata metadata) {
-        //potentially look for other values in embedded path or original file name, etc...
-        //maybe different fallback order?
         String path = metadata.get(TikaCoreProperties.EMBEDDED_RESOURCE_PATH);
+        if (! StringUtils.isBlank(path)) {
+            return path;
+        }
+        path = metadata.get(TikaCoreProperties.INTERNAL_PATH);
         if (! StringUtils.isBlank(path)) {
             return path;
         }
@@ -311,9 +313,11 @@ public class FilenameUtils {
 
     //this tries for resource name first, and then backs off to path
     private static String getEmbeddedName(Metadata metadata) {
-        //potentially look for other values in embedded path or original file name, etc...
-        //maybe different fallback order?
         String path = metadata.get(TikaCoreProperties.RESOURCE_NAME_KEY);
+        if (! StringUtils.isBlank(path)) {
+            return path;
+        }
+        path = metadata.get(TikaCoreProperties.INTERNAL_PATH);
         if (! StringUtils.isBlank(path)) {
             return path;
         }
@@ -321,12 +325,10 @@ public class FilenameUtils {
         if (! StringUtils.isBlank(path)) {
             return path;
         }
-
         path = metadata.get(TikaCoreProperties.EMBEDDED_RESOURCE_PATH);
         if (! StringUtils.isBlank(path)) {
             return path;
         }
-
         return metadata.get(TikaCoreProperties.ORIGINAL_RESOURCE_NAME);
     }
 

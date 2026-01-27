@@ -64,6 +64,15 @@
       <scope>provided</scope>
     </dependency>
 
+    <!-- Annotation processor - contains @TikaComponent and ensures build order.
+         "provided" because it is only used at compile time -->
+    <dependency>
+      <groupId>org.apache.tika</groupId>
+      <artifactId>tika-annotation-processor</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- Test dependencies -->
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -157,6 +166,19 @@
         </executions>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>org.apache.tika</groupId>
+              <artifactId>tika-annotation-processor</artifactId>
+              <version>${project.version}</version>
+            </path>
+          </annotationProcessorPaths>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <version>${maven.bundle.version}</version>
@@ -176,6 +198,10 @@
             <Export-Package>
               org.apache.tika.*
             </Export-Package>
+            <Include-Resource>
+              {maven-resources},
+              META-INF/tika=${project.build.outputDirectory}/META-INF/tika
+            </Include-Resource>
           </instructions>
         </configuration>
       </plugin>
@@ -183,14 +209,14 @@
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
         <configuration>
-          <excludes>
-            <exclude>src/test/resources/org/apache/tika/**</exclude>
-            <exclude>src/main/resources/org/apache/tika/language/*.ngp</exclude>
-            <exclude>src/main/resources/org/apache/tika/detect/*.nnmodel</exclude>
-            <exclude>src/test/resources/test-documents/file-list.txt</exclude>
-            <exclude>src/test/resources/test-documents/ang20150420t182050_corr_v1e_img.hdr</exclude>
-            <exclude>src/test/resources/test-documents/*.pdf</exclude>
-          </excludes>
+          <inputExcludes>
+            <inputExclude>src/test/resources/org/apache/tika/**</inputExclude>
+            <inputExclude>src/main/resources/org/apache/tika/language/*.ngp</inputExclude>
+            <inputExclude>src/main/resources/org/apache/tika/detect/*.nnmodel</inputExclude>
+            <inputExclude>src/test/resources/test-documents/file-list.txt</inputExclude>
+            <inputExclude>src/test/resources/test-documents/ang20150420t182050_corr_v1e_img.hdr</inputExclude>
+            <inputExclude>src/test/resources/test-documents/*.pdf</inputExclude>
+          </inputExcludes>
         </configuration>
       </plugin>
       <plugin>

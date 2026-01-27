@@ -41,6 +41,16 @@
       <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
+
+    <!-- Annotation processor - contains @TikaComponent and ensures build order.
+         "provided" because it is only used at compile time -->
+    <dependency>
+      <groupId>org.apache.tika</groupId>
+      <artifactId>tika-annotation-processor</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
     <dependency>
       <groupId>org.apache.tika</groupId>
       <artifactId>tika-langdetect-optimaize</artifactId>
@@ -80,7 +90,7 @@
     <dependency>
       <groupId>jakarta.websocket</groupId>
       <artifactId>jakarta.websocket-api</artifactId>
-      <version>2.3.0-M1</version>
+      <version>2.2.0</version>
     </dependency>
     <dependency>
       <groupId>org.glassfish.tyrus.bundles</groupId>
@@ -133,6 +143,7 @@
               org.apache.tika.*,
               *;resolution:=optional
             </Import-Package>
+            <Include-Resource>{maven-resources},META-INF=target/classes/META-INF</Include-Resource>
           </instructions>
         </configuration>
       </plugin>
@@ -140,10 +151,10 @@
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
         <configuration>
-          <excludes>
-            <exclude>src/main/java/org/apache/tika/parser/txt/Charset*.java</exclude>
-            <exclude>src/test/resources/test-documents/**</exclude>
-          </excludes>
+          <inputExcludes>
+            <inputExclude>src/main/java/org/apache/tika/parser/txt/Charset*.java</inputExclude>
+            <inputExclude>src/test/resources/test-documents/**</inputExclude>
+          </inputExcludes>
         </configuration>
       </plugin>
       <plugin>
@@ -161,6 +172,19 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
         <version>3.21.0</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>org.apache.tika</groupId>
+              <artifactId>tika-annotation-processor</artifactId>
+              <version>${project.version}</version>
+            </path>
+          </annotationProcessorPaths>
+        </configuration>
       </plugin>
     </plugins>
 

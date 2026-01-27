@@ -35,7 +35,6 @@ import org.apache.poi.util.IOUtils;
 import org.apache.poi.util.StringUtil;
 import org.xml.sax.SAXException;
 
-import org.apache.tika.config.TikaConfig;
 import org.apache.tika.detect.Detector;
 import org.apache.tika.detect.zip.DefaultZipContainerDetector;
 import org.apache.tika.exception.TikaException;
@@ -74,11 +73,6 @@ abstract class AbstractPOIFSExtractor {
         this.officeParserConfig = context.get(OfficeParserConfig.class, new OfficeParserConfig());
         this.parentMetadata = parentMetadata;
         this.context = context;
-    }
-
-    // Note - these cache, but avoid creating the default TikaConfig if not needed
-    protected TikaConfig getTikaConfig() {
-        return embeddedDocumentUtil.getTikaConfig();
     }
 
     protected Detector getDetector() {
@@ -174,13 +168,13 @@ abstract class AbstractPOIFSExtractor {
             // It's OOXML (has a ZipFile):
             metadata.set(Metadata.CONTENT_LENGTH,
                     Integer.toString(((DocumentEntry)ooxml).getSize()));
-            try (TikaInputStream stream = TikaInputStream
+            try (TikaInputStream tis = TikaInputStream
                     .get(new DocumentInputStream((DocumentEntry) ooxml))) {
 
                 Detector detector = new DefaultZipContainerDetector();
                 MediaType type = null;
                 try {
-                    type = detector.detect(stream, metadata);
+                    type = detector.detect(tis, metadata, context);
                 } catch (SecurityException e) {
                     throw e;
                 } catch (Exception e) {
@@ -188,7 +182,7 @@ abstract class AbstractPOIFSExtractor {
                     EmbeddedDocumentUtil.recordEmbeddedStreamException(e, parentMetadata);
                     return;
                 }
-                handleEmbeddedResource(stream, metadata,null, dir.getName(), dir.getStorageClsid(),
+                handleEmbeddedResource(tis, metadata,null, dir.getName(), dir.getStorageClsid(),
                         type.toString(), xhtml, outputHtml);
                 return;
             }
@@ -312,7 +306,7 @@ abstract class AbstractPOIFSExtractor {
         }
         try (TikaInputStream tis = TikaInputStream.get(inp)) {
             // Try to work out what it is
-            MediaType mediaType = getDetector().detect(tis, metadata);
+            MediaType mediaType = getDetector().detect(tis, metadata, context);
             String extension = type.getExtension();
             try {
                 MimeType mimeType =
@@ -379,6 +373,9 @@ abstract class AbstractPOIFSExtractor {
             throw e;
         } catch (Exception e) {
             EmbeddedDocumentUtil.recordEmbeddedStreamException(e, parentMetadata);
+            return;
+        }
+        if (data == null) {
             return;
         }
         try (TikaInputStream tis = TikaInputStream.get(data)) {

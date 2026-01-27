@@ -14,19 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.tika.parser.microsoft.ooxml.xwpf.ml2006;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collections;
 import java.util.Set;
 
-import org.apache.commons.io.input.CloseShieldInputStream;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.exception.TikaException;
+import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
 import org.apache.tika.parser.ParseContext;
@@ -35,7 +34,7 @@ import org.apache.tika.sax.EmbeddedContentHandler;
 import org.apache.tika.sax.XHTMLContentHandler;
 import org.apache.tika.utils.XMLReaderUtils;
 
-
+@TikaComponent
 public class Word2006MLParser extends AbstractOfficeParser {
 
     protected static final Set<MediaType> SUPPORTED_TYPES =
@@ -47,7 +46,7 @@ public class Word2006MLParser extends AbstractOfficeParser {
     }
 
     @Override
-    public void parse(InputStream stream, ContentHandler handler, Metadata metadata,
+    public void parse(TikaInputStream tis, ContentHandler handler, Metadata metadata,
                       ParseContext context) throws IOException, SAXException, TikaException {
         //set OfficeParserConfig if the user hasn't specified one
         configure(context);
@@ -55,15 +54,18 @@ public class Word2006MLParser extends AbstractOfficeParser {
         final XHTMLContentHandler xhtml = new XHTMLContentHandler(handler, metadata);
 
         xhtml.startDocument();
+        tis.setCloseShield();
         try {
             //need to get new SAXParser because
             //an attachment might require another SAXParser
             //mid-parse
-            XMLReaderUtils.getSAXParser().parse(CloseShieldInputStream.wrap(stream),
+            XMLReaderUtils.getSAXParser().parse(tis,
                     new EmbeddedContentHandler(
                             new Word2006MLDocHandler(xhtml, metadata, context)));
         } catch (SAXException e) {
             throw new TikaException("XML parse error", e);
+        } finally {
+            tis.removeCloseShield();
         }
         xhtml.endDocument();
     }

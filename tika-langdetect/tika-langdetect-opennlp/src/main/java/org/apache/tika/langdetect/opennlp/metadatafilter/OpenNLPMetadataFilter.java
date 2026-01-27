@@ -16,25 +16,24 @@
  */
 package org.apache.tika.langdetect.opennlp.metadatafilter;
 
-import org.apache.tika.config.Field;
-import org.apache.tika.exception.TikaException;
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.langdetect.opennlp.OpenNLPDetector;
 import org.apache.tika.language.detect.LanguageResult;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.TikaCoreProperties;
-import org.apache.tika.metadata.filter.MetadataFilter;
+import org.apache.tika.metadata.filter.MetadataFilterBase;
 
-public class OpenNLPMetadataFilter extends MetadataFilter {
+@TikaComponent
+public class OpenNLPMetadataFilter extends MetadataFilterBase {
 
     private int maxCharsForDetection = 10000;
 
-    @Field
     public void setMaxCharsForDetection(int maxCharsForDetection) {
         this.maxCharsForDetection = maxCharsForDetection;
     }
 
     @Override
-    public void filter(Metadata metadata) throws TikaException {
+    public void filter(Metadata metadata) {
         OpenNLPDetector detector = new OpenNLPDetector();
         detector.setMaxLength(maxCharsForDetection);
         String content = metadata.get(TikaCoreProperties.TIKA_CONTENT);

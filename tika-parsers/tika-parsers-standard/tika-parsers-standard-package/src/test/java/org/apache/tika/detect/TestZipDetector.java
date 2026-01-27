@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.tika.detect;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,22 +32,21 @@ import org.junit.jupiter.api.Test;
 
 import org.apache.tika.Tika;
 import org.apache.tika.TikaTest;
-import org.apache.tika.config.TikaConfig;
+import org.apache.tika.config.loader.TikaLoader;
 import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
+import org.apache.tika.parser.ParseContext;
 
 public class TestZipDetector extends TikaTest {
 
     private static final String ZIP_FILE = "testTika4424.zip";
-    private static final String SKIP_ZIP_CONTAINER_CONFIG = "tika-4424-config.xml";
 
-    private static final Detector DETECTOR = TikaConfig
-            .getDefaultConfig()
-            .getDetector();
+    private static Detector DETECTOR;
 
     private static Path DOCX;
     @BeforeAll
     public static void setUp() throws Exception {
+        DETECTOR = TikaLoader.loadDefault().loadDetectors();
         DOCX = Files.createTempFile("test-zip-", ".docx");
         Files.copy(TestZipDetector.class.getResourceAsStream("/test-documents/testWORD.docx"),
                 DOCX, StandardCopyOption.REPLACE_EXISTING);
@@ -66,7 +64,7 @@ public class TestZipDetector extends TikaTest {
         Metadata metadata = new Metadata();
         try (TikaInputStream tis = TikaInputStream.get(p, metadata)) {
             assertEquals(expectedMime, DETECTOR
-                    .detect(tis, metadata)
+                    .detect(tis, metadata, new ParseContext())
                     .toString());
         }
 
@@ -74,21 +72,23 @@ public class TestZipDetector extends TikaTest {
         metadata = new Metadata();
         try (TikaInputStream tis = TikaInputStream.get(bytes)) {
             assertEquals(expectedMime, DETECTOR
-                    .detect(tis, metadata)
+                    .detect(tis, metadata, new ParseContext())
                     .toString());
         }
 
         metadata = new Metadata();
-        try (InputStream is = new BufferedInputStream(Files.newInputStream(p))) {
+        try (InputStream is = new BufferedInputStream(Files.newInputStream(p));
+             TikaInputStream tis = TikaInputStream.get(is)) {
             assertEquals(expectedMime, DETECTOR
-                    .detect(is, metadata)
+                    .detect(tis, metadata, new ParseContext())
                     .toString());
         }
 
         metadata = new Metadata();
-        try (InputStream is = new ByteArrayInputStream(bytes)) {
+        try (InputStream is = new ByteArrayInputStream(bytes);
+             TikaInputStream tis = TikaInputStream.get(is)) {
             assertEquals(expectedMime, DETECTOR
-                    .detect(is, metadata)
+                    .detect(tis, metadata, new ParseContext())
                     .toString());
         }
     }
@@ -117,21 +117,6 @@ public class TestZipDetector extends TikaTest {
 
             String result = tika.detect(tikaInputStream, ZIP_FILE);
             assertEquals("application/vnd.google-earth.kmz", result);
-        }
-    }
-
-    @Test
-    public void detectPlainZipUsingPlainInputStream() throws Exception {
-        try (InputStream tikaConfigInputStream = TestZipDetector.class.getResourceAsStream("/configs/" + SKIP_ZIP_CONTAINER_CONFIG);
-                InputStream inputStream = TestZipDetector.class.getResourceAsStream("/test-documents/" + ZIP_FILE)) {
-
-            assertNotNull(tikaConfigInputStream);
-            assertNotNull(inputStream);
-
-            Tika tika = new Tika(new TikaConfig(tikaConfigInputStream));
-
-            String result = tika.detect(inputStream, ZIP_FILE);
-            assertEquals("application/zip", result);
         }
     }
 

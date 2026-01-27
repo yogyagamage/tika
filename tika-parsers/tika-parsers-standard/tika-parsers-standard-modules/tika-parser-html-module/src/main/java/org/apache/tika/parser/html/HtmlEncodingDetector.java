@@ -18,8 +18,8 @@ package org.apache.tika.parser.html;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -30,9 +30,13 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.tika.config.Field;
+import org.apache.tika.config.ConfigDeserializer;
+import org.apache.tika.config.JsonConfig;
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.detect.EncodingDetector;
+import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
+import org.apache.tika.parser.ParseContext;
 import org.apache.tika.utils.CharsetUtils;
 
 /**
@@ -44,10 +48,18 @@ import org.apache.tika.utils.CharsetUtils;
  *
  * @since Apache Tika 1.2
  */
+@TikaComponent(spi = false)
 public class HtmlEncodingDetector implements EncodingDetector {
 
     // TIKA-357 - use bigger buffer for meta tag sniffing (was 4K)
     private static final int DEFAULT_MARK_LIMIT = 8192;
+
+    /**
+     * Configuration class for JSON deserialization.
+     */
+    public static class Config implements Serializable {
+        public int markLimit = DEFAULT_MARK_LIMIT;
+    }
     private static final Pattern HTTP_META_PATTERN =
             Pattern.compile("(?is)<\\s*meta(?:/|\\s+)([^<>]+)");
     //this should match both the older:
@@ -96,24 +108,48 @@ public class HtmlEncodingDetector implements EncodingDetector {
         CHARSETS_UNSUPPORTED_BY_IANA = Collections.unmodifiableSet(unsupported);
     }
 
-    @Field
     private int markLimit = DEFAULT_MARK_LIMIT;
 
-    public Charset detect(InputStream input, Metadata metadata) throws IOException {
-        if (input == null) {
+    /**
+     * Default constructor for SPI loading.
+     */
+    public HtmlEncodingDetector() {
+    }
+
+    /**
+     * Constructor with explicit Config object.
+     *
+     * @param config the configuration
+     */
+    public HtmlEncodingDetector(Config config) {
+        this.markLimit = config.markLimit;
+    }
+
+    /**
+     * Constructor for JSON configuration.
+     * Requires Jackson on the classpath.
+     *
+     * @param jsonConfig JSON configuration
+     */
+    public HtmlEncodingDetector(JsonConfig jsonConfig) {
+        this(ConfigDeserializer.buildConfig(jsonConfig, Config.class));
+    }
+
+    public Charset detect(TikaInputStream tis, Metadata metadata, ParseContext parseContext) throws IOException {
+        if (tis == null) {
             return null;
         }
 
         // Read enough of the text stream to capture possible meta tags
-        input.mark(markLimit);
+        tis.mark(markLimit);
         byte[] buffer = new byte[markLimit];
         int n = 0;
-        int m = input.read(buffer);
+        int m = tis.read(buffer);
         while (m != -1 && n < buffer.length) {
             n += m;
-            m = input.read(buffer, n, buffer.length - n);
+            m = tis.read(buffer, n, buffer.length - n);
         }
-        input.reset();
+        tis.reset();
 
         // Interpret the head as ASCII and try to spot a meta tag with
         // a possible character encoding hint
@@ -173,7 +209,6 @@ public class HtmlEncodingDetector implements EncodingDetector {
      *
      * @param markLimit
      */
-    @Field
     public void setMarkLimit(int markLimit) {
         this.markLimit = markLimit;
     }

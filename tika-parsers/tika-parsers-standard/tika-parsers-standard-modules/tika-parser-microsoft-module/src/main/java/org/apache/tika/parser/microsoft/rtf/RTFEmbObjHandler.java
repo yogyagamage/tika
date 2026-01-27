@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -217,26 +217,25 @@ class RTFEmbObjHandler {
         metadata.set(Metadata.CONTENT_LENGTH, Integer.toString(bytes.length));
 
         if (embeddedDocumentUtil.shouldParseEmbedded(metadata)) {
-            TikaInputStream stream = TikaInputStream.get(bytes);
-            if (metadata.get(TikaCoreProperties.RESOURCE_NAME_KEY) == null) {
-                String extension = embeddedDocumentUtil.getExtension(stream, metadata);
-                if (inObject && state == EMB_STATE.PICT) {
-                    metadata.set(TikaCoreProperties.RESOURCE_NAME_KEY,
-                            "thumbnail_" + thumbCount++ + extension);
-                    metadata.set(RTFMetadata.THUMBNAIL, "true");
-                } else {
-                    metadata.set(TikaCoreProperties.RESOURCE_NAME_KEY,
-                            "file_" + unknownFilenameCount.getAndIncrement() + extension);
+            try (TikaInputStream tis = TikaInputStream.get(bytes)) {
+                if (metadata.get(TikaCoreProperties.RESOURCE_NAME_KEY) == null) {
+                    String extension = embeddedDocumentUtil.getExtension(tis, metadata);
+                    if (inObject && state == EMB_STATE.PICT) {
+                        metadata.set(TikaCoreProperties.RESOURCE_NAME_KEY,
+                                "thumbnail_" + thumbCount++ + extension);
+                        metadata.set(RTFMetadata.THUMBNAIL, "true");
+                    } else {
+                        metadata.set(TikaCoreProperties.RESOURCE_NAME_KEY,
+                                "file_" + unknownFilenameCount.getAndIncrement() + extension);
+                    }
                 }
-            }
-            try {
-                embeddedDocumentUtil
-                        .parseEmbedded(stream, new EmbeddedContentHandler(handler), metadata,
-                                true);
-            } catch (IOException e) {
-                EmbeddedDocumentUtil.recordEmbeddedStreamException(e, metadata);
-            } finally {
-                stream.close();
+                try {
+                    embeddedDocumentUtil
+                            .parseEmbedded(tis, new EmbeddedContentHandler(handler), metadata,
+                                    true);
+                } catch (IOException e) {
+                    EmbeddedDocumentUtil.recordEmbeddedStreamException(e, metadata);
+                }
             }
         }
     }

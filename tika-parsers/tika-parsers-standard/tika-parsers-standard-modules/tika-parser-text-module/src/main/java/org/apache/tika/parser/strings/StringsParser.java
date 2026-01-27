@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,7 +25,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -35,10 +34,10 @@ import org.apache.commons.io.IOUtils;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
-import org.apache.tika.config.Field;
+import org.apache.tika.config.ConfigDeserializer;
 import org.apache.tika.config.Initializable;
-import org.apache.tika.config.InitializableProblemHandler;
-import org.apache.tika.config.Param;
+import org.apache.tika.config.JsonConfig;
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.detect.FileCommandDetector;
 import org.apache.tika.exception.TikaConfigException;
 import org.apache.tika.exception.TikaException;
@@ -55,11 +54,12 @@ import org.apache.tika.utils.SystemUtils;
 /**
  * Parser that uses the "strings" (or strings-alternative) command to find the
  * printable strings in a object, or other binary, file
- * (application/octet-stream). Useful as "best-effort" parser for files detected
- * as application/octet-stream.
+ * (application/octet-tis). Useful as "best-effort" parser for files detected
+ * as application/octet-tis.
  *
  * @author gtotaro
  */
+@TikaComponent(spi = false)
 public class StringsParser implements Parser, Initializable {
     /**
      * Serial version UID
@@ -69,7 +69,7 @@ public class StringsParser implements Parser, Initializable {
     private static final Set<MediaType> SUPPORTED_TYPES =
             Collections.singleton(MediaType.OCTET_STREAM);
 
-    private final StringsConfig defaultStringsConfig = new StringsConfig();
+    private StringsConfig defaultStringsConfig = new StringsConfig();
 
     private String filePath = "";
 
@@ -79,6 +79,13 @@ public class StringsParser implements Parser, Initializable {
     private boolean hasEncodingOption = false;//whether or not the strings app allows -e
 
     private String stringsPath = "";
+
+    public StringsParser() {
+    }
+
+    public StringsParser(JsonConfig jsonConfig) {
+        defaultStringsConfig = ConfigDeserializer.buildConfig(jsonConfig, StringsConfig.class);
+    }
 
     public static String getStringsProg() {
         return SystemUtils.IS_OS_WINDOWS ? "strings.exe" : "strings";
@@ -90,7 +97,7 @@ public class StringsParser implements Parser, Initializable {
     }
 
     @Override
-    public void parse(InputStream stream, ContentHandler handler, Metadata metadata,
+    public void parse(TikaInputStream tis, ContentHandler handler, Metadata metadata,
                       ParseContext context) throws IOException, SAXException, TikaException {
 
         if (!stringsPresent) {
@@ -99,7 +106,6 @@ public class StringsParser implements Parser, Initializable {
         StringsConfig stringsConfig = context.get(StringsConfig.class, defaultStringsConfig);
 
         try (TemporaryResources tmp = new TemporaryResources()) {
-            TikaInputStream tis = TikaInputStream.get(stream, tmp, metadata);
             File input = tis.getFile();
 
             // Metadata
@@ -125,7 +131,7 @@ public class StringsParser implements Parser, Initializable {
 
     private String doFile(TikaInputStream tis) throws IOException {
         Metadata tmpMetadata = new Metadata();
-        fileCommandDetector.detect(tis, tmpMetadata);
+        fileCommandDetector.detect(tis, tmpMetadata, new ParseContext());
         return tmpMetadata.get(Metadata.CONTENT_TYPE);
     }
 
@@ -214,10 +220,10 @@ public class StringsParser implements Parser, Initializable {
         return totalBytes.get();
     }
 
-    private Thread logStream(final InputStream stream, final ContentHandler handler,
+    private Thread logStream(final InputStream tis, final ContentHandler handler,
                              final AtomicInteger totalBytes) {
         return new Thread(() -> {
-            Reader reader = new InputStreamReader(stream, UTF_8);
+            Reader reader = new InputStreamReader(tis, UTF_8);
             char[] buffer = new char[1024];
             try {
                 for (int n = reader.read(buffer); n != -1; n = reader.read(buffer)) {
@@ -227,7 +233,7 @@ public class StringsParser implements Parser, Initializable {
             } catch (SAXException | IOException e) {
                 //swallow
             } finally {
-                IOUtils.closeQuietly(stream);
+                IOUtils.closeQuietly(tis);
             }
         });
     }
@@ -241,7 +247,6 @@ public class StringsParser implements Parser, Initializable {
      *
      * @param path the "strings" installation folder.
      */
-    @Field
     public void setStringsPath(String path) {
         if (!path.isEmpty() && !path.endsWith(File.separator)) {
             path += File.separatorChar;
@@ -249,7 +254,6 @@ public class StringsParser implements Parser, Initializable {
         this.stringsPath = path;
     }
 
-    @Field
     public void setEncoding(String encoding) {
         defaultStringsConfig.setEncoding(StringsEncoding.valueOf(encoding));
     }
@@ -258,7 +262,6 @@ public class StringsParser implements Parser, Initializable {
         return defaultStringsConfig.getMinLength();
     }
 
-    @Field
     public void setMinLength(int minLength) {
         defaultStringsConfig.setMinLength(minLength);
     }
@@ -267,7 +270,6 @@ public class StringsParser implements Parser, Initializable {
         return defaultStringsConfig.getTimeoutSeconds();
     }
 
-    @Field
     public void setTimeoutSeconds(int timeoutSeconds) {
         defaultStringsConfig.setTimeoutSeconds(timeoutSeconds);
     }
@@ -277,15 +279,10 @@ public class StringsParser implements Parser, Initializable {
     }
 
     @Override
-    public void initialize(Map<String, Param> params) throws TikaConfigException {
+    public void initialize() throws TikaConfigException {
         checkForStrings();
         fileCommandDetector = new FileCommandDetector();
         fileCommandDetector.setFilePath(filePath);
         fileCommandDetector.setTimeoutMs(defaultStringsConfig.getTimeoutSeconds() * 1000);
-    }
-
-    @Override
-    public void checkInitialization(InitializableProblemHandler problemHandler)
-            throws TikaConfigException {
     }
 }

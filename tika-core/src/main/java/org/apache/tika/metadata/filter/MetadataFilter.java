@@ -14,45 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.tika.metadata.filter;
 
-import java.io.IOException;
 import java.io.Serializable;
+import java.util.List;
 
-import org.w3c.dom.Element;
-
-import org.apache.tika.config.ConfigBase;
-import org.apache.tika.exception.TikaConfigException;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 
-/**
- * Filters the metadata in place after the parse
- *
- * @since Apache Tika 1.25
- */
-public abstract class MetadataFilter extends ConfigBase implements Serializable {
+public abstract class MetadataFilter implements Serializable {
 
     /**
-     * Loads the metadata filter from the config file if it exists, otherwise returns NoOpFilter
-     * @param root
-     * @return
-     * @throws TikaConfigException
-     * @throws IOException
+     * Filters the metadata list in place. The list and the metadata objects within it
+     * may be modified. Callers must pass a mutable list and should make a defensive
+     * copy before calling if the original data must be preserved.
+     *
+     * @param metadataList the list to filter (must be mutable)
+     * @throws TikaException if filtering fails
      */
-    public static MetadataFilter load(Element root, boolean allowMissing) throws TikaConfigException,
-            IOException {
-        try {
-            return buildComposite("metadataFilters", CompositeMetadataFilter.class,
-                    "metadataFilter", MetadataFilter.class, root);
-        } catch (TikaConfigException e) {
-            if (allowMissing && e.getMessage().contains("could not find metadataFilters")) {
-                return new NoOpFilter();
-            }
-            throw e;
-        }
-    }
-
-    public abstract void filter(Metadata metadata) throws TikaException;
+    public abstract void filter(List<Metadata> metadataList) throws TikaException;
 }

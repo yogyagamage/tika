@@ -1,0 +1,13 @@
+{
+  "auto-detect-parser": {
+    "outputThreshold": 1000000,
+    "digesterFactory": {
+      "bouncy-castle-digester-factory": {
+        "digests": [
+          { "algorithm": "SHA1", "encoding": "BASE32" }
+        ]
+      }
+    },
+    "throwOnZeroBytes": false
+  }
+}

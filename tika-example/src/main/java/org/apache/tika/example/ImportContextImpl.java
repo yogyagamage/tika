@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.tika.example;
 
 import java.io.BufferedInputStream;
@@ -34,9 +33,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.apache.tika.detect.Detector;
+import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.TikaCoreProperties;
 import org.apache.tika.mime.MediaType;
+import org.apache.tika.parser.ParseContext;
 
 /**
  * <code>ImportContextImpl</code>...
@@ -84,9 +85,10 @@ public class ImportContextImpl implements ImportContext {
         if (stream != null && !stream.markSupported()) {
             stream = new BufferedInputStream(stream);
         }
-        type = detector.detect(stream, metadata);
-
-        this.inputFile = IOUtil.getTempFile(stream);
+        try (TikaInputStream tis = TikaInputStream.get(stream)) {
+            type = detector.detect(tis, metadata, new ParseContext());
+            this.inputFile = IOUtil.getTempFile(tis);
+        }
     }
 
     /**

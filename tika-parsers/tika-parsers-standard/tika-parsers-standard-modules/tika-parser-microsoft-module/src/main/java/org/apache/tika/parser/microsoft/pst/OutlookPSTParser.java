@@ -20,7 +20,6 @@ import static java.lang.String.valueOf;
 import static java.util.Collections.singleton;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Set;
 
 import com.pff.PSTException;
@@ -31,6 +30,7 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.extractor.EmbeddedDocumentExtractor;
 import org.apache.tika.extractor.EmbeddedDocumentUtil;
@@ -46,6 +46,7 @@ import org.apache.tika.sax.XHTMLContentHandler;
 /**
  * Parser for MS Outlook PST email storage files
  */
+@TikaComponent
 public class OutlookPSTParser implements Parser {
 
     public static final MediaType MS_OUTLOOK_PST_MIMETYPE =
@@ -64,7 +65,7 @@ public class OutlookPSTParser implements Parser {
         return SUPPORTED_TYPES;
     }
 
-    public void parse(InputStream stream, ContentHandler handler, Metadata metadata,
+    public void parse(TikaInputStream tis, ContentHandler handler, Metadata metadata,
                       ParseContext context) throws IOException, SAXException, TikaException {
 
         // Use the delegate parser to parse the contained document
@@ -76,10 +77,10 @@ public class OutlookPSTParser implements Parser {
         XHTMLContentHandler xhtml = new XHTMLContentHandler(handler, metadata);
         xhtml.startDocument();
 
-        TikaInputStream in = TikaInputStream.get(stream);
         PSTFile pstFile = null;
         try {
-            pstFile = new PSTFile(in.getFile().getPath());
+            tis.setCloseShield();
+            pstFile = new PSTFile(tis.getFile());
             metadata.set(Metadata.CONTENT_LENGTH, valueOf(pstFile.getFileHandle().length()));
             boolean isValid = pstFile.getFileHandle().getFD().valid();
             metadata.set(PST.IS_VALID, isValid);
@@ -102,6 +103,7 @@ public class OutlookPSTParser implements Parser {
                     //swallow closing exception
                 }
             }
+            tis.removeCloseShield();
         }
 
         xhtml.endDocument();
@@ -114,11 +116,14 @@ public class OutlookPSTParser implements Parser {
             while (pstMail != null) {
                 Metadata metadata = new Metadata();
                 metadata.set(TikaCoreProperties.CONTENT_TYPE_PARSER_OVERRIDE, PSTMailItemParser.PST_MAIL_ITEM_STRING);
-                metadata.set(PST.PST_FOLDER_PATH, folderPath);
-                metadata.set(TikaCoreProperties.RESOURCE_NAME_KEY, pstMail.getSubject() + ".msg");
+                String resourceName = pstMail.getSubject() + ".msg";
+                String internalPath = folderPath.endsWith("/") ?
+                        folderPath + resourceName : folderPath + "/" + resourceName;
+                metadata.set(TikaCoreProperties.INTERNAL_PATH, internalPath);
+                metadata.set(TikaCoreProperties.RESOURCE_NAME_KEY, resourceName);
                 long length = estimateSize(pstMail);
                 try (TikaInputStream tis = TikaInputStream.getFromContainer(pstMail, length, metadata)) {
-                    embeddedExtractor.parseEmbedded(tis, handler, metadata, true);
+                    embeddedExtractor.parseEmbedded(tis, handler, metadata, new ParseContext(), true);
                 }
                 pstMail = (PSTMessage) pstFolder.getNextChild();
             }

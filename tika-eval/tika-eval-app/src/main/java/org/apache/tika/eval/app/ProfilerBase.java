@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.tika.eval.app;
 
 
@@ -71,7 +70,7 @@ import org.apache.tika.metadata.PDF;
 import org.apache.tika.metadata.PagedText;
 import org.apache.tika.metadata.Property;
 import org.apache.tika.metadata.TikaCoreProperties;
-import org.apache.tika.pipes.core.fetcher.FetchKey;
+import org.apache.tika.pipes.api.fetcher.FetchKey;
 import org.apache.tika.sax.ToXMLContentHandler;
 import org.apache.tika.utils.StringUtils;
 
@@ -812,4 +811,3 @@ public abstract class ProfilerBase {
 
 
 }
-

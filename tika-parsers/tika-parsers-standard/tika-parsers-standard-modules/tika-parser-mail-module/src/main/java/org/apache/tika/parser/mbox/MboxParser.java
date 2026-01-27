@@ -20,7 +20,6 @@ import static org.apache.tika.parser.mailcommons.MailDateParser.parseDateLenient
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.Date;
@@ -37,6 +36,7 @@ import org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.extractor.EmbeddedDocumentExtractor;
 import org.apache.tika.extractor.EmbeddedDocumentUtil;
@@ -55,6 +55,7 @@ import org.apache.tika.utils.StringUtils;
  * Mbox (mailbox) parser. This version extracts each mail from Mbox and uses the
  * DelegatingParser to process each mail.
  */
+@TikaComponent
 public class MboxParser implements Parser {
 
     public static final String MBOX_MIME_TYPE = "application/mbox";
@@ -81,7 +82,7 @@ public class MboxParser implements Parser {
     }
 
     @Override
-    public void parse(InputStream stream, ContentHandler handler, Metadata metadata,
+    public void parse(TikaInputStream tis, ContentHandler handler, Metadata metadata,
                       ParseContext context) throws IOException, TikaException, SAXException {
 
         EmbeddedDocumentExtractor extractor =
@@ -95,7 +96,7 @@ public class MboxParser implements Parser {
         XHTMLContentHandler xhtml = new XHTMLContentHandler(handler, metadata);
         xhtml.startDocument();
 
-        InputStreamReader isr = new InputStreamReader(stream, charsetName);
+        InputStreamReader isr = new InputStreamReader(tis, charsetName);
         try (BufferedReader reader = new BufferedReader(isr)) {
             String curLine = reader.readLine();
             int mailItem = 0;
@@ -142,7 +143,7 @@ public class MboxParser implements Parser {
                     message = null;
 
                     if (extractor.shouldParseEmbedded(mailMetadata)) {
-                        extractor.parseEmbedded(msgStream, xhtml, mailMetadata, true);
+                        extractor.parseEmbedded(msgStream, xhtml, mailMetadata, context, true);
                     }
 
                     if (tracking) {

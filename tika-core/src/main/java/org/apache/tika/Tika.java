@@ -16,7 +16,6 @@
  */
 package org.apache.tika;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,11 +26,12 @@ import java.util.Properties;
 
 import org.xml.sax.SAXException;
 
-import org.apache.tika.config.TikaConfig;
+import org.apache.tika.detect.DefaultDetector;
 import org.apache.tika.detect.Detector;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.exception.WriteLimitReachedException;
 import org.apache.tika.io.TikaInputStream;
+import org.apache.tika.language.translate.DefaultTranslator;
 import org.apache.tika.language.translate.Translator;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.TikaCoreProperties;
@@ -86,7 +86,7 @@ public class Tika {
     public Tika(Detector detector, Parser parser) {
         this.detector = detector;
         this.parser = parser;
-        this.translator = TikaConfig.getDefaultConfig().getTranslator();
+        this.translator = new DefaultTranslator();
     }
 
     /**
@@ -104,19 +104,10 @@ public class Tika {
     }
 
     /**
-     * Creates a Tika facade using the given configuration.
-     *
-     * @param config Tika configuration
-     */
-    public Tika(TikaConfig config) {
-        this(config.getDetector(), new AutoDetectParser(config), config.getTranslator());
-    }
-
-    /**
      * Creates a Tika facade using the default configuration.
      */
     public Tika() {
-        this(TikaConfig.getDefaultConfig());
+        this(new DefaultDetector(), new AutoDetectParser());
     }
 
     /**
@@ -154,10 +145,11 @@ public class Tika {
      * @throws IOException if the stream can not be read
      */
     public String detect(InputStream stream, Metadata metadata) throws IOException {
-        if (stream == null || stream.markSupported()) {
-            return detector.detect(stream, metadata).toString();
-        } else {
-            return detector.detect(new BufferedInputStream(stream), metadata).toString();
+        if (stream == null) {
+            return detector.detect(null, metadata, new ParseContext()).toString();
+        }
+        try (TikaInputStream tis = TikaInputStream.get(stream)) {
+            return detector.detect(tis, metadata, new ParseContext()).toString();
         }
     }
 
@@ -521,8 +513,8 @@ public class Tika {
         WriteOutContentHandler handler = new WriteOutContentHandler(maxLength);
         ParseContext context = new ParseContext();
         context.set(Parser.class, parser);
-        try (stream) {
-            parser.parse(stream, new BodyContentHandler(handler), metadata, context);
+        try (TikaInputStream tis = TikaInputStream.get(stream)) {
+            parser.parse(tis, new BodyContentHandler(handler), metadata, context);
         } catch (SAXException e) {
             if (!WriteLimitReachedException.isWriteLimitReached(e)) {
                 // This should never happen with BodyContentHandler...

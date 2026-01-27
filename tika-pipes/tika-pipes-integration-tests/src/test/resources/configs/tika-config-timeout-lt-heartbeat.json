@@ -1,0 +1,30 @@
+{
+  "fetchers": {
+    "fsf": {
+      "file-system-fetcher": {
+        "basePath": "FETCHER_BASE_PATH",
+        "extractFileSystemMetadata": false
+      }
+    }
+  },
+  "emitters": {
+    "fse": {
+      "file-system-emitter": {
+        "basePath": "EMITTER_BASE_PATH",
+        "fileExtension": "json",
+        "onExists": "EXCEPTION"
+      }
+    }
+  },
+  "pipes": {
+    "numClients": 1,
+    "timeoutMillis": 60000,
+    "socketTimeoutMs": 3000,
+    "heartbeatIntervalMs": 10000,
+    "forkedJvmArgs": [
+      "-Xmx256m",
+      "-Dtika.pipes.allowInvalidHeartbeat=true"
+    ]
+  },
+  "plugin-roots": "PLUGINS_PATHS"
+}

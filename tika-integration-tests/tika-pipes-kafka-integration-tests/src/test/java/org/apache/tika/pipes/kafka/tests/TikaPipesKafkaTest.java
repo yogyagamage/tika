@@ -23,6 +23,8 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.HashMap;
@@ -38,9 +40,7 @@ import java.util.concurrent.TimeUnit;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Stopwatch;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -55,6 +55,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -62,7 +63,8 @@ import org.testcontainers.kafka.ConfluentKafkaContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import org.apache.tika.cli.TikaCLI;
-import org.apache.tika.pipes.core.HandlerConfig;
+import org.apache.tika.config.JsonConfigHelper;
+import org.apache.tika.pipes.api.ParseMode;
 import org.apache.tika.utils.SystemUtils;
 
 /**
@@ -89,20 +91,16 @@ public class TikaPipesKafkaTest {
     private final int numDocs = 42;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-
-    private final File testFileFolder = new File("target", "test-files");
-
     private final Set<String> waitingFor = new HashSet<>();
     // https://java.testcontainers.org/modules/kafka/#using-orgtestcontainerskafkaconfluentkafkacontainer
     ConfluentKafkaContainer kafka = new ConfluentKafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.4.0"));
 
-    private void createTestFiles() throws Exception {
-        if (testFileFolder.mkdirs()) {
-            LOG.info("Created test folder: {}", testFileFolder);
-        }
+    private void createTestFiles(Path testFileFolderPath) throws Exception {
+        Files.createDirectories(testFileFolderPath);
+        LOG.info("Created test folder: {}", testFileFolderPath);
         for (int i = 0; i < numDocs; ++i) {
             String nextFileName = "test-" + i + ".html";
-            FileUtils.writeStringToFile(new File(testFileFolder, nextFileName),
+            Files.writeString(testFileFolderPath.resolve(nextFileName),
                     "<html><body>body-" + i + "</body></html>", StandardCharsets.UTF_8);
             waitingFor.add(nextFileName);
         }
@@ -119,20 +117,11 @@ public class TikaPipesKafkaTest {
     }
 
     @Test
-    public void testKafkaPipeIteratorAndEmitter() throws Exception {
-        createTestFiles();
-        File tikaConfigFile = new File("target", "ta.xml");
-        File log4jPropFile = new File("target", "tmp-log4j2.xml");
-        try (InputStream is = this.getClass()
-                .getResourceAsStream("/pipes-fork-server-custom-log4j2.xml")) {
-            assert is != null;
-            FileUtils.copyInputStreamToFile(is, log4jPropFile);
-        }
-        String tikaConfigTemplateXml;
-        try (InputStream is = this.getClass().getResourceAsStream("/tika-config-kafka.xml")) {
-            assert is != null;
-            tikaConfigTemplateXml = IOUtils.toString(is, StandardCharsets.UTF_8);
-        }
+    public void testKafkaPipeIteratorAndEmitter(@TempDir Path pipesDirectory) throws Exception {
+        Path testFileFolderPath = pipesDirectory.resolve("test-files");
+        createTestFiles(testFileFolderPath);
+
+        Path tikaConfigPath = getTikaConfig(pipesDirectory, testFileFolderPath);
 
         Properties consumerProps = new Properties();
         consumerProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafka.getBootstrapServers());
@@ -159,7 +148,7 @@ public class TikaPipesKafkaTest {
         try (KafkaProducer<String, String> producer = new KafkaProducer<>(producerProps)) {
             int numSent = 0;
             for (int i = 0; i < numDocs; ++i) {
-                File nextFile = new File(testFileFolder, "test-" + i + ".html");
+                File nextFile = testFileFolderPath.resolve("test-" + i + ".html").toFile();
                 Map<String, Object> meta = new HashMap<>();
                 meta.put("name", nextFile.getName());
                 meta.put("path", nextFile.getAbsolutePath());
@@ -179,11 +168,7 @@ public class TikaPipesKafkaTest {
 
         es.execute(() -> {
             try {
-                String tikaConfigXml =
-                        createTikaConfigXml(tikaConfigFile, log4jPropFile, tikaConfigTemplateXml);
-
-                FileUtils.writeStringToFile(tikaConfigFile, tikaConfigXml, StandardCharsets.UTF_8);
-                TikaCLI.main(new String[]{"-a", "-c", tikaConfigFile.getAbsolutePath()});
+                TikaCLI.main(new String[]{"-a", "-c", tikaConfigPath.toAbsolutePath().toString()});
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -219,15 +204,27 @@ public class TikaPipesKafkaTest {
         LOG.info("Done");
     }
 
+
     @NotNull
-    private String createTikaConfigXml(File tikaConfigFile, File log4jPropFile,
-                                       String tikaConfigTemplateXml) {
-        return tikaConfigTemplateXml.replace("{TIKA_CONFIG}", tikaConfigFile.getAbsolutePath())
-                .replace("{LOG4J_PROPERTIES_FILE}", log4jPropFile.getAbsolutePath())
-                .replace("{PATH_TO_DOCS}", testFileFolder.getAbsolutePath())
-                .replace("{PARSE_MODE}", HandlerConfig.PARSE_MODE.RMETA.name())
-                .replace("{PIPE_ITERATOR_TOPIC}", PIPE_ITERATOR_TOPIC)
-                .replace("{EMITTER_TOPIC}", EMITTER_TOPIC)
-                .replace("{BOOTSTRAP_SERVERS}", kafka.getBootstrapServers());
+    private Path getTikaConfig(Path pipesDirectory, Path testFileFolderPath) throws Exception {
+        Path tikaConfig = pipesDirectory.resolve("tika-config.json");
+
+        Path log4jPropFile = pipesDirectory.resolve("log4j2.xml");
+        try (InputStream is = this.getClass().getResourceAsStream("/pipes-fork-server-custom-log4j2.xml")) {
+            assert is != null;
+            Files.copy(is, log4jPropFile);
+        }
+
+        Map<String, Object> replacements = new HashMap<>();
+        replacements.put("PIPE_ITERATOR_TOPIC", PIPE_ITERATOR_TOPIC);
+        replacements.put("EMITTER_TOPIC", EMITTER_TOPIC);
+        replacements.put("BOOTSTRAP_SERVERS", kafka.getBootstrapServers());
+        replacements.put("FETCHER_BASE_PATH", testFileFolderPath);
+        replacements.put("PARSE_MODE", ParseMode.RMETA.name());
+        replacements.put("LOG4J_JVM_ARG", "-Dlog4j.configurationFile=" + log4jPropFile.toAbsolutePath());
+
+        JsonConfigHelper.writeConfigFromResource("/kafka/plugins-template.json",
+                TikaPipesKafkaTest.class, replacements, tikaConfig);
+        return tikaConfig;
     }
 }

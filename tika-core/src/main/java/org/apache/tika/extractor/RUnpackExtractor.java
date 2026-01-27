@@ -68,7 +68,7 @@ public class RUnpackExtractor extends ParsingEmbeddedDocumentExtractor {
 
     @Override
     public void parseEmbedded(
-            TikaInputStream tis, ContentHandler handler, Metadata metadata, boolean outputHtml)
+            TikaInputStream tis, ContentHandler handler, Metadata metadata, ParseContext parseContext, boolean outputHtml)
             throws SAXException, IOException {
         if (outputHtml) {
             AttributesImpl attributes = new AttributesImpl();
@@ -141,9 +141,9 @@ public class RUnpackExtractor extends ParsingEmbeddedDocumentExtractor {
         }
     }
 
-    private void parse(InputStream stream, ContentHandler handler, Metadata metadata)
+    private void parse(TikaInputStream tis, ContentHandler handler, Metadata metadata)
             throws TikaException, IOException, SAXException {
-        getDelegatingParser().parse(stream,
+        getDelegatingParser().parse(tis,
                 new EmbeddedContentHandler(new BodyContentHandler(handler)),
                 metadata, context);
     }

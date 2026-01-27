@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.tika.server.standard;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,7 +23,9 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import javax.imageio.ImageIO;
@@ -32,17 +33,21 @@ import javax.imageio.ImageIO;
 import jakarta.ws.rs.core.Response;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.cxf.jaxrs.client.WebClient;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.cxf.jaxrs.ext.multipart.ContentDisposition;
+import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.apache.cxf.jaxrs.lifecycle.SingletonResourceProvider;
 import org.junit.jupiter.api.Test;
 
-import org.apache.tika.config.TikaConfig;
+import org.apache.tika.config.loader.TikaLoader;
+import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
+import org.apache.tika.parser.ParseContext;
 import org.apache.tika.server.core.CXFTestBase;
 import org.apache.tika.server.core.TikaServerParseExceptionMapper;
 import org.apache.tika.server.core.resource.UnpackerResource;
 import org.apache.tika.server.core.writer.TarWriter;
 import org.apache.tika.server.core.writer.ZipWriter;
-import org.apache.tika.server.standard.config.PDFServerConfig;
 
 public class UnpackerResourceWithConfigTest extends CXFTestBase {
     private static final String BASE_PATH = "/unpack";
@@ -67,22 +72,34 @@ public class UnpackerResourceWithConfigTest extends CXFTestBase {
     protected InputStream getTikaConfigInputStream() throws IOException {
         return this
                 .getClass()
-                .getResourceAsStream("/config/tika-config-unpacker.xml");
+                .getResourceAsStream("/configs/tika-config-unpacker.json");
     }
 
     //Test that the PDFParser's renderer can be configured at parse time
-    //when specified in tika-config.xml
+    //when specified in tika-config.json
     @Test
     public void testPDFPerPageRenderColor() throws Exception {
-
         //default is gray scale png; change to rgb and tiff
+        String configJson = """
+                {
+                  "pdf-parser": {
+                    "imageStrategy": "RENDER_PAGES_AT_PAGE_END",
+                    "ocrImageType": "RGB",
+                    "ocrImageFormat": "TIFF"
+                  }
+                }
+                """;
+        ContentDisposition fileCd = new ContentDisposition("form-data; name=\"file\"; filename=\"testColorRendering.pdf\"");
+        Attachment fileAtt = new Attachment("file",
+                ClassLoader.getSystemResourceAsStream("test-documents/testColorRendering.pdf"), fileCd);
+        Attachment configAtt = new Attachment("config", "application/json",
+                new ByteArrayInputStream(configJson.getBytes(StandardCharsets.UTF_8)));
+
         Response response = WebClient
-                .create(CXFTestBase.endPoint + ALL_PATH)
-                .header(PDFServerConfig.X_TIKA_PDF_HEADER_PREFIX + "imageStrategy", "RenderPagesAtPageEnd")
-                .header(PDFServerConfig.X_TIKA_PDF_HEADER_PREFIX + "ocrImageType", "rgb")
-                .header(PDFServerConfig.X_TIKA_PDF_HEADER_PREFIX + "ocrImageFormatName", "tiff")
+                .create(CXFTestBase.endPoint + ALL_PATH + "/config")
+                .type("multipart/form-data")
                 .accept("application/zip")
-                .put(ClassLoader.getSystemResourceAsStream("test-documents/testColorRendering.pdf"));
+                .post(new MultipartBody(Arrays.asList(fileAtt, configAtt)));
         Map<String, byte[]> results = readZipArchiveBytes((InputStream) response.getEntity());
         byte[] renderedImage = null;
         for (Map.Entry<String, byte[]> e : results.entrySet()) {
@@ -93,11 +110,13 @@ public class UnpackerResourceWithConfigTest extends CXFTestBase {
                 break;
             }
         }
-        assertEquals("image/tiff", TikaConfig
-                .getDefaultConfig()
-                .getDetector()
-                .detect(new ByteArrayInputStream(renderedImage), new Metadata())
-                .toString());
+        try (TikaInputStream tis = TikaInputStream.get(renderedImage)) {
+            assertEquals("image/tiff", TikaLoader
+                    .loadDefault()
+                    .loadDetectors()
+                    .detect(tis, new Metadata(), new ParseContext())
+                    .toString());
+        }
 
         try (InputStream is = new ByteArrayInputStream(renderedImage)) {
             BufferedImage image = ImageIO.read(is);
@@ -126,15 +145,26 @@ public class UnpackerResourceWithConfigTest extends CXFTestBase {
 
     @Test
     public void testPDFPerPageRenderGray() throws Exception {
-
+        String configJson = """
+                {
+                  "pdf-parser": {
+                    "imageStrategy": "RENDER_PAGES_AT_PAGE_END",
+                    "ocrImageType": "GRAY",
+                    "ocrImageFormat": "JPEG"
+                  }
+                }
+                """;
+        ContentDisposition fileCd = new ContentDisposition("form-data; name=\"file\"; filename=\"testColorRendering.pdf\"");
+        Attachment fileAtt = new Attachment("file",
+                ClassLoader.getSystemResourceAsStream("test-documents/testColorRendering.pdf"), fileCd);
+        Attachment configAtt = new Attachment("config", "application/json",
+                new ByteArrayInputStream(configJson.getBytes(StandardCharsets.UTF_8)));
 
         Response response = WebClient
-                .create(CXFTestBase.endPoint + ALL_PATH)
-                .header(PDFServerConfig.X_TIKA_PDF_HEADER_PREFIX + "imageStrategy", "RenderPagesAtPageEnd")
-                .header(PDFServerConfig.X_TIKA_PDF_HEADER_PREFIX + "ocrImageType", "gray")
-                .header(PDFServerConfig.X_TIKA_PDF_HEADER_PREFIX + "ocrImageFormatName", "jpeg")
+                .create(CXFTestBase.endPoint + ALL_PATH + "/config")
+                .type("multipart/form-data")
                 .accept("application/zip")
-                .put(ClassLoader.getSystemResourceAsStream("test-documents/testColorRendering.pdf"));
+                .post(new MultipartBody(Arrays.asList(fileAtt, configAtt)));
         Map<String, byte[]> results = readZipArchiveBytes((InputStream) response.getEntity());
         byte[] renderedImage = null;
         for (Map.Entry<String, byte[]> e : results.entrySet()) {
@@ -145,11 +175,13 @@ public class UnpackerResourceWithConfigTest extends CXFTestBase {
                 break;
             }
         }
-        assertEquals("image/jpeg", TikaConfig
-                .getDefaultConfig()
-                .getDetector()
-                .detect(new ByteArrayInputStream(renderedImage), new Metadata())
-                .toString());
+        try (TikaInputStream tis = TikaInputStream.get(renderedImage)) {
+            assertEquals("image/jpeg", TikaLoader
+                    .loadDefault()
+                    .loadDetectors()
+                    .detect(tis, new Metadata(), new ParseContext())
+                    .toString());
+        }
 
         try (InputStream is = new ByteArrayInputStream(renderedImage)) {
             BufferedImage image = ImageIO.read(is);

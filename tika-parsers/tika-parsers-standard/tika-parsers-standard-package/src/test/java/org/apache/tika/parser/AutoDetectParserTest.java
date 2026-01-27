@@ -23,25 +23,20 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.gagravarr.tika.FlacParser;
-import org.gagravarr.tika.OpusParser;
-import org.gagravarr.tika.VorbisParser;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.ContentHandler;
 
+import org.apache.tika.TikaLoaderHelper;
 import org.apache.tika.TikaTest;
-import org.apache.tika.config.TikaConfig;
+import org.apache.tika.config.loader.TikaLoader;
 import org.apache.tika.detect.Detector;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.exception.WriteLimitReachedException;
@@ -52,8 +47,10 @@ import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.TikaCoreProperties;
 import org.apache.tika.metadata.XMPDM;
 import org.apache.tika.mime.MediaType;
-import org.apache.tika.parser.digestutils.CommonsDigester;
 import org.apache.tika.parser.external.CompositeExternalParser;
+import org.apache.tika.parser.ogg.FlacParser;
+import org.apache.tika.parser.ogg.OpusParser;
+import org.apache.tika.parser.ogg.VorbisParser;
 import org.apache.tika.sax.BodyContentHandler;
 import org.apache.tika.sax.ToXMLContentHandler;
 import org.apache.tika.sax.WriteOutContentHandler;
@@ -85,7 +82,6 @@ public class AutoDetectParserTest extends TikaTest {
     private static final String FLAC_NATIVE = "audio/x-flac";
     private static final String OPENOFFICE = "application/vnd.oasis.opendocument.text";
     private static final MediaType MY_MEDIA_TYPE = new MediaType("application", "x-myparser");
-    private TikaConfig tika = TikaConfig.getDefaultConfig();
 
     /**
      * This is where a single test is done.
@@ -94,15 +90,16 @@ public class AutoDetectParserTest extends TikaTest {
      * @throws IOException
      */
     private void assertAutoDetect(TestParams tp) throws Exception {
-        try (InputStream input = getResourceAsStream(tp.resourceRealName)) {
-            if (input == null) {
+        try (TikaInputStream tis = getResourceAsStream(tp.resourceRealName)) {
+            if (tis == null) {
                 fail("Could not open stream from specified resource: " + tp.resourceRealName);
             }
             Metadata metadata = new Metadata();
             metadata.set(TikaCoreProperties.RESOURCE_NAME_KEY, tp.resourceStatedName);
             metadata.set(Metadata.CONTENT_TYPE, tp.statedType);
             ContentHandler handler = new BodyContentHandler();
-            new AutoDetectParser(tika).parse(input, handler, metadata);
+            ParseContext pc = new ParseContext();
+            TikaLoader.loadDefault().loadAutoDetectParser().parse(tis, handler, metadata, pc);
 
             assertEquals(tp.realType, metadata.get(Metadata.CONTENT_TYPE),
                     "Bad content type: " + tp);
@@ -265,10 +262,10 @@ public class AutoDetectParserTest extends TikaTest {
      */
     @Test
     public void testZipBombPrevention() throws Exception {
-        try (InputStream tgz = getResourceAsStream("/test-documents/TIKA-216.tgz")) {
+        try (TikaInputStream tgz = getResourceAsStream("/test-documents/TIKA-216.tgz")) {
             Metadata metadata = new Metadata();
             ContentHandler handler = new BodyContentHandler(-1);
-            new AutoDetectParser(tika).parse(tgz, handler, metadata);
+            TikaLoader.loadDefault().loadAutoDetectParser().parse(tgz, handler, metadata, new ParseContext());
             fail("Zip bomb was not detected");
         } catch (TikaException e) {
             // expected
@@ -291,9 +288,12 @@ public class AutoDetectParserTest extends TikaTest {
         }
         zos.finish();
         zos.close();
-        new AutoDetectParser(tika)
-                .parse(new ByteArrayInputStream(baos.toByteArray()), new BodyContentHandler(-1),
-                        new Metadata());
+        try (TikaInputStream tis = TikaInputStream.get(baos.toByteArray())) {
+            TikaLoader
+                    .loadDefault()
+                    .loadAutoDetectParser()
+                    .parse(tis, new BodyContentHandler(-1), new Metadata(), new ParseContext());
+        }
     }
 
     /**
@@ -326,7 +326,7 @@ public class AutoDetectParserTest extends TikaTest {
                 "Parser not found for " + mediaTypes[3]);
 
         // Check we found the parser
-        CompositeParser parser = (CompositeParser) tika.getParser();
+        CompositeParser parser = (CompositeParser) TikaLoader.loadDefault().loadParsers();
         for (MediaType mt : mediaTypes) {
             assertNotNull(parser.getParsers().get(mt), "Parser not found for " + mt);
         }
@@ -334,13 +334,13 @@ public class AutoDetectParserTest extends TikaTest {
         // Have each file parsed, and check
         for (int i = 0; i < testFiles.length; i++) {
             String file = testFiles[i];
-            try (InputStream input = getResourceAsStream("/test-documents/" + file)) {
-                if (input == null) {
+            try (TikaInputStream tis = getResourceAsStream("/test-documents/" + file)) {
+                if (tis == null) {
                     fail("Could not find test file " + file);
                 }
                 Metadata metadata = new Metadata();
                 ContentHandler handler = new BodyContentHandler();
-                new AutoDetectParser(tika).parse(input, handler, metadata);
+                TikaLoader.loadDefault().loadAutoDetectParser().parse(tis, handler, metadata, new ParseContext());
 
                 assertEquals(mediaTypes[i].toString(), metadata.get(Metadata.CONTENT_TYPE),
                         "Incorrect content type for " + file);
@@ -379,9 +379,9 @@ public class AutoDetectParserTest extends TikaTest {
     public void testSpecificParserList() throws Exception {
         AutoDetectParser parser = new AutoDetectParser(new MyDetector(), new MyParser());
 
-        InputStream is = new ByteArrayInputStream("test".getBytes(UTF_8));
+        TikaInputStream tis = TikaInputStream.get("test".getBytes(UTF_8));
         Metadata metadata = new Metadata();
-        parser.parse(is, new BodyContentHandler(), metadata, new ParseContext());
+        parser.parse(tis, new BodyContentHandler(), metadata, new ParseContext());
 
         assertEquals("value", metadata.get("MyParser"));
     }
@@ -416,9 +416,9 @@ public class AutoDetectParserTest extends TikaTest {
         ContentHandler handler = new WriteOutContentHandler(500);
         Metadata metadata = new Metadata();
         ParseContext parseContext = new ParseContext();
-        try (InputStream stream =
+        try (TikaInputStream tis =
                     getResourceAsStream("/test-documents/test_recursive_embedded.docx")) {
-            AUTO_DETECT_PARSER.parse(stream, handler, metadata, parseContext);
+            AUTO_DETECT_PARSER.parse(tis, handler, metadata, parseContext);
             fail("write limit reached should have percolated to here");
         } catch (WriteLimitReachedException e) {
             //expected
@@ -438,9 +438,9 @@ public class AutoDetectParserTest extends TikaTest {
         ContentHandler handler = new WriteOutContentHandler(new ToXMLContentHandler(),
                 500, false, parseContext);
         Metadata metadata = new Metadata();
-        try (InputStream stream =
+        try (TikaInputStream tis =
                     getResourceAsStream("/test-documents/test_recursive_embedded.docx")) {
-            AUTO_DETECT_PARSER.parse(stream, handler, metadata, parseContext);
+            AUTO_DETECT_PARSER.parse(tis, handler, metadata, parseContext);
         }
         String txt = handler.toString();
         assertEquals("true", metadata.get(TikaCoreProperties.WRITE_LIMIT_REACHED));
@@ -496,7 +496,7 @@ public class AutoDetectParserTest extends TikaTest {
      */
     @SuppressWarnings("serial")
     private static class MyDetector implements Detector {
-        public MediaType detect(InputStream input, Metadata metadata) throws IOException {
+        public MediaType detect(TikaInputStream tis, Metadata metadata, ParseContext parseContext) throws IOException {
             return MY_MEDIA_TYPE;
         }
     }
@@ -509,7 +509,7 @@ public class AutoDetectParserTest extends TikaTest {
             return supportedTypes;
         }
 
-        public void parse(InputStream stream, ContentHandler handler, Metadata metadata,
+        public void parse(TikaInputStream tis, ContentHandler handler, Metadata metadata,
                           ParseContext context) {
             metadata.add("MyParser", "value");
         }
@@ -567,11 +567,7 @@ public class AutoDetectParserTest extends TikaTest {
         //TIKA-4533 -- this tests both that a very large embedded OLE doc doesn't cause a zip bomb
         //exception AND that the sha for the embedded OLE doc is not the sha for a zero-byte file
         String expectedSha = "bbc2057a1ff8fe859a296d2fbb493fc0c3e5796749ba72507c0e13f7a3d81f78";
-        TikaConfig tikaConfig = null;
-        try (InputStream is = AutoDetectParserTest.class.getResourceAsStream("/configs/tika-4533.xml")) {
-            tikaConfig = new TikaConfig(is);
-        }
-        AutoDetectParser autoDetectParser = new AutoDetectParser(tikaConfig);
+        AutoDetectParser autoDetectParser = (AutoDetectParser) TikaLoaderHelper.getLoader("tika-4533.json").loadAutoDetectParser();
         //this models what happens in tika-pipes
         if (autoDetectParser.getAutoDetectParserConfig()
                     .getEmbeddedDocumentExtractorFactory() == null) {
@@ -582,15 +578,5 @@ public class AutoDetectParserTest extends TikaTest {
         assertEquals(expectedSha, metadataList.get(2).get("X-TIKA:digest:SHA256"));
         assertNull(metadataList.get(2).get(TikaCoreProperties.EMBEDDED_EXCEPTION));
         assertEquals(2049290L, Long.parseLong(metadataList.get(2).get(Metadata.CONTENT_LENGTH)));
-
-        DigestingParser.Digester digester = new CommonsDigester(10000, "SHA256");
-
-        //now test that we get the same digest if we wrap the auto detect parser vs configuring it
-        autoDetectParser = new AutoDetectParser();
-        Parser digestingParser = new DigestingParser(autoDetectParser, digester, true);
-        metadataList = getRecursiveMetadata("testLargeOLEDoc.doc", digestingParser, new ParseContext());
-        assertEquals(expectedSha, metadataList.get(2).get("X-TIKA:digest:SHA256").toLowerCase(Locale.US));
-        assertEquals(2049290L, Long.parseLong(metadataList.get(2).get(Metadata.CONTENT_LENGTH)));
-
     }
 }

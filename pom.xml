@@ -38,13 +38,16 @@
     <module>tika-parent</module>
     <module>tika-bom</module>
     <module>tika-core</module>
+    <module>tika-annotation-processor</module>
     <module>tika-serialization</module>
+    <module>tika-plugins-core</module>
     <module>tika-detectors</module>
     <module>tika-parsers</module>
     <module>tika-bundles</module>
     <module>tika-xmp</module>
     <module>tika-langdetect</module>
     <module>tika-pipes</module>
+
     <module>tika-grpc</module>
     <module>tika-app</module>
     <module>tika-server</module>
@@ -59,6 +62,9 @@
   <profiles>
     <profile>
       <id>apache-release</id>
+      <modules>
+        <module>docs</module>
+      </modules>
       <properties>
         <username>${user.name}</username>
       </properties>
@@ -185,18 +191,20 @@ least three +1 Tika PMC votes are cast.
       <plugin>
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
-        <version>${rat.version}</version>
         <configuration>
-          <excludes>
-            <exclude>CHANGES.txt</exclude>
-            <exclude>README.md</exclude>
+          <inputExcludes>
+            <inputExclude>CHANGES.txt</inputExclude>
+            <inputExclude>README.md</inputExclude>
             <!-- remove this once we figure out the bundle packaging -->
-            <exclude>tika-bundle/src/main/resources/META-INF/MANIFEST.MF</exclude>
-            <exclude>.gitattributes</exclude>
+            <inputExclude>tika-bundle/src/main/resources/META-INF/MANIFEST.MF</inputExclude>
+            <inputExclude>.gitattributes</inputExclude>
+
+            <!-- Antora UI supplemental files -->
+            <inputExclude>docs/supplemental-ui/**</inputExclude>
 
             <!-- subprojects already checked, added for RAT 0.17, see also RAT-97 -->
-            <exclude>tika-*/**</exclude>
-          </excludes>
+            <inputExclude>tika-*/**</inputExclude>
+          </inputExcludes>
         </configuration>
       </plugin>
     </plugins>

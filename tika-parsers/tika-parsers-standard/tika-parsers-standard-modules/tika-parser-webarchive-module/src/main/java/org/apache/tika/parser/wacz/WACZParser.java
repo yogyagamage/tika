@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,10 +30,10 @@ import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.compress.utils.IOUtils;
-import org.apache.commons.io.input.CloseShieldInputStream;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.extractor.EmbeddedDocumentExtractor;
 import org.apache.tika.extractor.EmbeddedDocumentUtil;
@@ -45,6 +45,7 @@ import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
 import org.apache.tika.sax.XHTMLContentHandler;
 
+@TikaComponent
 public class WACZParser implements Parser {
 
     private static final Set<MediaType> SUPPORTED_TYPES = Collections.unmodifiableSet(
@@ -56,37 +57,33 @@ public class WACZParser implements Parser {
     }
 
     @Override
-    public void parse(InputStream stream, ContentHandler handler, Metadata metadata,
+    public void parse(TikaInputStream tis, ContentHandler handler, Metadata metadata,
                       ParseContext context) throws IOException, SAXException, TikaException {
 
         XHTMLContentHandler xhtml = new XHTMLContentHandler(handler, metadata);
         xhtml.startDocument();
         EmbeddedDocumentExtractor embeddedDocumentExtractor =
                 EmbeddedDocumentUtil.getEmbeddedDocumentExtractor(context);
-        if (stream instanceof TikaInputStream) {
-            ZipFile zip = (ZipFile) ((TikaInputStream) stream).getOpenContainer();
-            if (zip == null && ((TikaInputStream)stream).hasFile()) {
-                zip = ZipFile.builder().setFile(((TikaInputStream) stream).getFile()).get();
-            }
-            if (zip != null) {
-                try {
-                    processZip(zip, xhtml, metadata, embeddedDocumentExtractor);
-                } finally {
-                    zip.close();
-                }
-            } else {
-                processStream(stream, xhtml, metadata, embeddedDocumentExtractor);
+        ZipFile zip = (ZipFile) tis.getOpenContainer();
+        if (zip == null && tis.hasFile()) {
+            zip = ZipFile.builder().setFile(tis.getFile()).get();
+        }
+        if (zip != null) {
+            try {
+                processZip(zip, xhtml, metadata, embeddedDocumentExtractor);
+            } finally {
+                zip.close();
             }
         } else {
-            processStream(stream, xhtml, metadata, embeddedDocumentExtractor);
+            processStream(tis, xhtml, metadata, embeddedDocumentExtractor);
         }
         xhtml.endDocument();
     }
 
-    private void processStream(InputStream stream, XHTMLContentHandler xhtml, Metadata metadata,
+    private void processStream(TikaInputStream tis, XHTMLContentHandler xhtml, Metadata metadata,
                                EmbeddedDocumentExtractor ex) throws SAXException, IOException {
-        try (ZipArchiveInputStream zais = new ZipArchiveInputStream(
-                CloseShieldInputStream.wrap(stream))) {
+        tis.setCloseShield();
+        try (ZipArchiveInputStream zais = new ZipArchiveInputStream(tis)) {
             ZipArchiveEntry zae = zais.getNextEntry();
             while (zae != null) {
                 String name = zae.getName();
@@ -101,6 +98,8 @@ public class WACZParser implements Parser {
 
                 zae = zais.getNextEntry();
             }
+        } finally {
+            tis.removeCloseShield();
         }
     }
 
@@ -114,11 +113,12 @@ public class WACZParser implements Parser {
                              String name, XHTMLContentHandler xhtml, Metadata parentMetadata,
                              EmbeddedDocumentExtractor ex) throws IOException, SAXException {
         Metadata metadata = new Metadata();
+        metadata.set(TikaCoreProperties.INTERNAL_PATH, zae.getName());
         metadata.set(TikaCoreProperties.RESOURCE_NAME_KEY, name);
         metadata.set(Metadata.CONTENT_LENGTH, Long.toString(zae.getSize()));
         try (TikaInputStream tis = TikaInputStream.get(getMaybeGzipInputStream(TikaInputStream.get(zais)))) {
             if (ex.shouldParseEmbedded(metadata)) {
-                ex.parseEmbedded(tis, xhtml, metadata, true);
+                ex.parseEmbedded(tis, xhtml, metadata, new ParseContext(), true);
             }
         }
     }

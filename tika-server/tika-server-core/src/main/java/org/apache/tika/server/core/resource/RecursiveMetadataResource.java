@@ -14,12 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.tika.server.core.resource;
 
 import static org.apache.tika.server.core.resource.TikaResource.fillMetadata;
-import static org.apache.tika.server.core.resource.TikaResource.fillParseContext;
-import static org.apache.tika.server.core.resource.TikaResource.getConfig;
+import static org.apache.tika.server.core.resource.TikaResource.getWriteLimit;
+import static org.apache.tika.server.core.resource.TikaResource.setupContentHandlerFactory;
+import static org.apache.tika.server.core.resource.TikaResource.setupContentHandlerFactoryIfNeeded;
+import static org.apache.tika.server.core.resource.TikaResource.setupMultipartConfig;
 
 import java.io.InputStream;
 import java.util.List;
@@ -30,26 +31,20 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.UriInfo;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
-import org.apache.tika.metadata.listfilter.MetadataListFilter;
 import org.apache.tika.parser.ParseContext;
-import org.apache.tika.parser.Parser;
-import org.apache.tika.parser.RecursiveParserWrapper;
-import org.apache.tika.pipes.core.HandlerConfig;
+import org.apache.tika.pipes.api.ParseMode;
 import org.apache.tika.sax.BasicContentHandlerFactory;
-import org.apache.tika.sax.RecursiveParserWrapperHandler;
 import org.apache.tika.server.core.MetadataList;
-import org.apache.tika.server.core.TikaServerParseException;
 
 @Path("/rmeta")
 public class RecursiveMetadataResource {
@@ -58,50 +53,35 @@ public class RecursiveMetadataResource {
     protected static final BasicContentHandlerFactory.HANDLER_TYPE DEFAULT_HANDLER_TYPE = BasicContentHandlerFactory.HANDLER_TYPE.XML;
     private static final Logger LOG = LoggerFactory.getLogger(RecursiveMetadataResource.class);
 
-    public static List<Metadata> parseMetadata(InputStream is, Metadata metadata, MultivaluedMap<String, String> httpHeaders, UriInfo info, HandlerConfig handlerConfig)
+    /**
+     * Parses content and returns metadata list.
+     * Metadata filtering is done in the child process, so no filtering needed here.
+     */
+    public static List<Metadata> parseMetadata(TikaInputStream tis, Metadata metadata,
+                                               MultivaluedMap<String, String> httpHeaders,
+                                               ServerHandlerConfig handlerConfig)
             throws Exception {
 
         final ParseContext context = new ParseContext();
-        Parser parser = TikaResource.createParser();
 
-        RecursiveParserWrapper wrapper = new RecursiveParserWrapper(parser);
-        fillMetadata(parser, metadata, httpHeaders);
-        fillParseContext(httpHeaders, metadata, context);
+        fillMetadata(null, metadata, httpHeaders);
         TikaResource.logRequest(LOG, "/rmeta", metadata);
 
-        BasicContentHandlerFactory.HANDLER_TYPE type = handlerConfig.getType();
-        RecursiveParserWrapperHandler handler =
-                new RecursiveParserWrapperHandler(new BasicContentHandlerFactory(type, handlerConfig.getWriteLimit(), handlerConfig.isThrowOnWriteLimitReached(), context),
-                        handlerConfig.getMaxEmbeddedResources(), TikaResource
-                        .getConfig()
-                        .getMetadataFilter());
-        try {
-            TikaResource.parse(wrapper, LOG, "/rmeta", is, handler, metadata, context);
-        } catch (TikaServerParseException e) {
-            //do nothing
-            LOG.debug("server parse exception", e);
-        } catch (SecurityException | WebApplicationException e) {
-            throw e;
-        } catch (Exception e) {
-            //we shouldn't get here?
-            LOG.error("something went seriously wrong", e);
-        }
-        MetadataListFilter metadataListFilter = context.get(MetadataListFilter.class, getConfig().getMetadataListFilter());
-        return metadataListFilter.filter(handler.getMetadataList());
+        // Set up handler factory in context using shared utility
+        setupContentHandlerFactory(context, handlerConfig.type().toString(), handlerConfig.writeLimit(),
+                handlerConfig.throwOnWriteLimitReached());
+
+        // Filtering is done in child process, no need to filter again
+        return TikaResource.parseWithPipes(tis, metadata, context, ParseMode.RMETA);
     }
 
-    static HandlerConfig buildHandlerConfig(MultivaluedMap<String, String> httpHeaders, String handlerTypeName, HandlerConfig.PARSE_MODE parseMode) {
-        int writeLimit = -1;
-        if (httpHeaders.containsKey("writeLimit")) {
-            writeLimit = Integer.parseInt(httpHeaders.getFirst("writeLimit"));
-        }
-
+    static ServerHandlerConfig buildHandlerConfig(MultivaluedMap<String, String> httpHeaders, String handlerTypeName, ParseMode parseMode) {
         int maxEmbeddedResources = -1;
         if (httpHeaders.containsKey("maxEmbeddedResources")) {
             maxEmbeddedResources = Integer.parseInt(httpHeaders.getFirst("maxEmbeddedResources"));
         }
-        return new HandlerConfig(BasicContentHandlerFactory.parseHandlerType(handlerTypeName, DEFAULT_HANDLER_TYPE), parseMode, writeLimit, maxEmbeddedResources,
-                TikaResource.getThrowOnWriteLimitReached(httpHeaders));
+        return new ServerHandlerConfig(BasicContentHandlerFactory.parseHandlerType(handlerTypeName, DEFAULT_HANDLER_TYPE), parseMode,
+                getWriteLimit(httpHeaders), maxEmbeddedResources, TikaResource.getThrowOnWriteLimitReached(httpHeaders));
     }
 
     /**
@@ -132,11 +112,51 @@ public class RecursiveMetadataResource {
     @Consumes("multipart/form-data")
     @Produces({"application/json"})
     @Path("form{" + HANDLER_TYPE_PARAM + " : (\\w+)?}")
-    public Response getMetadataFromMultipart(Attachment att, @Context UriInfo info, @PathParam(HANDLER_TYPE_PARAM) String handlerTypeName) throws Exception {
-        return Response
-                .ok(parseMetadataToMetadataList(att.getObject(InputStream.class), new Metadata(), att.getHeaders(), info,
-                        buildHandlerConfig(att.getHeaders(), handlerTypeName, HandlerConfig.PARSE_MODE.RMETA)))
-                .build();
+    public Response getMetadataFromMultipart(Attachment att, @PathParam(HANDLER_TYPE_PARAM) String handlerTypeName) throws Exception {
+        try (TikaInputStream tis = TikaInputStream.get(att.getObject(InputStream.class))) {
+            tis.getPath(); // Spool to temp file for pipes-based parsing
+            List<Metadata> metadataList = parseMetadata(tis, new Metadata(), att.getHeaders(),
+                    buildHandlerConfig(att.getHeaders(), handlerTypeName, ParseMode.RMETA));
+            return Response.ok(new MetadataList(metadataList)).build();
+        }
+    }
+
+    /**
+     * Multipart endpoint with per-request ParseContext configuration.
+     * Accepts two parts: "file" (the document) and "config" (JSON configuration with parseContext).
+     */
+    @POST
+    @Consumes("multipart/form-data")
+    @Produces({"application/json"})
+    @Path("config{" + HANDLER_TYPE_PARAM + " : (/\\w+)?}")
+    public Response getMetadataWithConfig(
+            List<Attachment> attachments,
+            @Context HttpHeaders httpHeaders,
+            @PathParam(HANDLER_TYPE_PARAM) String handlerTypeName) throws Exception {
+
+        Metadata metadata = new Metadata();
+        ParseContext context = new ParseContext();
+        try (TikaInputStream tis = setupMultipartConfig(attachments, metadata, context)) {
+
+            TikaResource.logRequest(LOG, "/rmeta/config", metadata);
+
+            return Response
+                    .ok(parseMetadataWithContext(tis, metadata, httpHeaders.getRequestHeaders(),
+                            buildHandlerConfig(httpHeaders.getRequestHeaders(), handlerTypeName != null ? handlerTypeName.substring(1) : null, ParseMode.RMETA),
+                            context))
+                    .build();
+        }
+    }
+
+    private MetadataList parseMetadataWithContext(TikaInputStream tis, Metadata metadata, MultivaluedMap<String, String> httpHeaders,
+                                                  ServerHandlerConfig handlerConfig, ParseContext context) throws Exception {
+        // Set up handler factory in context if not already set using shared utility
+        setupContentHandlerFactoryIfNeeded(context, handlerConfig.type().toString(),
+                handlerConfig.writeLimit(), handlerConfig.throwOnWriteLimitReached());
+
+        // Filtering is done in child process, no need to filter again
+        List<Metadata> metadataList = TikaResource.parseWithPipes(tis, metadata, context, ParseMode.RMETA);
+        return new MetadataList(metadataList);
     }
 
     /**
@@ -157,7 +177,6 @@ public class RecursiveMetadataResource {
      * /rmeta/text   (store the content as text)<br/>
      * /rmeta/ignore (don't record any content)<br/>
      *
-     * @param info            uri info
      * @param handlerTypeName which type of handler to use
      * @return InputStream that can be deserialized as a list of {@link Metadata} objects
      * @throws Exception
@@ -166,16 +185,13 @@ public class RecursiveMetadataResource {
     @PUT
     @Produces("application/json")
     @Path("{" + HANDLER_TYPE_PARAM + " : (\\w+)?}")
-    public Response getMetadata(InputStream is, @Context HttpHeaders httpHeaders, @Context UriInfo info, @PathParam(HANDLER_TYPE_PARAM) String handlerTypeName) throws Exception {
+    public Response getMetadata(InputStream is, @Context HttpHeaders httpHeaders, @PathParam(HANDLER_TYPE_PARAM) String handlerTypeName) throws Exception {
         Metadata metadata = new Metadata();
-        return Response
-                .ok(parseMetadataToMetadataList(TikaResource.getInputStream(is, metadata, httpHeaders, info), metadata, httpHeaders.getRequestHeaders(), info,
-                        buildHandlerConfig(httpHeaders.getRequestHeaders(), handlerTypeName, HandlerConfig.PARSE_MODE.RMETA)))
-                .build();
-    }
-
-    private MetadataList parseMetadataToMetadataList(InputStream is, Metadata metadata, MultivaluedMap<String, String> httpHeaders, UriInfo info, HandlerConfig handlerConfig)
-            throws Exception {
-        return new MetadataList(parseMetadata(is, metadata, httpHeaders, info, handlerConfig));
+        try (TikaInputStream tis = TikaInputStream.get(is)) {
+            tis.getPath(); // Spool to temp file for pipes-based parsing
+            List<Metadata> metadataList = parseMetadata(tis, metadata, httpHeaders.getRequestHeaders(),
+                    buildHandlerConfig(httpHeaders.getRequestHeaders(), handlerTypeName, ParseMode.RMETA));
+            return Response.ok(new MetadataList(metadataList)).build();
+        }
     }
 }

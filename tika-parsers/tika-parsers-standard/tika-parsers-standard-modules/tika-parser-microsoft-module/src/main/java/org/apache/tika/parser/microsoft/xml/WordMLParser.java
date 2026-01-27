@@ -33,6 +33,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.DefaultHandler;
 
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.extractor.EmbeddedDocumentExtractor;
 import org.apache.tika.extractor.EmbeddedDocumentUtil;
 import org.apache.tika.io.TikaInputStream;
@@ -49,6 +50,7 @@ import org.apache.tika.sax.XHTMLContentHandler;
  * <p>
  * See <a href="https://en.wikipedia.org/wiki/Microsoft_Office_XML_formats">https://en.wikipedia.org/wiki/Microsoft_Office_XML_formats</a>
  */
+@TikaComponent
 public class WordMLParser extends AbstractXML2003Parser {
     //map between wordml and xhtml entities
     private static final Map<String, String> WORDML_TO_XHTML;
@@ -81,7 +83,7 @@ public class WordMLParser extends AbstractXML2003Parser {
 
         return new TeeContentHandler(super.getContentHandler(ch, metadata, context),
                 new WordMLHandler(ch), new HyperlinkHandler(ch, WORD_ML_URL),
-                new PictHandler(ch, metadata,
+                new PictHandler(ch, metadata, context,
                         EmbeddedDocumentUtil.getEmbeddedDocumentExtractor(context)));
     }
 
@@ -179,16 +181,18 @@ public class WordMLParser extends AbstractXML2003Parser {
         final ContentHandler handler;
         final Base64 base64 = new Base64();
         byte[] rawBytes = null;
+        final ParseContext parseContext;
         EmbeddedDocumentExtractor embeddedDocumentExtractor;
         boolean inPict = false;
         boolean inBin = false;
         String pictName = null;
         String pictSource = null;
 
-        public PictHandler(ContentHandler handler, Metadata metadata,
+        public PictHandler(ContentHandler handler, Metadata metadata, ParseContext parseContext,
                            EmbeddedDocumentExtractor embeddedDocumentExtractor) {
             this.handler = handler;
             this.parentMetadata = metadata;
+            this.parseContext = parseContext;
             this.embeddedDocumentExtractor = embeddedDocumentExtractor;
         }
 
@@ -276,7 +280,7 @@ public class WordMLParser extends AbstractXML2003Parser {
 
         private void handleEmbedded(boolean outputHtml) throws SAXException {
             if (rawBytes != null) {
-                try (TikaInputStream is = TikaInputStream.get(rawBytes)) {
+                try (TikaInputStream tis = TikaInputStream.get(rawBytes)) {
                     Metadata metadata = new Metadata();
                     if (pictName != null) {
                         metadata.set(TikaCoreProperties.RESOURCE_NAME_KEY, pictName);
@@ -285,7 +289,7 @@ public class WordMLParser extends AbstractXML2003Parser {
                         metadata.set(TikaCoreProperties.ORIGINAL_RESOURCE_NAME, pictSource);
                     }
                     if (embeddedDocumentExtractor.shouldParseEmbedded(metadata)) {
-                        embeddedDocumentExtractor.parseEmbedded(is, handler, metadata, outputHtml);
+                        embeddedDocumentExtractor.parseEmbedded(tis, handler, metadata, parseContext, outputHtml);
                     }
                 } catch (IOException e) {
                     //log

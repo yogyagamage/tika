@@ -44,14 +44,14 @@ public class CompositeMetadataFilter extends MetadataFilter {
     }
 
     @Override
-    public void filter(Metadata metadata) throws TikaException {
+    public void filter(List<Metadata> metadataList) throws TikaException {
         for (MetadataFilter filter : filters) {
-            filter.filter(metadata);
+            filter.filter(metadataList);
         }
     }
 
     @Override
     public String toString() {
-        return "CompositeMetadataFilter{" + "filters=" + filters + '}';
+        return "CompositeMetadataListFilter{" + "filters=" + filters + '}';
     }
 }

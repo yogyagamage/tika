@@ -17,20 +17,21 @@
 package org.apache.tika.parser.odf;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.io.input.CloseShieldInputStream;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import org.apache.tika.config.Field;
+import org.apache.tika.config.ConfigDeserializer;
+import org.apache.tika.config.JsonConfig;
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.exception.TikaException;
+import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
 import org.apache.tika.parser.ParseContext;
@@ -40,7 +41,15 @@ import org.apache.tika.sax.EmbeddedContentHandler;
 import org.apache.tika.sax.XHTMLContentHandler;
 import org.apache.tika.utils.XMLReaderUtils;
 
+@TikaComponent
 public class FlatOpenDocumentParser implements Parser {
+
+    /**
+     * Configuration class for JSON deserialization.
+     */
+    public static class Config {
+        public boolean extractMacros = false;
+    }
 
     static final MediaType FLAT_OD =
             MediaType.application("vnd.oasis.opendocument.tika.flat.document");
@@ -58,20 +67,43 @@ public class FlatOpenDocumentParser implements Parser {
 
     private boolean extractMacros = false;
 
+    public FlatOpenDocumentParser() {
+    }
+
+    /**
+     * Constructor with explicit Config object.
+     *
+     * @param config the configuration
+     */
+    public FlatOpenDocumentParser(Config config) {
+        this.extractMacros = config.extractMacros;
+    }
+
+    /**
+     * Constructor for JSON configuration.
+     * Requires Jackson on the classpath.
+     *
+     * @param jsonConfig JSON configuration
+     */
+    public FlatOpenDocumentParser(JsonConfig jsonConfig) {
+        this(ConfigDeserializer.buildConfig(jsonConfig, Config.class));
+    }
+
     @Override
     public Set<MediaType> getSupportedTypes(ParseContext context) {
         return SUPPORTED_TYPES;
     }
 
     @Override
-    public void parse(InputStream stream, ContentHandler handler, Metadata metadata,
+    public void parse(TikaInputStream tis, ContentHandler handler, Metadata metadata,
                       ParseContext context) throws IOException, SAXException, TikaException {
         final XHTMLContentHandler xhtml = new XHTMLContentHandler(handler, metadata);
 
         xhtml.startDocument();
+        tis.setCloseShield();
         try {
             ContentHandler fodHandler = getContentHandler(xhtml, metadata, context);
-            XMLReaderUtils.parseSAX(CloseShieldInputStream.wrap(stream),
+            XMLReaderUtils.parseSAX(tis,
                     new EmbeddedContentHandler(fodHandler), context);
             //can only detect subtype (text/pres/sheet) during parse.
             //update it here.
@@ -80,11 +112,11 @@ public class FlatOpenDocumentParser implements Parser {
                 metadata.set(Metadata.CONTENT_TYPE, detected.toString());
             }
         } finally {
+            tis.removeCloseShield();
             xhtml.endDocument();
         }
     }
 
-    @Field
     public void setExtractMacros(boolean extractMacros) {
         this.extractMacros = extractMacros;
     }

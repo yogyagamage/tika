@@ -14,12 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.tika.parser.microsoft;
 
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
@@ -36,6 +34,7 @@ import org.apache.poi.util.StringUtil;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.extractor.EmbeddedDocumentExtractor;
 import org.apache.tika.extractor.EmbeddedDocumentUtil;
@@ -62,6 +61,7 @@ import org.apache.tika.sax.XHTMLContentHandler;
  * We'd have to do something like what PDFBox or XPS do to sort the
  * runs and then put the cow back together from the hamburger...lol...
  */
+@TikaComponent
 public class EMFParser implements Parser {
 
     public static Property EMF_ICON_ONLY = Property.internalBoolean("emf:iconOnly");
@@ -76,13 +76,12 @@ public class EMFParser implements Parser {
 
     private static void handleEmbedded(byte[] data,
                                        EmbeddedDocumentExtractor embeddedDocumentExtractor,
-                                       ContentHandler handler) throws TikaException, SAXException {
+                                       ContentHandler handler, ParseContext context) throws TikaException, SAXException {
         try (TikaInputStream tis = TikaInputStream.get(data)) {
             Metadata embeddedMetadata = new Metadata();
             if (embeddedDocumentExtractor.shouldParseEmbedded(embeddedMetadata)) {
                 embeddedDocumentExtractor
-                        .parseEmbedded(tis, new EmbeddedContentHandler(handler), embeddedMetadata,
-                                true);
+                        .parseEmbedded(tis, new EmbeddedContentHandler(handler), embeddedMetadata, context, true);
             }
         } catch (IOException e) {
             //swallow
@@ -95,14 +94,14 @@ public class EMFParser implements Parser {
     }
 
     @Override
-    public void parse(InputStream stream, ContentHandler handler, Metadata metadata,
+    public void parse(TikaInputStream tis, ContentHandler handler, Metadata metadata,
                       ParseContext context) throws IOException, SAXException, TikaException {
 
         EmbeddedDocumentExtractor embeddedDocumentExtractor = null;
         XHTMLContentHandler xhtml = new XHTMLContentHandler(handler, metadata);
         xhtml.startDocument();
         try {
-            HemfPicture ex = new HemfPicture(stream);
+            HemfPicture ex = new HemfPicture(tis);
             ParseState parseState = new ParseState();
             long fudgeFactorX = 10;//derive this from the font or frame/bounds information
             StringBuilder buffer = new StringBuilder();
@@ -213,14 +212,14 @@ public class EMFParser implements Parser {
                         EmbeddedDocumentUtil.getEmbeddedDocumentExtractor(context);
             }
             handleMultiFormats((HemfComment.EmfCommentDataMultiformats) commentData,
-                    xhtml, parseState.extractor);
+                    xhtml, parseState.extractor, context);
         } else if (commentData instanceof HemfComment.EmfCommentDataWMF) {
             if (parseState.extractor == null) {
                 parseState.extractor =
                         EmbeddedDocumentUtil.getEmbeddedDocumentExtractor(context);
             }
             handleWMF(((HemfComment.EmfCommentDataWMF) commentData).getWMFData(), xhtml,
-                    parseState.extractor);
+                    parseState.extractor, context);
         } else if (commentData instanceof HemfComment.EmfCommentDataGeneric) {
             String val =
                     tryToReadAsString((((HemfComment.EmfCommentDataGeneric) commentData).getPrivateData()));
@@ -250,7 +249,8 @@ public class EMFParser implements Parser {
     }
 
     private void handleWMF(byte[] bytes, ContentHandler contentHandler,
-                           EmbeddedDocumentExtractor embeddedDocumentExtractor)
+                           EmbeddedDocumentExtractor embeddedDocumentExtractor,
+                           ParseContext context)
             throws IOException, SAXException, TikaException {
         Metadata embeddedMetadata = new Metadata();
         embeddedMetadata.set(Metadata.CONTENT_TYPE, WMF_MEDIA_TYPE.toString());
@@ -258,7 +258,7 @@ public class EMFParser implements Parser {
             try (TikaInputStream tis = TikaInputStream.get(bytes)) {
                 embeddedDocumentExtractor
                         .parseEmbedded(tis, new EmbeddedContentHandler(contentHandler),
-                                embeddedMetadata, true);
+                                embeddedMetadata, context, true);
 
             }
 
@@ -268,12 +268,13 @@ public class EMFParser implements Parser {
 
     private void handleMultiFormats(HemfComment.EmfCommentDataMultiformats commentData,
                                     ContentHandler handler,
-                                    EmbeddedDocumentExtractor embeddedDocumentExtractor)
+                                    EmbeddedDocumentExtractor embeddedDocumentExtractor,
+                                    ParseContext context)
             throws IOException, TikaException, SAXException {
 
         for (HemfComment.EmfCommentDataFormat dataFormat : commentData.getFormats()) {
             //is this right?!
-            handleEmbedded(dataFormat.getRawData(), embeddedDocumentExtractor, handler);
+            handleEmbedded(dataFormat.getRawData(), embeddedDocumentExtractor, handler, context);
         }
     }
 

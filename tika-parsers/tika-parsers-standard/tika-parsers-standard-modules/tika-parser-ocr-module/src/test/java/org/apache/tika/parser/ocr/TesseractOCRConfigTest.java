@@ -21,14 +21,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
 import org.apache.tika.TikaTest;
-import org.apache.tika.config.TikaConfig;
+import org.apache.tika.config.loader.TikaLoader;
+import org.apache.tika.exception.TikaConfigException;
 import org.apache.tika.parser.CompositeParser;
 
 public class TesseractOCRConfigTest extends TikaTest {
@@ -51,11 +51,10 @@ public class TesseractOCRConfigTest extends TikaTest {
 
     @Test
     public void testPartialConfig() throws Exception {
-
-        InputStream stream = getResourceAsStream("/test-configs/tika-config-tesseract-partial.xml");
-
+        TikaLoader loader = TikaLoader.load(
+                getConfigPath(TesseractOCRConfigTest.class, "tika-config-tesseract-partial.json"));
         TesseractOCRParser parser =
-                (TesseractOCRParser) ((CompositeParser) new TikaConfig(stream).getParser())
+                (TesseractOCRParser) ((CompositeParser) loader.loadParsers())
                         .getAllComponentParsers().get(0);
         TesseractOCRConfig config = parser.getDefaultConfig();
         assertEquals("fra+deu", config.getLanguage(), "Invalid overridden language value");
@@ -72,11 +71,10 @@ public class TesseractOCRConfigTest extends TikaTest {
 
     @Test
     public void testFullConfig() throws Exception {
-
-        InputStream stream = getResourceAsStream("/test-configs/tika-config-tesseract-full.xml");
-
+        TikaLoader loader = TikaLoader.load(
+                getConfigPath(TesseractOCRConfigTest.class, "tika-config-tesseract-full.json"));
         TesseractOCRParser parser =
-                (TesseractOCRParser) ((CompositeParser) new TikaConfig(stream).getParser())
+                (TesseractOCRParser) ((CompositeParser) loader.loadParsers())
                         .getAllComponentParsers().get(0);
         TesseractOCRConfig config = parser.getDefaultConfig();
         assertEquals("ceb", config.getLanguage(), "Invalid overridden language value");
@@ -181,7 +179,7 @@ public class TesseractOCRConfigTest extends TikaTest {
     }
 
     @Test
-    public void testDataPathCheck() {
+    public void testDataPathCheck() throws TikaConfigException {
         TesseractOCRParser parser = new TesseractOCRParser();
         assertThrows(IllegalArgumentException.class, () -> {
             parser.setTessdataPath("blah\u0000deblah");
@@ -189,7 +187,7 @@ public class TesseractOCRConfigTest extends TikaTest {
     }
 
     @Test
-    public void testPathCheck() {
+    public void testPathCheck() throws TikaConfigException {
         TesseractOCRParser parser = new TesseractOCRParser();
         assertThrows(IllegalArgumentException.class, () -> {
             parser.setTesseractPath("blah\u0000deblah");
@@ -248,29 +246,5 @@ public class TesseractOCRConfigTest extends TikaTest {
         assertThrows(IllegalArgumentException.class, () -> {
             config.setColorspace("someth!ng");
         });
-    }
-
-    @Test
-    public void testUpdatingConfigs() throws Exception {
-        TesseractOCRConfig configA = new TesseractOCRConfig();
-        configA.setLanguage("eng");
-        configA.setMinFileSizeToOcr(100);
-        configA.setOutputType(TesseractOCRConfig.OUTPUT_TYPE.TXT);
-        configA.addOtherTesseractConfig("k1", "a1");
-        configA.addOtherTesseractConfig("k2", "a2");
-
-        TesseractOCRConfig configB = new TesseractOCRConfig();
-        configB.setLanguage("fra");
-        configB.setMinFileSizeToOcr(1000);
-        configB.setOutputType(TesseractOCRConfig.OUTPUT_TYPE.HOCR);
-        configB.addOtherTesseractConfig("k1", "b1");
-        configB.addOtherTesseractConfig("k2", "b2");
-
-        TesseractOCRConfig clone = configA.cloneAndUpdate(configB);
-        assertEquals("fra", clone.getLanguage());
-        assertEquals(1000, clone.getMinFileSizeToOcr());
-        assertEquals(TesseractOCRConfig.OUTPUT_TYPE.HOCR, clone.getOutputType());
-        assertEquals("b1", clone.getOtherTesseractConfig().get("k1"));
-        assertEquals("b2", clone.getOtherTesseractConfig().get("k2"));
     }
 }

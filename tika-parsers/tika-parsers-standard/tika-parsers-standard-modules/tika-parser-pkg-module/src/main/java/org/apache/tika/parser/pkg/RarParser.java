@@ -17,7 +17,6 @@
 package org.apache.tika.parser.pkg;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collections;
 import java.util.Set;
 
@@ -27,6 +26,7 @@ import com.github.junrar.rarfile.FileHeader;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.exception.EncryptedDocumentException;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.exception.UnsupportedFormatException;
@@ -43,6 +43,7 @@ import org.apache.tika.sax.XHTMLContentHandler;
 /**
  * Parser for Rar files.
  */
+@TikaComponent
 public class RarParser implements Parser {
     private static final long serialVersionUID = 6157727985054451501L;
 
@@ -55,7 +56,7 @@ public class RarParser implements Parser {
     }
 
     @Override
-    public void parse(InputStream stream, ContentHandler handler, Metadata metadata,
+    public void parse(TikaInputStream tis, ContentHandler handler, Metadata metadata,
                       ParseContext context) throws IOException, SAXException, TikaException {
 
         XHTMLContentHandler xhtml = new XHTMLContentHandler(handler, metadata);
@@ -70,7 +71,6 @@ public class RarParser implements Parser {
         }
         Archive rar = null;
         try (TemporaryResources tmp = new TemporaryResources()) {
-            TikaInputStream tis = TikaInputStream.get(stream, tmp, metadata);
             rar = new Archive(tis.getFile());
 
             if (rar.isEncrypted()) {
@@ -88,7 +88,7 @@ public class RarParser implements Parser {
                             xhtml);
                     try (TikaInputStream rarTis = TikaInputStream.get(rar.getInputStream(header))) {
                         if (extractor.shouldParseEmbedded(entrydata)) {
-                            extractor.parseEmbedded(rarTis, handler, entrydata, true);
+                            extractor.parseEmbedded(rarTis, handler, entrydata, context, true);
                         }
                     }
                 }

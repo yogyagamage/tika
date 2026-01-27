@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.tika.parser.dwg;
 
 import java.io.File;
@@ -23,17 +22,16 @@ import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.apache.tika.config.Param;
+import org.apache.tika.config.Initializable;
 import org.apache.tika.exception.TikaConfigException;
 import org.apache.tika.parser.external.ExternalParser;
 import org.apache.tika.utils.StringUtils;
 
-public class DWGParserConfig implements Serializable {
+public class DWGParserConfig implements Serializable, Initializable {
 
     private static final long serialVersionUID = -7623524257255755725L;
     private String dwgReadExecutable = "";
@@ -48,9 +46,10 @@ public class DWGParserConfig implements Serializable {
     private boolean hasDwgRead;
     private static final Logger LOG = LoggerFactory.getLogger(DWGParserConfig.class);
 
-    public void initialize(Map<String, Param> params) throws TikaConfigException {
-        hasDwgRead = hasDwgRead();
 
+    public void initialize() throws TikaConfigException {
+        //TODO -- not sure if the behavior is try to find dwgread and if not back off the the DWGParser(?)
+        hasDwgRead = hasDwgRead();
     }
 
     public boolean hasDwgRead() throws TikaConfigException {

@@ -18,76 +18,89 @@ package org.apache.tika.async.cli;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.apache.tika.TikaTest;
+import org.apache.tika.config.JsonConfigHelper;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.TikaCoreProperties;
 import org.apache.tika.parser.ParseContext;
-import org.apache.tika.pipes.core.FetchEmitTuple;
-import org.apache.tika.pipes.core.HandlerConfig;
+import org.apache.tika.pipes.api.FetchEmitTuple;
+import org.apache.tika.pipes.api.emitter.EmitKey;
+import org.apache.tika.pipes.api.fetcher.FetchKey;
+import org.apache.tika.pipes.api.pipesiterator.PipesIterator;
+import org.apache.tika.pipes.core.PipesException;
 import org.apache.tika.pipes.core.async.AsyncProcessor;
-import org.apache.tika.pipes.core.emitter.EmitKey;
 import org.apache.tika.pipes.core.extractor.EmbeddedDocumentBytesConfig;
-import org.apache.tika.pipes.core.fetcher.FetchKey;
-import org.apache.tika.pipes.core.pipesiterator.PipesIterator;
 import org.apache.tika.serialization.JsonMetadataList;
 
 /**
  * This should be in tika-core, but we want to avoid a dependency mess with tika-serialization
  */
 public class AsyncProcessorTest extends TikaTest {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AsyncProcessorTest.class);
+
     //TODO -- integrate json pipes iterator and run with AyncProcessor.main
     @TempDir
     private Path basedir;
     private Path inputDir;
 
-    private Path bytesDir;
-
-    private Path jsonDir;
+    private Path outputDir;
+    private Path jsonOutputDir;
+    private Path bytesOutputDir;
 
     private Path configDir;
 
+    private Path tikaConfigPath;
+
     @BeforeEach
-    public void setUp() throws IOException {
+    public void setUp() throws Exception {
         inputDir = basedir.resolve("input");
 
-        bytesDir = basedir.resolve("bytes");
+        outputDir = basedir.resolve("output");
+        jsonOutputDir = outputDir.resolve("json");
+        bytesOutputDir = outputDir.resolve("bytes");
 
-        jsonDir = basedir.resolve("json");
 
         configDir = basedir.resolve("config");
-        Path tikaConfig = configDir.resolve("tika-config.xml");
 
         Files.createDirectories(basedir);
         Files.createDirectories(configDir);
         Files.createDirectories(inputDir);
 
-        String xml = IOUtils.toString(AsyncProcessorTest.class.getResourceAsStream("/configs/TIKA-4207-emitter.xml"), StandardCharsets.UTF_8);
-        //do stuff to xml
-        xml = xml.replace("BASE_PATH", inputDir
-                .toAbsolutePath()
-                .toString());
-        xml = xml.replace("JSON_PATH", jsonDir
-                .toAbsolutePath()
-                .toString());
-        xml = xml.replace("BYTES_PATH", bytesDir
-                .toAbsolutePath()
-                .toString());
+        Path pluginsDir = Paths.get("target/plugins");
+        if (!Files.isDirectory(pluginsDir)) {
+            LOG.warn("CAN'T FIND PLUGINS DIR. pwd={}", Paths.get("").toAbsolutePath().toString());
+        }
 
-        Files.writeString(tikaConfig, xml, StandardCharsets.UTF_8);
+        tikaConfigPath = configDir.resolve("tika-config.json");
+
+        Map<String, Object> replacements = new HashMap<>();
+        replacements.put("FETCHER_BASE_PATH", inputDir);
+        replacements.put("JSON_EMITTER_BASE_PATH", jsonOutputDir);
+        replacements.put("BYTES_EMITTER_BASE_PATH", bytesOutputDir);
+        replacements.put("PLUGIN_ROOTS", pluginsDir);
+
+        JsonConfigHelper.writeConfigFromResource("/configs/config-template.json",
+                AsyncProcessorTest.class, replacements, tikaConfigPath);
 
         Path mock = inputDir.resolve("mock.xml");
         try (OutputStream os = Files.newOutputStream(mock)) {
@@ -96,42 +109,39 @@ public class AsyncProcessorTest extends TikaTest {
     }
 
     @Test
-    public void testBasic() throws Exception {
-//        TikaAsyncCLI cli = new TikaAsyncCLI();
-        //      cli.main(new String[]{ configDir.resolve("tika-config.xml").toAbsolutePath().toString()});
-        AsyncProcessor processor = new AsyncProcessor(configDir.resolve("tika-config.xml"));
+    public void testRecursiveUnpacking() throws Exception {
+        AsyncProcessor processor = AsyncProcessor.load(configDir.resolve("tika-config.json"));
 
         EmbeddedDocumentBytesConfig embeddedDocumentBytesConfig = new EmbeddedDocumentBytesConfig(true);
         embeddedDocumentBytesConfig.setIncludeOriginal(true);
-        embeddedDocumentBytesConfig.setEmitter("bytes");
+        embeddedDocumentBytesConfig.setEmitter("fse-bytes");
         embeddedDocumentBytesConfig.setSuffixStrategy(EmbeddedDocumentBytesConfig.SUFFIX_STRATEGY.NONE);
         embeddedDocumentBytesConfig.setEmbeddedIdPrefix("-");
         ParseContext parseContext = new ParseContext();
-        parseContext.set(HandlerConfig.class, HandlerConfig.DEFAULT_HANDLER_CONFIG);
         parseContext.set(EmbeddedDocumentBytesConfig.class, embeddedDocumentBytesConfig);
         FetchEmitTuple t =
-                new FetchEmitTuple("myId-1", new FetchKey("fs", "mock.xml"), new EmitKey("json", "emit-1"), new Metadata(), parseContext, FetchEmitTuple.ON_PARSE_EXCEPTION.EMIT);
+                new FetchEmitTuple("myId-1", new FetchKey("fsf", "mock.xml"),
+                        new EmitKey("fse-json", "emit-1"), new Metadata(), parseContext, FetchEmitTuple.ON_PARSE_EXCEPTION.EMIT);
 
         processor.offer(t, 1000);
 
         for (int i = 0; i < 10; i++) {
             processor.offer(PipesIterator.COMPLETED_SEMAPHORE, 1000);
         }
-        //TODO clean this up
         while (processor.checkActive()) {
             Thread.sleep(100);
         }
         processor.close();
 
-        String container = Files.readString(bytesDir.resolve("emit-1-embed/emit-1-0"));
+        String container = Files.readString(bytesOutputDir.resolve("emit-1-embed/emit-1-0"));
         assertContains("\"dc:creator\">Nikolai Lobachevsky", container);
 
-        String xmlEmbedded = Files.readString(bytesDir.resolve("emit-1-embed/emit-1-1"));
+        String xmlEmbedded = Files.readString(bytesOutputDir.resolve("emit-1-embed/emit-1-1"));
         assertContains("name=\"dc:creator\"", xmlEmbedded);
         assertContains(">embeddedAuthor</metadata>", xmlEmbedded);
 
         List<Metadata> metadataList;
-        try (BufferedReader reader = Files.newBufferedReader(jsonDir.resolve("emit-1.json"))) {
+        try (BufferedReader reader = Files.newBufferedReader(jsonOutputDir.resolve("emit-1"))) {
             metadataList = JsonMetadataList.fromJson(reader);
         }
         assertEquals(2, metadataList.size());
@@ -141,5 +151,45 @@ public class AsyncProcessorTest extends TikaTest {
         assertContains("some_embedded_content", metadataList
                 .get(1)
                 .get(TikaCoreProperties.TIKA_CONTENT));
+    }
+
+    @Test
+    public void testStopsOnApplicationError() throws Exception {
+        AsyncProcessor processor = AsyncProcessor.load(configDir.resolve("tika-config.json"));
+
+        ParseContext parseContext = new ParseContext();
+        FetchEmitTuple badTuple = new FetchEmitTuple(
+                "bad-tuple-1",
+                new FetchKey("non-existent-fetcher", "some-file.txt"),
+                new EmitKey("fse-json", "emit-bad"),
+                new Metadata(),
+                parseContext,
+                FetchEmitTuple.ON_PARSE_EXCEPTION.EMIT);
+
+        processor.offer(badTuple, 1000);
+
+        int maxWaitMs = 30000;
+        int waited = 0;
+        while (!processor.hasApplicationError() && waited < maxWaitMs) {
+            Thread.sleep(100);
+            waited += 100;
+        }
+
+        assertTrue(processor.hasApplicationError(),
+                "AsyncProcessor should detect application error from bad fetcher");
+
+        FetchEmitTuple anotherTuple = new FetchEmitTuple(
+                "another-tuple",
+                new FetchKey("fsf", "mock.xml"),
+                new EmitKey("fse-json", "emit-another"),
+                new Metadata(),
+                parseContext,
+                FetchEmitTuple.ON_PARSE_EXCEPTION.EMIT);
+
+        assertThrows(PipesException.class, () -> {
+            processor.offer(anotherTuple, 1000);
+        }, "Should throw PipesException when offering after application error");
+
+        processor.close();
     }
 }

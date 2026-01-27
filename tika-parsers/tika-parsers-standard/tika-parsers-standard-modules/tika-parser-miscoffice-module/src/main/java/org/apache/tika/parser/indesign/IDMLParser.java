@@ -31,6 +31,7 @@ import org.apache.commons.io.IOUtils;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
@@ -45,6 +46,7 @@ import org.apache.tika.sax.XHTMLContentHandler;
 /**
  * Adobe InDesign IDML Parser.
  */
+@TikaComponent
 public class IDMLParser implements Parser {
 
     /**
@@ -79,23 +81,18 @@ public class IDMLParser implements Parser {
     }
 
     @Override
-    public void parse(InputStream stream, ContentHandler baseHandler, Metadata metadata, ParseContext context)
+    public void parse(TikaInputStream tis, ContentHandler baseHandler, Metadata metadata, ParseContext context)
             throws IOException, SAXException, TikaException {
 
         ZipFile zipFile = null;
         ZipInputStream zipStream = null;
-        if (stream instanceof TikaInputStream) {
-            TikaInputStream tis = (TikaInputStream) stream;
-            Object container = ((TikaInputStream) stream).getOpenContainer();
-            if (container instanceof ZipFile) {
-                zipFile = (ZipFile) container;
-            } else if (tis.hasFile()) {
-                zipFile = new ZipFile(tis.getFile());
-            } else {
-                zipStream = new ZipInputStream(stream);
-            }
+        Object container = tis.getOpenContainer();
+        if (container instanceof ZipFile) {
+            zipFile = (ZipFile) container;
+        } else if (tis.hasFile()) {
+            zipFile = new ZipFile(tis.getFile());
         } else {
-            zipStream = new ZipInputStream(stream);
+            zipStream = new ZipInputStream(tis);
         }
 
         XHTMLContentHandler xhtml = new XHTMLContentHandler(baseHandler, metadata);

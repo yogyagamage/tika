@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.tika.parser.dwg;
 
 import java.io.BufferedReader;
@@ -22,7 +21,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
@@ -48,7 +46,9 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.exception.TikaException;
+import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.TikaCoreProperties;
 import org.apache.tika.mime.MediaType;
@@ -82,7 +82,7 @@ import org.apache.tika.utils.ProcessUtils;
  * <p>
  * String : cleanDwgReadReplaceWith - * replacement characters dwgReadExecutable
  */
-
+@TikaComponent(spi = false)
 public class DWGReadParser extends AbstractDWGParser {
     private static final Logger LOG = LoggerFactory.getLogger(DWGReadParser.class);
     /**
@@ -96,7 +96,7 @@ public class DWGReadParser extends AbstractDWGParser {
     }
 
     @Override
-    public void parse(InputStream stream, ContentHandler handler, Metadata metadata, ParseContext context)
+    public void parse(TikaInputStream tis, ContentHandler handler, Metadata metadata, ParseContext context)
             throws IOException, SAXException, TikaException {
 
         configure(context);
@@ -111,7 +111,7 @@ public class DWGReadParser extends AbstractDWGParser {
         try {
             
 
-            FileUtils.copyInputStreamToFile(stream, tmpFileIn);
+            FileUtils.copyInputStreamToFile(tis, tmpFileIn);
 
             List<String> command = Arrays.asList(dwgc.getDwgReadExecutable(), "-O", "JSON", "-o",
                     tmpFileOut.getCanonicalPath(), tmpFileIn.getCanonicalPath());

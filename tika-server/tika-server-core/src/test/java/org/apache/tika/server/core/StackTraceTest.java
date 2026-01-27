@@ -1,13 +1,13 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -56,7 +56,7 @@ public class StackTraceTest extends CXFTestBase {
         List<ResourceProvider> rCoreProviders = new ArrayList<>();
         rCoreProviders.add(new SingletonResourceProvider(new MetadataResource()));
         rCoreProviders.add(new SingletonResourceProvider(new RecursiveMetadataResource()));
-        rCoreProviders.add(new SingletonResourceProvider(new DetectorResource(new ServerStatus("", 0))));
+        rCoreProviders.add(new SingletonResourceProvider(new DetectorResource(new ServerStatus())));
         rCoreProviders.add(new SingletonResourceProvider(new TikaResource()));
         rCoreProviders.add(new SingletonResourceProvider(new UnpackerResource()));
         sf.setResourceProviders(rCoreProviders);
@@ -80,17 +80,14 @@ public class StackTraceTest extends CXFTestBase {
             if ("/rmeta".equals(path)) {
                 continue;
             }
-            String accept = "*/*";
-            if ("/tika".equals(path)) {
-                accept = "text/plain";
-            }
+            // Use path-based routing for /tika
+            String actualPath = "/tika".equals(path) ? "/tika/text" : path;
             Response response = WebClient
-                    .create(endPoint + path)
-                    .accept(accept)
+                    .create(endPoint + actualPath)
                     .header("Content-Disposition", "attachment; filename=" + TEST_PASSWORD_PROTECTED)
                     .put(ClassLoader.getSystemResourceAsStream(TEST_PASSWORD_PROTECTED));
-            assertNotNull(response, "null response: " + path);
-            assertEquals(UNPROCESSEABLE, response.getStatus(), "unprocessable: " + path);
+            assertNotNull(response, "null response: " + actualPath);
+            assertEquals(UNPROCESSEABLE, response.getStatus(), "unprocessable: " + actualPath);
             String msg = getStringFromInputStream((InputStream) response.getEntity());
             assertContains("org.apache.tika.exception.EncryptedDocumentException", msg);
         }
@@ -102,16 +99,13 @@ public class StackTraceTest extends CXFTestBase {
             if ("/rmeta".equals(path)) {
                 continue;
             }
-            String accept = "*/*";
-            if ("/tika".equals(path)) {
-                accept = "text/plain";
-            }
+            // Use path-based routing for /tika
+            String actualPath = "/tika".equals(path) ? "/tika/text" : path;
             Response response = WebClient
-                    .create(endPoint + path)
-                    .accept(accept)
+                    .create(endPoint + actualPath)
                     .put(ClassLoader.getSystemResourceAsStream(TEST_NULL));
             assertNotNull(response);
-            assertEquals(UNPROCESSEABLE, response.getStatus(), "unprocessable: " + path);
+            assertEquals(UNPROCESSEABLE, response.getStatus(), "unprocessable: " + actualPath);
             String msg = getStringFromInputStream((InputStream) response.getEntity());
             assertContains("Caused by: java.lang.NullPointerException: null pointer message", msg);
         }
@@ -123,17 +117,17 @@ public class StackTraceTest extends CXFTestBase {
         //that don't have a parser
         //no stack traces for 415
         for (String path : PATHS) {
-
+            // Use path-based routing for /tika
+            String actualPath = "/tika".equals(path) ? "/tika/text" : path;
             Response response = WebClient
-                    .create(endPoint + path)
-                    .accept("*:*")
+                    .create(endPoint + actualPath)
                     .put(ClassLoader.getSystemResourceAsStream("test-documents/testDigilite.fdf"));
             if (path.equals("/unpack")) {
                 //"NO CONTENT"
-                assertEquals(204, response.getStatus(), "bad type: " + path);
+                assertEquals(204, response.getStatus(), "bad type: " + actualPath);
             } else {
-                assertEquals(200, response.getStatus(), "bad type: " + path);
-                assertNotNull(response, "null response: " + path);
+                assertEquals(200, response.getStatus(), "bad type: " + actualPath);
+                assertNotNull(response, "null response: " + actualPath);
             }
         }
     }

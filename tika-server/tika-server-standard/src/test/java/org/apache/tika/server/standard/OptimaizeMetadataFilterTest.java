@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.tika.server.standard;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -32,6 +31,7 @@ import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.cxf.jaxrs.lifecycle.SingletonResourceProvider;
 import org.junit.jupiter.api.Test;
 
+import org.apache.tika.TikaTest;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.OfficeOpenXMLExtended;
 import org.apache.tika.metadata.TikaCoreProperties;
@@ -67,7 +67,12 @@ public class OptimaizeMetadataFilterTest extends CXFTestBase {
 
     @Override
     protected InputStream getTikaConfigInputStream() {
-        return getClass().getResourceAsStream("/config/tika-config-langdetect-optimaize-filter.xml");
+        return getClass().getResourceAsStream("/configs/tika-config-langdetect-optimaize-filter.json");
+    }
+
+    @Override
+    protected InputStream getPipesConfigInputStream() {
+        return getClass().getResourceAsStream("/configs/tika-config-langdetect-optimaize-filter.json");
     }
 
     @Test
@@ -79,6 +84,7 @@ public class OptimaizeMetadataFilterTest extends CXFTestBase {
 
         Reader reader = new InputStreamReader((InputStream) response.getEntity(), UTF_8);
         List<Metadata> metadataList = JsonMetadataList.fromJson(reader);
+        TikaTest.debug(metadataList);
 
         assertEquals(12, metadataList.size());
         assertEquals("Microsoft Office Word", metadataList
@@ -103,8 +109,7 @@ public class OptimaizeMetadataFilterTest extends CXFTestBase {
     @Test
     public void testTika() throws Exception {
         Response response = WebClient
-                .create(endPoint + TIKA_PATH)
-                .accept("application/json")
+                .create(endPoint + TIKA_PATH + "/json")
                 .put(ClassLoader.getSystemResourceAsStream(TEST_RECURSIVE_DOC));
 
         Reader reader = new InputStreamReader((InputStream) response.getEntity(), UTF_8);

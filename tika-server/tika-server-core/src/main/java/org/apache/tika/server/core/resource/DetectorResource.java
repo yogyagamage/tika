@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.tika.server.core.resource;
 
 import java.io.IOException;
@@ -30,6 +29,7 @@ import jakarta.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.apache.tika.exception.TikaConfigException;
 import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.TikaCoreProperties;
@@ -57,22 +57,19 @@ public class DetectorResource {
         LOG.info("Detecting media type for Filename: {}", filename);
         met.add(TikaCoreProperties.RESOURCE_NAME_KEY, filename);
         ParseContext parseContext = new ParseContext();
-        TikaResource.fillParseContext(httpHeaders.getRequestHeaders(), met, parseContext);
-        long timeoutMillis = TikaResource.getTaskTimeout(parseContext);
-        long taskId = serverStatus.start(ServerStatus.TASK.DETECT, filename, timeoutMillis);
+        long taskId = serverStatus.start(ServerStatus.TASK.DETECT, filename);
 
-        try (TikaInputStream tis = TikaInputStream.get(TikaResource.getInputStream(is, met, httpHeaders, info))) {
+        try (TikaInputStream tis = TikaInputStream.get(is)) {
             return TikaResource
-                    .getConfig()
-                    .getDetector()
-                    .detect(tis, met)
+                    .getTikaLoader()
+                    .loadDetectors()
+                    .detect(tis, met, parseContext)
                     .toString();
-        } catch (IOException e) {
+        } catch (IOException | TikaConfigException e) {
             LOG.warn("Unable to detect MIME type for file. Reason: {} ({})", e.getMessage(), filename, e);
             return MediaType.OCTET_STREAM.toString();
         } catch (OutOfMemoryError e) {
             LOG.error("OOM while detecting: ({})", filename, e);
-            serverStatus.setStatus(ServerStatus.STATUS.ERROR);
             throw e;
         } catch (Throwable e) {
             LOG.error("Exception while detecting: ({})", filename, e);

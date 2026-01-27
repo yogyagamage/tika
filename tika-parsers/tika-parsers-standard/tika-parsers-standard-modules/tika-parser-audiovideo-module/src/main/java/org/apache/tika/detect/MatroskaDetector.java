@@ -8,26 +8,28 @@
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an "AS IS"
- * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied.  See the License for the specific language governing
- * permissions and limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 package org.apache.tika.detect;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
 
+import org.apache.tika.config.TikaComponent;
+import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
+import org.apache.tika.parser.ParseContext;
 
 /**
  * Detector for Matroska (MKV and WEBM) files based on the EBML header.
  */
+@TikaComponent
 public class MatroskaDetector implements Detector {
 
     /** For serialization compatibility. */
@@ -45,24 +47,24 @@ public class MatroskaDetector implements Detector {
     /**
      * Detects the media type of the input stream by inspecting EBML headers.
      *
-     * @param input    the input stream
+     * @param tis      the input stream
      * @param metadata the metadata to populate
      * @return detected MediaType (WEBM, Matroska, or OCTET_STREAM)
      * @throws IOException if an I/O error occurs
      */
     @Override
-    public MediaType detect(InputStream input, Metadata metadata) throws IOException {
-        if (input == null) {
+    public MediaType detect(TikaInputStream tis, Metadata metadata, ParseContext parseContext) throws IOException {
+        if (tis == null) {
             return MediaType.OCTET_STREAM;
         }
-        input.mark(64);
+        tis.mark(64);
 
         byte[] header = new byte[64];
         int bytesRead = -1;
         try {
-            bytesRead = IOUtils.read(input, header, 0, 64);
+            bytesRead = IOUtils.read(tis, header, 0, 64);
         } finally {
-            input.reset();
+            tis.reset();
         }
 
         if (bytesRead < EBML_HEADER.length) {

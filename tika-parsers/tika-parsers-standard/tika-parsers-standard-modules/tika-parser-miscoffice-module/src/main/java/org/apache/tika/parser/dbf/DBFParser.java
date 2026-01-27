@@ -16,10 +16,8 @@
  */
 package org.apache.tika.parser.dbf;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
@@ -31,6 +29,7 @@ import java.util.Set;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.detect.EncodingDetector;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.io.TikaInputStream;
@@ -50,6 +49,7 @@ import org.apache.tika.sax.XHTMLContentHandler;
  * It caches the first 10 rows and then runs encoding dectection
  * on the "character" cells.
  */
+@TikaComponent
 public class DBFParser implements Parser {
 
     private static final int ROWS_TO_BUFFER_FOR_CHARSET_DETECTION = 10;
@@ -65,9 +65,9 @@ public class DBFParser implements Parser {
     }
 
     @Override
-    public void parse(InputStream stream, ContentHandler handler, Metadata metadata,
+    public void parse(TikaInputStream tis, ContentHandler handler, Metadata metadata,
                       ParseContext context) throws IOException, SAXException, TikaException {
-        DBFReader reader = DBFReader.open(stream);
+        DBFReader reader = DBFReader.open(tis);
         DBFFileHeader header = reader.getHeader();
         metadata.set(Metadata.CONTENT_TYPE, header.getVersion().getFullMimeString());
 
@@ -86,7 +86,7 @@ public class DBFParser implements Parser {
             row = reader.next();
         }
 
-        Charset charset = getCharset(firstRows, header);
+        Charset charset = getCharset(firstRows, header, context);
         metadata.set(Metadata.CONTENT_ENCODING, charset.toString());
 
         XHTMLContentHandler xhtml = new XHTMLContentHandler(handler, metadata);
@@ -118,7 +118,7 @@ public class DBFParser implements Parser {
         xhtml.endDocument();
     }
 
-    private Charset getCharset(List<DBFRow> firstRows, DBFFileHeader header)
+    private Charset getCharset(List<DBFRow> firstRows, DBFFileHeader header, ParseContext parseContext)
             throws IOException, TikaException {
         //TODO: potentially use codepage info in the header
         Charset charset = DEFAULT_CHARSET;
@@ -137,8 +137,9 @@ public class DBFParser implements Parser {
         byte[] bytes = bos.toByteArray();
         if (bytes.length > 20) {
             EncodingDetector detector = new Icu4jEncodingDetector();
-            detector.detect(TikaInputStream.get(bytes), new Metadata());
-            charset = detector.detect(new ByteArrayInputStream(bytes), new Metadata());
+            try (TikaInputStream tis = TikaInputStream.get(bytes)) {
+                charset = detector.detect(TikaInputStream.get(bytes), new Metadata(), parseContext);
+            }
         }
         return charset;
     }

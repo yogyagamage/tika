@@ -1,13 +1,13 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,31 +16,12 @@
  */
 package org.apache.tika.pipes.core;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.apache.tika.TikaTest;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
-import org.apache.tika.config.AbstractTikaConfigTest;
-import org.apache.tika.exception.TikaConfigException;
-import org.apache.tika.pipes.core.async.AsyncConfig;
-import org.apache.tika.pipes.core.async.MockReporter;
-import org.apache.tika.pipes.core.emitter.Emitter;
-import org.apache.tika.pipes.core.emitter.EmitterManager;
-import org.apache.tika.pipes.core.fetcher.Fetcher;
-import org.apache.tika.pipes.core.fetcher.FetcherManager;
-import org.apache.tika.pipes.core.pipesiterator.PipesIterator;
-import org.apache.tika.pipes.fetcher.fs.FileSystemFetcher;
-
-public class TikaPipesConfigTest extends AbstractTikaConfigTest {
+public class TikaPipesConfigTest extends TikaTest {
     //this handles tests for the newer pipes type configs.
-
+/*
+    TODO -- reimplent these with json
     @Test
     public void testFetchers() throws Exception {
         FetcherManager m = FetcherManager.load(getConfigFilePath("fetchers-config.xml"));
@@ -93,31 +74,23 @@ public class TikaPipesConfigTest extends AbstractTikaConfigTest {
         });
     }
 
+
+
     @Test
     public void testPipesIterator() throws Exception {
-        PipesIterator it =
-                PipesIterator.build(getConfigFilePath("pipes-iterator-config.xml"));
-        assertEquals("fs1", it.getFetcherName());
+        PipesIteratorBase it =
+                PipesIteratorBase.build(getConfigFilePath("pipes-iterator-config.xml"));
+        assertEquals("fsf1", it.getFetcherId());
     }
 
     @Test
     public void testMultiplePipesIterators() throws Exception {
         assertThrows(TikaConfigException.class, () -> {
-            PipesIterator it =
-                    PipesIterator.build(getConfigFilePath("pipes-iterator-multiple-config.xml"));
-            assertEquals("fs1", it.getFetcherName());
+            PipesIteratorBase it =
+                    PipesIteratorBase.build(getConfigFilePath("pipes-iterator-multiple-config.xml"));
+            assertEquals("fsf1", it.getFetcherId());
         });
     }
-    @Test
-    public void testParams() throws Exception {
-        //This test makes sure that pre 2.7.x configs that still contain <params/> element
-        //in ConfigBase derived objects still work.
-        Path configPath = getConfigFilePath("TIKA-3865-params.xml");
-        AsyncConfig asyncConfig = AsyncConfig.load(configPath);
-        PipesReporter reporter = asyncConfig.getPipesReporter();
-        assertTrue(reporter instanceof CompositePipesReporter);
-        List<PipesReporter> reporters = ((CompositePipesReporter)reporter).getPipesReporters();
-        assertEquals("somethingOrOther1", ((MockReporter)reporters.get(0)).getEndpoint());
-        assertEquals("somethingOrOther2", ((MockReporter)reporters.get(1)).getEndpoint());
-    }
+    */
+
 }

@@ -65,16 +65,15 @@
       <plugin>
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
-        <version>${rat.version}</version>
         <configuration>
-          <excludes>
-            <exclude>**/*.test</exclude>
-            <exclude>**/text-test.tsv</exclude>
-            <exclude>**/language-codes.tsv</exclude>
-            <exclude>**/udhr-known.txt</exclude>
-            <exclude>**/udhr-unknown.txt</exclude>
-            <exclude>**/language-codes.txt</exclude>
-          </excludes>
+          <inputExcludes>
+            <inputExclude>**/*.test</inputExclude>
+            <inputExclude>**/text-test.tsv</inputExclude>
+            <inputExclude>**/language-codes.tsv</inputExclude>
+            <inputExclude>**/udhr-known.txt</inputExclude>
+            <inputExclude>**/udhr-unknown.txt</inputExclude>
+            <inputExclude>**/language-codes.txt</inputExclude>
+          </inputExcludes>
         </configuration>
       </plugin>
       <plugin>

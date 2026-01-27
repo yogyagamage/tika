@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.tika.utils;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -39,7 +38,7 @@ public class ServiceLoaderUtilsTest extends TikaTest {
         int dcxmlIndex = -1;
         int i = 0;
         for (Parser p : defaultParser.getAllComponentParsers()) {
-            if ("class org.gagravarr.tika.VorbisParser".equals(p.getClass().toString())) {
+            if ("class org.apache.tika.parser.ogg.VorbisParser".equals(p.getClass().toString())) {
                 vorbisIndex = i;
             }
             if ("class org.apache.tika.parser.xml.FictionBookParser"

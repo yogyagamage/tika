@@ -25,11 +25,12 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import org.apache.tika.TikaTest;
+import org.apache.tika.detect.DefaultDetector;
 import org.apache.tika.detect.Detector;
 import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
-import org.apache.tika.metadata.TikaCoreProperties;
 import org.apache.tika.mime.MediaType;
+import org.apache.tika.parser.ParseContext;
 
 public class TruncatedOOXMLTest extends TikaTest {
 
@@ -50,14 +51,14 @@ public class TruncatedOOXMLTest extends TikaTest {
         List<Metadata> metadataList =
                 getRecursiveMetadata(truncate("testWORD_various.docx", 774), true);
 
-        // for debuging problems in commons compress 1.25.0 -> 1.26.0
+        /* for debuging problems in commons compress 1.25.0 -> 1.26.0
         metadataList.forEach(m -> {
             System.out.println("depth: " + m.get("X-TIKA:embedded_depth"));
             System.out.println("relid: " + m.get("embeddedRelationshipId"));
             System.out.println("res:   " + m.get(TikaCoreProperties.RESOURCE_NAME_KEY));
             System.out.println("cont:  " + m.get("X-TIKA:content"));
         });
-
+        */
         assertEquals(4, metadataList.size());
         Metadata m = metadataList.get(0);
         assertEquals("application/x-tika-ooxml", m.get(Metadata.CONTENT_TYPE));
@@ -65,11 +66,12 @@ public class TruncatedOOXMLTest extends TikaTest {
 
     @Test
     public void testTruncatedStreamDetection() throws Exception {
-        Detector detector = DEFAULT_TIKA_CONFIG.getDetector();
+        Detector detector = new DefaultDetector();
         Metadata metadata = new Metadata();
         try (InputStream is = new BufferedInputStream(TruncatedOOXMLTest.class.getResourceAsStream(
-                "/test-documents/testWORD_truncated.docx"))) {
-            MediaType mediaType = detector.detect(is, metadata);
+                "/test-documents/testWORD_truncated.docx"));
+             TikaInputStream tis = TikaInputStream.get(is)) {
+            MediaType mediaType = detector.detect(tis, metadata, new ParseContext());
             assertEquals(MediaType.application("vnd.openxmlformats-officedocument.wordprocessingml.document"),
                     mediaType);
         }
@@ -77,12 +79,12 @@ public class TruncatedOOXMLTest extends TikaTest {
 
     @Test
     public void testTruncatedPathDetection() throws Exception {
-        Detector detector = DEFAULT_TIKA_CONFIG.getDetector();
+        Detector detector = new DefaultDetector();
         Metadata metadata = new Metadata();
-        try (TikaInputStream tis = TikaInputStream.get(TruncatedOOXMLTest.class.getResourceAsStream(
-                "/test-documents/testWORD_truncated.docx"))) {
+        try (TikaInputStream tis = getResourceAsStream(
+                "/test-documents/testWORD_truncated.docx")) {
             tis.getPath();
-            MediaType mediaType = detector.detect(tis, metadata);
+            MediaType mediaType = detector.detect(tis, metadata, new ParseContext());
             assertEquals(
                     MediaType.application("vnd.openxmlformats-officedocument.wordprocessingml.document"),
                     mediaType);

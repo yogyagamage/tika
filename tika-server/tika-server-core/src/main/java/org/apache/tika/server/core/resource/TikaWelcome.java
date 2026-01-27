@@ -65,7 +65,7 @@ public class TikaWelcome {
     private List<Class<?>> endpoints = new LinkedList<>();
 
     public TikaWelcome(List<ResourceProvider> rCoreProviders) {
-        this.tika = new Tika(TikaResource.getConfig());
+        this.tika = new Tika();
         this.html = new HTMLHelper();
         for (ResourceProvider rp : rCoreProviders) {
             this.endpoints.add(rp.getResourceClass());
@@ -134,8 +134,6 @@ public class TikaWelcome {
     @GET
     @Produces("text/html")
     public String getWelcomeHTML() {
-        TikaResource.checkIsOperating();
-
         StringBuffer h = new StringBuffer();
         String tikaVersion = tika.toString();
 
@@ -192,7 +190,6 @@ public class TikaWelcome {
     @GET
     @Produces("text/plain")
     public String getWelcomePlain() {
-        TikaResource.checkIsOperating();
         StringBuilder text = new StringBuilder();
 
         text.append(tika.toString());

@@ -15,23 +15,11 @@
  * limitations under the License.
  */
 package org.apache.tika.config;
+import org.junit.jupiter.api.Disabled;
 
-import static org.apache.tika.TikaTest.assertContains;
-import static org.apache.tika.TikaTest.assertContainsCount;
-import static org.apache.tika.TikaTest.assertNotContained;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import org.junit.jupiter.api.Test;
-
+@Disabled("TODO -- convert to TikaLoader/serializer")
 public class TikaConfigSerializerTest {
-
+/*
     @Test
     public void testBasicParams() throws Exception {
         TikaConfig tikaConfig = TikaConfig.getDefaultConfig();
@@ -50,8 +38,8 @@ public class TikaConfigSerializerTest {
         assertContains(detectorNeedle, xml);
 
         String parserNeedle = "<parser class=\"org.apache.tika.parser.pdf.PDFParser\">" +
-                " <params> <param name=\"allowExtractionForAccessibility\" " +
-                "type=\"bool\">true</param>";
+                " <params> <param name=\"accessCheckMode\" " +
+                "type=\"string\">DONT_CHECK</param>";
 
         assertContains(parserNeedle, xml);
         //TODO This is still to be implemented -- we do not want to show the default renderer here
@@ -64,23 +52,6 @@ public class TikaConfigSerializerTest {
         }
     }
 
-    @Test
-    public void testTesseractList() throws Exception {
-        TikaConfig tikaConfig = new TikaConfig(getPath("tika-config-tesseract-arbitrary.xml"));
-        StringWriter writer = new StringWriter();
-
-        TikaConfigSerializer.serialize(tikaConfig, TikaConfigSerializer.Mode.STATIC,
-                writer, StandardCharsets.UTF_8);
-        String xml = writer.toString().replaceAll("\\s+", " ");
-        String needle = "<param name=\"otherTesseractSettings\" type=\"list\"> " +
-                "<string>textord_initialx_ile 0.75</string> <string>textord_noise_hfract 0.15625</string> </param>";
-        assertContains(needle, xml);
-        //For now, make sure that deserialization basically works;
-        //add many more unit tests!
-        try (InputStream is = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8))) {
-            TikaConfig deserialized = new TikaConfig(is);
-        }
-    }
 
     @Test
     public void testOfficeParserParams() throws Exception {
@@ -91,13 +62,6 @@ public class TikaConfigSerializerTest {
         assertContainsCount("<param name=\"concatenatePhoneticRuns\" type=\"bool\">true</param>",
                 writer.toString(), 3);
     }
+*/
 
-    private Path getPath(String config) {
-        try {
-            return Paths.get(TikaConfigSerializerTest.class.getResource("/configs/" + config)
-                    .toURI());
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

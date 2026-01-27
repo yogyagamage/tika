@@ -23,10 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
@@ -34,10 +32,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.apache.tika.Tika;
-import org.apache.tika.config.TikaConfig;
+import org.apache.tika.config.loader.TikaLoader;
 import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.TikaCoreProperties;
+import org.apache.tika.parser.ParseContext;
 
 /**
  * Test Suite for the {@link MimeTypes} repository.
@@ -51,9 +50,9 @@ public class TestMimeTypes {
 
     @BeforeEach
     public void setUp() throws Exception {
-        TikaConfig config = TikaConfig.getDefaultConfig();
-        repo = config.getMimeRepository();
-        tika = new Tika(config);
+        TikaLoader tikaLoader = TikaLoader.loadDefault();
+        repo = TikaLoader.getMimeTypes();
+        tika = new Tika(tikaLoader.loadDetectors(), tikaLoader.loadAutoDetectParser());
         u = new URI("http://mydomain.com/x.pdf?x=y").toURL();
     }
 
@@ -1386,6 +1385,15 @@ public class TestMimeTypes {
         assertTypeByName("audio/x-aac", "x.aac");
     }
 
+    /**
+     * TIKA-4582: MP3 files with ID3 tags should not be misdetected as AAC.
+     * This test file contains random audio data that happens to match the AAC ADTS sync pattern.
+     */
+    @Test
+    public void testMP3Detection() throws Exception {
+        assertTypeByData("audio/mpeg", "testMP3_id3_false_aac.mp3");
+    }
+
     private void assertText(byte[] prefix) throws IOException {
         assertMagic("text/plain", prefix);
     }
@@ -1395,40 +1403,42 @@ public class TestMimeTypes {
     }
 
     private void assertMagic(String expected, byte[] prefix) throws IOException {
-        MediaType type = repo.detect(new ByteArrayInputStream(prefix), new Metadata());
-        assertNotNull(type);
-        assertEquals(expected, type.toString());
+        try (TikaInputStream tis = TikaInputStream.get(prefix)) {
+            MediaType type = repo.detect(tis, new Metadata(), new ParseContext());
+            assertNotNull(type);
+            assertEquals(expected, type.toString());
+        }
     }
 
     private void assertType(String expected, String filename) throws Exception {
-        try (InputStream stream = TikaInputStream
+        try (TikaInputStream tis = TikaInputStream
                 .get(TestMimeTypes.class.getResourceAsStream("/test-documents/" + filename))) {
-            assertNotNull(stream, "Test file not found: " + filename);
+            assertNotNull(tis, "Test file not found: " + filename);
             Metadata metadata = new Metadata();
             metadata.set(TikaCoreProperties.RESOURCE_NAME_KEY, filename);
-            assertEquals(expected, repo.detect(stream, metadata).toString());
+            assertEquals(expected, repo.detect(tis, metadata, new ParseContext()).toString());
         }
     }
 
     private void assertTypeByName(String expected, String filename) throws IOException {
         Metadata metadata = new Metadata();
         metadata.set(TikaCoreProperties.RESOURCE_NAME_KEY, filename);
-        assertEquals(expected, repo.detect(null, metadata).toString());
+        assertEquals(expected, repo.detect(null, metadata, new ParseContext()).toString());
     }
 
     private void assertTypeByData(String expected, String filename) throws IOException {
-        try (InputStream stream = TikaInputStream
+        try (TikaInputStream tis = TikaInputStream
                 .get(TestMimeTypes.class.getResourceAsStream("/test-documents/" + filename))) {
-            assertNotNull(stream, "Test file not found: " + filename);
+            assertNotNull(tis, "Test file not found: " + filename);
             Metadata metadata = new Metadata();
-            assertEquals(expected, repo.detect(stream, metadata).toString());
+            assertEquals(expected, repo.detect(tis, metadata, new ParseContext()).toString());
         }
     }
 
     private void assertTypeByData(String expected, byte[] data) throws IOException {
-        try (InputStream stream = new ByteArrayInputStream(data)) {
+        try (TikaInputStream tis = TikaInputStream.get(data)) {
             Metadata metadata = new Metadata();
-            assertEquals(expected, repo.detect(stream, metadata).toString());
+            assertEquals(expected, repo.detect(tis, metadata, new ParseContext()).toString());
         }
     }
 
@@ -1448,12 +1458,12 @@ public class TestMimeTypes {
     }
 
     private MediaType getTypeByNameAndData(String filename) throws IOException {
-        try (InputStream stream = TikaInputStream
+        try (TikaInputStream tis = TikaInputStream
                 .get(TestMimeTypes.class.getResourceAsStream("/test-documents/" + filename))) {
-            assertNotNull(stream, "Test document not found: " + filename);
+            assertNotNull(tis, "Test document not found: " + filename);
             Metadata metadata = new Metadata();
             metadata.set(TikaCoreProperties.RESOURCE_NAME_KEY, filename);
-            return repo.detect(stream, metadata);
+            return repo.detect(tis, metadata, new ParseContext());
         }
     }
 }

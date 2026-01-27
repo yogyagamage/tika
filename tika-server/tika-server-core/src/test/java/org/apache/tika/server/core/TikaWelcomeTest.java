@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.tika.server.core;
 
 import java.io.InputStream;
@@ -44,7 +43,7 @@ public class TikaWelcomeTest extends CXFTestBase {
     protected void setUpResources(JAXRSServerFactoryBean sf) {
         List<ResourceProvider> rpsCore = new ArrayList<>();
         rpsCore.add(new SingletonResourceProvider(new TikaVersion()));
-        rpsCore.add(new SingletonResourceProvider(new DetectorResource(new ServerStatus("", 0))));
+        rpsCore.add(new SingletonResourceProvider(new DetectorResource(new ServerStatus())));
         rpsCore.add(new SingletonResourceProvider(new MetadataResource()));
         List<ResourceProvider> all = new ArrayList<>(rpsCore);
         all.add(new SingletonResourceProvider(new TikaWelcome(rpsCore)));

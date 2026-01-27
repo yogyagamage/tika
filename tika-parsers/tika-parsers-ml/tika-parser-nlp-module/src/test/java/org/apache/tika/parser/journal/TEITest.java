@@ -14,20 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.tika.parser.journal;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 
 import org.apache.tika.TikaTest;
+import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;
 
@@ -38,8 +37,8 @@ public class TEITest extends TikaTest {
     public void testBasic() throws Exception {
         TEIDOMParser teiParser = new TEIDOMParser();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        try (InputStream is = getResourceAsStream("/test-documents/testTEI.xml")) {
-            IOUtils.copy(is, bos);
+        try (TikaInputStream tis = getResourceAsStream("/test-documents/testTEI.xml")) {
+            IOUtils.copy(tis, bos);
         }
         String xml = new String(bos.toByteArray(), StandardCharsets.UTF_8);
         Metadata metadata = teiParser.parse(xml, new ParseContext());

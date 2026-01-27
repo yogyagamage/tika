@@ -18,14 +18,13 @@ package org.apache.tika.parser.mail;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.InputStream;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.ContentHandler;
 
 import org.apache.tika.TikaTest;
 import org.apache.tika.detect.TypeDetector;
+import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.parser.ParseContext;
@@ -57,8 +56,8 @@ public class MboxParserTest extends TikaTest {
         Metadata metadata = new Metadata();
         ParseContext context = new ParseContext();
 
-        try (InputStream stream = getResourceAsStream("/test-documents/single_mail.mbox")) {
-            mboxParser.parse(stream, handler, metadata, context);
+        try (TikaInputStream tis = getResourceAsStream("/test-documents/single_mail.mbox")) {
+            mboxParser.parse(tis, handler, metadata, context);
         }
 
         Metadata firstMail = mboxParser.getTrackingMetadata().get(0);

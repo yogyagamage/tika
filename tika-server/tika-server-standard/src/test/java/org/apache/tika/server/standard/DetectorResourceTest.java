@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.tika.server.standard;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -47,7 +46,7 @@ public class DetectorResourceTest extends CXFTestBase {
     @Override
     protected void setUpResources(JAXRSServerFactoryBean sf) {
         sf.setResourceClasses(DetectorResource.class);
-        sf.setResourceProvider(DetectorResource.class, new SingletonResourceProvider(new DetectorResource(new ServerStatus("", 0))));
+        sf.setResourceProvider(DetectorResource.class, new SingletonResourceProvider(new DetectorResource(new ServerStatus())));
 
     }
 

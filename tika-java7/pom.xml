@@ -64,12 +64,11 @@
       <plugin>
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
-        <version>${rat.version}</version>
         <configuration>
-          <excludes>
-            <exclude>src/main/resources/META-INF/services/java.nio.file.spi.FileTypeDetector</exclude>
-            <exclude>src/test/resources/test-documents/*</exclude>
-          </excludes>
+          <inputExcludes>
+            <inputExclude>src/main/resources/META-INF/services/java.nio.file.spi.FileTypeDetector</inputExclude>
+            <inputExclude>src/test/resources/test-documents/*</inputExclude>
+          </inputExcludes>
         </configuration>
       </plugin>
       <plugin>

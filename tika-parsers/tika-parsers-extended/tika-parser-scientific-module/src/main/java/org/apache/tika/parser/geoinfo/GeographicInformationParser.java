@@ -14,12 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.tika.parser.geoinfo;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -61,6 +59,7 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.io.TemporaryResources;
 import org.apache.tika.io.TikaInputStream;
@@ -71,7 +70,7 @@ import org.apache.tika.parser.Parser;
 import org.apache.tika.sax.XHTMLContentHandler;
 import org.apache.tika.utils.DateUtils;
 
-
+@TikaComponent
 public class GeographicInformationParser implements Parser {
 
     public static final String geoInfoType = "text/iso19139+xml";
@@ -86,15 +85,14 @@ public class GeographicInformationParser implements Parser {
     }
 
     @Override
-    public void parse(InputStream inputStream, ContentHandler contentHandler, Metadata metadata,
+    public void parse(TikaInputStream tis, ContentHandler contentHandler, Metadata metadata,
                       ParseContext parseContext) throws IOException, SAXException, TikaException {
         metadata.set(Metadata.CONTENT_TYPE, geoInfoType);
         XHTMLContentHandler xhtmlContentHandler = new XHTMLContentHandler(contentHandler, metadata);
 
-        TemporaryResources tmp =
-                TikaInputStream.isTikaInputStream(inputStream) ? null : new TemporaryResources();
-        try (TikaInputStream tikaInputStream = TikaInputStream.get(inputStream, tmp, metadata)) {
-            File file = tikaInputStream.getFile();
+        TemporaryResources tmp = null;
+        try (tis) {
+            File file = tis.getFile();
             try (DataStore dataStore = DataStores.open(file)) {
                 DefaultMetadata defaultMetadata = new DefaultMetadata(dataStore.getMetadata());
                 extract(xhtmlContentHandler, metadata, defaultMetadata);

@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.tika.parser.microsoft.ooxml.xwpf;
 
 import java.io.Closeable;
@@ -25,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.input.CloseShieldInputStream;
 import org.apache.poi.ooxml.POIXMLDocument;
 import org.apache.poi.ooxml.POIXMLProperties;
 import org.apache.poi.ooxml.extractor.POIXMLTextExtractor;
@@ -205,7 +203,7 @@ public class XWPFEventBasedWordExtractor implements POIXMLTextExtractor {
 
         Map<String, String> hyperlinks = loadHyperlinkRelationships(packagePart);
         try (InputStream stream = packagePart.getInputStream()) {
-            XMLReaderUtils.parseSAX(CloseShieldInputStream.wrap(stream),
+            XMLReaderUtils.parseSAX(stream,
                     new OOXMLWordAndPowerPointTextHandler(new XWPFToTextContentHandler(buffer),
                     hyperlinks), new ParseContext());
         }
@@ -380,4 +378,3 @@ public class XWPFEventBasedWordExtractor implements POIXMLTextExtractor {
         }
     }
 }
-

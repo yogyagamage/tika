@@ -17,7 +17,6 @@
 package org.apache.tika.parser.mail;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collections;
 import java.util.Set;
 
@@ -28,7 +27,9 @@ import org.apache.james.mime4j.stream.MimeConfig;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
-import org.apache.tika.config.Field;
+import org.apache.tika.config.ConfigDeserializer;
+import org.apache.tika.config.JsonConfig;
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.detect.Detector;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.exception.ZeroByteFileException;
@@ -49,11 +50,19 @@ import org.apache.tika.sax.XHTMLContentHandler;
  *
  * @author jnioche@digitalpebble.com
  */
+@TikaComponent(name = "rfc822-parser")
 public class RFC822Parser implements Parser {
     /**
      * Serial version UID
      */
     private static final long serialVersionUID = -5504243905998074168L;
+
+    /**
+     * Configuration class for JSON deserialization.
+     */
+    public static class Config {
+        public boolean extractAllAlternatives = false;
+    }
 
     private static final Set<MediaType> SUPPORTED_TYPES =
             Collections.singleton(MediaType.parse("message/rfc822"));
@@ -62,14 +71,35 @@ public class RFC822Parser implements Parser {
     //built lazily and then reused
     private Detector detector;
 
-    @Field
     private boolean extractAllAlternatives = false;
+
+    public RFC822Parser() {
+    }
+
+    /**
+     * Constructor with explicit Config object.
+     *
+     * @param config the configuration
+     */
+    public RFC822Parser(Config config) {
+        this.extractAllAlternatives = config.extractAllAlternatives;
+    }
+
+    /**
+     * Constructor for JSON configuration.
+     * Requires Jackson on the classpath.
+     *
+     * @param jsonConfig JSON configuration
+     */
+    public RFC822Parser(JsonConfig jsonConfig) {
+        this(ConfigDeserializer.buildConfig(jsonConfig, Config.class));
+    }
 
     public Set<MediaType> getSupportedTypes(ParseContext context) {
         return SUPPORTED_TYPES;
     }
 
-    public void parse(InputStream stream, ContentHandler handler, Metadata metadata,
+    public void parse(TikaInputStream tis, ContentHandler handler, Metadata metadata,
                       ParseContext context) throws IOException, SAXException, TikaException {
         // Get the mime4j configuration, or use a default one
         MimeConfig config =
@@ -95,12 +125,11 @@ public class RFC822Parser implements Parser {
         parser.setContentDecoding(true);
         parser.setNoRecurse();
         xhtml.startDocument();
-        TikaInputStream tstream = TikaInputStream.get(stream);
-        checkForZeroByte(tstream);//avoid stackoverflow
+        checkForZeroByte(tis);//avoid stackoverflow
         try {
-            parser.parse(tstream);
+            parser.parse(tis);
         } catch (IOException e) {
-            tstream.throwIfCauseOf(e);
+            tis.throwIfCauseOf(e);
             throw new TikaException("Failed to parse an email message", e);
         } catch (MimeException e) {
             // Unwrap the exception in case it was not thrown by mime4j

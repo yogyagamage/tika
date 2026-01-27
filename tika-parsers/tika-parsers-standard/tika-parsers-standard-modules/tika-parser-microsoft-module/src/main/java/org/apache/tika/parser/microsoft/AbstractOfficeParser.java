@@ -18,7 +18,6 @@ package org.apache.tika.parser.microsoft;
 
 import org.apache.poi.util.IOUtils;
 
-import org.apache.tika.config.Field;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
 
@@ -27,7 +26,7 @@ import org.apache.tika.parser.Parser;
  */
 public abstract class AbstractOfficeParser implements Parser {
 
-    private final OfficeParserConfig defaultOfficeParserConfig = new OfficeParserConfig();
+    private OfficeParserConfig defaultOfficeParserConfig = new OfficeParserConfig();
 
     /**
      * Checks to see if the user has specified an {@link OfficeParserConfig}.
@@ -42,6 +41,15 @@ public abstract class AbstractOfficeParser implements Parser {
     }
 
     /**
+     * Allows subclasses to set the default configuration during construction.
+     *
+     * @param config the configuration to use as default
+     */
+    protected void setDefaultOfficeParserConfig(OfficeParserConfig config) {
+        this.defaultOfficeParserConfig = config;
+    }
+
+    /**
      * @return
      * @see OfficeParserConfig#isIncludeDeletedContent
      */
@@ -49,7 +57,6 @@ public abstract class AbstractOfficeParser implements Parser {
         return defaultOfficeParserConfig.isIncludeDeletedContent();
     }
 
-    @Field
     public void setIncludeDeletedContent(boolean includeDeletedConent) {
         defaultOfficeParserConfig.setIncludeDeletedContent(includeDeletedConent);
     }
@@ -63,7 +70,6 @@ public abstract class AbstractOfficeParser implements Parser {
         return defaultOfficeParserConfig.isIncludeMoveFromContent();
     }
 
-    @Field
     public void setIncludeMoveFromContent(boolean includeMoveFromContent) {
         defaultOfficeParserConfig.setIncludeMoveFromContent(includeMoveFromContent);
     }
@@ -76,7 +82,6 @@ public abstract class AbstractOfficeParser implements Parser {
         return defaultOfficeParserConfig.isUseSAXDocxExtractor();
     }
 
-    @Field
     public void setUseSAXDocxExtractor(boolean useSAXDocxExtractor) {
         defaultOfficeParserConfig.setUseSAXDocxExtractor(useSAXDocxExtractor);
     }
@@ -89,12 +94,10 @@ public abstract class AbstractOfficeParser implements Parser {
         return defaultOfficeParserConfig.isExtractMacros();
     }
 
-    @Field
     public void setExtractMacros(boolean extractMacros) {
         defaultOfficeParserConfig.setExtractMacros(extractMacros);
     }
 
-    @Field
     public void setIncludeShapeBasedContent(boolean includeShapeBasedContent) {
         defaultOfficeParserConfig.setIncludeShapeBasedContent(includeShapeBasedContent);
     }
@@ -103,7 +106,6 @@ public abstract class AbstractOfficeParser implements Parser {
         return defaultOfficeParserConfig.isIncludeShapeBasedContent();
     }
 
-    @Field
     public void setUseSAXPptxExtractor(boolean useSAXPptxExtractor) {
         defaultOfficeParserConfig.setUseSAXPptxExtractor(useSAXPptxExtractor);
     }
@@ -112,7 +114,6 @@ public abstract class AbstractOfficeParser implements Parser {
         return defaultOfficeParserConfig.isUseSAXPptxExtractor();
     }
 
-    @Field
     public void setConcatenatePhoneticRuns(boolean concatenatePhoneticRuns) {
         defaultOfficeParserConfig.setConcatenatePhoneticRuns(concatenatePhoneticRuns);
     }
@@ -135,7 +136,6 @@ public abstract class AbstractOfficeParser implements Parser {
      *                                     msg files
      * @since 1.17
      */
-    @Field
     public void setExtractAllAlternativesFromMSG(boolean extractAllAlternativesFromMSG) {
         defaultOfficeParserConfig.setExtractAllAlternativesFromMSG(extractAllAlternativesFromMSG);
     }
@@ -150,7 +150,6 @@ public abstract class AbstractOfficeParser implements Parser {
      *
      * @param maxOverride
      */
-    @Field
     public void setByteArrayMaxOverride(int maxOverride) {
         if (maxOverride > 0) {
             IOUtils.setByteArrayMaxOverride(maxOverride);
@@ -163,7 +162,6 @@ public abstract class AbstractOfficeParser implements Parser {
         return defaultOfficeParserConfig.getMaxOverride();
     }
 
-    @Field
     public void setDateFormatOverride(String format) {
         defaultOfficeParserConfig.setDateOverrideFormat(format);
     }
@@ -172,7 +170,6 @@ public abstract class AbstractOfficeParser implements Parser {
         return defaultOfficeParserConfig.getDateFormatOverride();
     }
 
-    @Field
     public void setIncludeHeadersAndFooters(boolean includeHeadersAndFooters) {
         defaultOfficeParserConfig.setIncludeHeadersAndFooters(includeHeadersAndFooters);
     }

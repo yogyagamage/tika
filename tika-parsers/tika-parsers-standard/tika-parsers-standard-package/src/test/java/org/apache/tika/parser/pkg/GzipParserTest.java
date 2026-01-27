@@ -18,15 +18,13 @@ package org.apache.tika.parser.pkg;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.InputStream;
-
 import org.junit.jupiter.api.Test;
 import org.xml.sax.ContentHandler;
 
-import org.apache.tika.config.TikaConfig;
+import org.apache.tika.TikaLoaderHelper;
+import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.TikaCoreProperties;
-import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
 import org.apache.tika.sax.BodyContentHandler;
@@ -41,8 +39,8 @@ public class GzipParserTest extends AbstractPkgTest {
         ContentHandler handler = new BodyContentHandler();
         Metadata metadata = new Metadata();
 
-        try (InputStream stream = getResourceAsStream("/test-documents/test-documents.tgz")) {
-            AUTO_DETECT_PARSER.parse(stream, handler, metadata, recursingContext);
+        try (TikaInputStream tis = getResourceAsStream("/test-documents/test-documents.tgz")) {
+            AUTO_DETECT_PARSER.parse(tis, handler, metadata, recursingContext);
         }
 
         assertEquals("application/gzip", metadata.get(Metadata.CONTENT_TYPE));
@@ -72,8 +70,8 @@ public class GzipParserTest extends AbstractPkgTest {
         ContentHandler handler = new BodyContentHandler();
         Metadata metadata = new Metadata();
 
-        try (InputStream stream = getResourceAsStream("/test-documents/testSVG.svgz")) {
-            AUTO_DETECT_PARSER.parse(stream, handler, metadata, recursingContext);
+        try (TikaInputStream tis = getResourceAsStream("/test-documents/testSVG.svgz")) {
+            AUTO_DETECT_PARSER.parse(tis, handler, metadata, recursingContext);
         }
 
         assertEquals("application/gzip", metadata.get(Metadata.CONTENT_TYPE));
@@ -87,12 +85,9 @@ public class GzipParserTest extends AbstractPkgTest {
         assertEquals(2, getRecursiveMetadata("multiple.gz").size());
 
         //test config
-        TikaConfig tikaConfig = null;
-        try (InputStream is = getResourceAsStream("/configs/tika-config-multiple-gz.xml")) {
-            tikaConfig = new TikaConfig(is);
-        }
+        Parser p = TikaLoaderHelper.getLoader("tika-config-multiple-gz.json").loadAutoDetectParser();
         assertContains("<p>ab</p>",
-                getRecursiveMetadata("multiple.gz", new AutoDetectParser(tikaConfig)).get(1)
+                getRecursiveMetadata("multiple.gz", p).get(1)
                         .get(TikaCoreProperties.TIKA_CONTENT));
     }
 
@@ -113,13 +108,10 @@ public class GzipParserTest extends AbstractPkgTest {
     @Test
     public void testDecompressConcatenatedOffInTikaConfig() throws Exception {
 
-        TikaConfig tikaConfig = null;
-        try (InputStream is = getResourceAsStream("tika-gzip-config.xml")) {
-            tikaConfig = new TikaConfig(is);
-        }
-        Parser p = new AutoDetectParser(tikaConfig);
+        Parser p = TikaLoaderHelper.getLoader("tika-gz-decompress-concatenated.json").loadAutoDetectParser();
         assertContains("<p>a</p>",
                 getRecursiveMetadata("multiple.gz", p).get(1)
                         .get(TikaCoreProperties.TIKA_CONTENT));
     }
+
 }

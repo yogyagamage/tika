@@ -29,10 +29,13 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.TimeZone;
 
+import org.apache.commons.io.IOUtils;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.exception.TikaException;
+import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.TikaCoreProperties;
 import org.apache.tika.mime.MediaType;
@@ -43,6 +46,7 @@ import org.apache.tika.sax.XHTMLContentHandler;
 /**
  * Parser for IPTC ANPA New Wire Feeds
  */
+@TikaComponent
 public class IptcAnpaParser implements Parser {
     /**
      * Serial version UID
@@ -94,10 +98,10 @@ public class IptcAnpaParser implements Parser {
         return SUPPORTED_TYPES;
     }
 
-    public void parse(InputStream stream, ContentHandler handler, Metadata metadata,
+    public void parse(TikaInputStream tis, ContentHandler handler, Metadata metadata,
                       ParseContext context) throws IOException, SAXException, TikaException {
 
-        HashMap<String, String> properties = this.loadProperties(stream);
+        HashMap<String, String> properties = this.loadProperties(tis);
         this.setMetadata(metadata, properties);
 
         XHTMLContentHandler xhtml = new XHTMLContentHandler(handler, metadata);
@@ -116,9 +120,9 @@ public class IptcAnpaParser implements Parser {
      * @deprecated This method will be removed in Apache Tika 1.0.
      */
     @Deprecated
-    public void parse(InputStream stream, ContentHandler handler, Metadata metadata)
+    public void parse(TikaInputStream tis, ContentHandler handler, Metadata metadata)
             throws IOException, SAXException, TikaException {
-        parse(stream, handler, metadata, new ParseContext());
+        parse(tis, handler, metadata, new ParseContext());
     }
 
     /**
@@ -341,7 +345,7 @@ public class IptcAnpaParser implements Parser {
 
             if (finished) {
                 // now, we want to reset the stream to be sitting right on top of the finish marker
-                is.skip(read);
+                IOUtils.skipFully(is, read);
                 value = new byte[read - start];
                 System.arraycopy(buf, start, value, 0, read - start);
             } else {

@@ -14,11 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.tika.example;
 
 import java.io.IOException;
 
+import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.langdetect.optimaize.OptimaizeLangDetector;
 import org.apache.tika.language.detect.LanguageDetector;
 import org.apache.tika.language.detect.LanguageHandler;
@@ -52,7 +52,9 @@ public class Language {
 
     public static void languageDetectionWithHandler() throws Exception {
         LanguageHandler handler = new LanguageHandler();
-        new AutoDetectParser().parse(System.in, handler, new Metadata(), new ParseContext());
+        try (TikaInputStream tis = TikaInputStream.get(System.in)) {
+            new AutoDetectParser().parse(tis, handler, new Metadata(), new ParseContext());
+        }
 
         LanguageResult result = handler.getLanguage();
         System.out.println(result.getLanguage());

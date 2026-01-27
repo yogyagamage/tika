@@ -14,12 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.tika.parser.microsoft;
 
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Set;
@@ -31,6 +29,7 @@ import com.healthmarketscience.jackcess.util.LinkResolver;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.exception.EncryptedDocumentException;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.exception.UnsupportedFormatException;
@@ -51,6 +50,7 @@ import org.apache.tika.sax.XHTMLContentHandler;
  * Many, many thanks to LexisNexis®/Health Market Science (HMS), Brian O'Neill,
  * and James Ahlborn for relicensing Jackcess to Apache v2.0!
  */
+@TikaComponent
 public class JackcessParser implements Parser {
 
     public static final String SUMMARY_PROPERTY_PREFIX =
@@ -75,9 +75,8 @@ public class JackcessParser implements Parser {
     }
 
     @Override
-    public void parse(InputStream stream, ContentHandler handler, Metadata metadata,
+    public void parse(TikaInputStream tis, ContentHandler handler, Metadata metadata,
                       ParseContext context) throws IOException, SAXException, TikaException {
-        TikaInputStream tis = TikaInputStream.get(stream);
         Database db = null;
         XHTMLContentHandler xhtml = new XHTMLContentHandler(handler, metadata);
         xhtml.startDocument();

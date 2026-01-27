@@ -131,8 +131,10 @@ public class JempboxExtractor {
         }
         if (mmSchema != null) {
             addMetadata(metadata, XMPMM.DOCUMENTID, mmSchema.getDocumentID());
-            //not currently supported by JempBox...
-//          metadata.set(XMPMM.INSTANCEID, mmSchema.getInstanceID());
+            // not currently supported by JempBox...
+            // but might be in 1.8.18 if ever released, see PDFBOX-6116
+            // until then use workaround (won't work if non standard prefix is used)
+            metadata.set(XMPMM.INSTANCEID, mmSchema.getTextProperty("xmpMM:InstanceID" ));
 
             ResourceRef derivedFrom = mmSchema.getDerivedFrom();
             if (derivedFrom != null) {
@@ -141,6 +143,7 @@ public class JempboxExtractor {
                             derivedFrom.getDocumentID());
                 } catch (NullPointerException e) {
                     //swallow
+                    // NPE fixed in PDFBOX-5984; NPE catch can be removed if Jempbox 1.8.18 is released
                 }
 
                 try {
@@ -148,6 +151,7 @@ public class JempboxExtractor {
                             derivedFrom.getInstanceID());
                 } catch (NullPointerException e) {
                     //swallow
+                    // NPE fixed in PDFBOX-5984; NPE catch can be removed if Jempbox 1.8.18 is released
                 }
 
                 //TODO: not yet supported by XMPBox...extract OriginalDocumentID
@@ -172,6 +176,7 @@ public class JempboxExtractor {
                         //instanceid can throw npe; getWhen can throw IOException
                     } catch (NullPointerException | IOException e) {
                         //swallow
+                        // NPE fixed in PDFBOX-5984; NPE catch can be removed if Jempbox 1.8.18 is released
                     }
                     if (instanceId != null && !instanceId.isBlank()) {
                         //for absent data elements, pass in empty strings so

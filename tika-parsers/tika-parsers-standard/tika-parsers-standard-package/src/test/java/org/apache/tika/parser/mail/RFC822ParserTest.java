@@ -27,11 +27,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.ContentHandler;
 
+import org.apache.tika.TikaLoaderHelper;
 import org.apache.tika.TikaTest;
-import org.apache.tika.config.TikaConfig;
+import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.TikaCoreProperties;
-import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
 import org.apache.tika.parser.PasswordProvider;
@@ -41,7 +41,6 @@ public class RFC822ParserTest extends TikaTest {
 
     //legacy RFC822 behavior...extract every alternative part
     private static Parser EXTRACT_ALL_ALTERNATIVES_PARSER;
-    private static TikaConfig TIKA_CONFIG;
 
     private static InputStream getStream(String name) {
         InputStream stream =
@@ -52,12 +51,8 @@ public class RFC822ParserTest extends TikaTest {
 
     @BeforeAll
     public static void setUp() throws Exception {
-
-        try (InputStream is = getStream(
-                "org/apache/tika/parser/mail/tika-config-extract-all-alternatives.xml")) {
-            TIKA_CONFIG = new TikaConfig(is);
-        }
-        EXTRACT_ALL_ALTERNATIVES_PARSER = new AutoDetectParser(TIKA_CONFIG);
+        EXTRACT_ALL_ALTERNATIVES_PARSER = TikaLoaderHelper
+                .getLoader("tika-config-rfc822-extract-alternatives.json").loadAutoDetectParser();
     }
 
     /**
@@ -71,7 +66,9 @@ public class RFC822ParserTest extends TikaTest {
         context.set(Parser.class, EXTRACT_ALL_ALTERNATIVES_PARSER);
         InputStream stream = getStream("test-documents/testRFC822_normal_zip");
         ContentHandler handler = new BodyContentHandler();
-        EXTRACT_ALL_ALTERNATIVES_PARSER.parse(stream, handler, metadata, context);
+        try (TikaInputStream tis = TikaInputStream.get(stream)) {
+            EXTRACT_ALL_ALTERNATIVES_PARSER.parse(tis, handler, metadata, context);
+        }
 
         // Check we go the metadata
         assertEquals("Juha Haaga <juha.haaga@gmail.com>", metadata.get(Metadata.MESSAGE_FROM));
@@ -102,7 +99,9 @@ public class RFC822ParserTest extends TikaTest {
         context.set(Parser.class, EXTRACT_ALL_ALTERNATIVES_PARSER);
         InputStream stream = getStream("test-documents/testRFC822_encrypted_zip");
         ContentHandler handler = new BodyContentHandler();
-        EXTRACT_ALL_ALTERNATIVES_PARSER.parse(stream, handler, metadata, context);
+        try (TikaInputStream tis = TikaInputStream.get(stream)) {
+            EXTRACT_ALL_ALTERNATIVES_PARSER.parse(tis, handler, metadata, context);
+        }
 
         // Check we go the metadata
         assertEquals("Juha Haaga <juha.haaga@gmail.com>", metadata.get(Metadata.MESSAGE_FROM));
@@ -123,7 +122,9 @@ public class RFC822ParserTest extends TikaTest {
         context.set(PasswordProvider.class, metadata1 -> "test");
         stream = getStream("test-documents/testRFC822_encrypted_zip");
         handler = new BodyContentHandler();
-        EXTRACT_ALL_ALTERNATIVES_PARSER.parse(stream, handler, metadata, context);
+        try (TikaInputStream tis2 = TikaInputStream.get(stream)) {
+            EXTRACT_ALL_ALTERNATIVES_PARSER.parse(tis2, handler, metadata, context);
+        }
 
         assertContains("Includes encrypted zip file", handler.toString());
         assertContains("password is \"test\".", handler.toString());

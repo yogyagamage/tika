@@ -1,13 +1,13 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -44,6 +44,7 @@ import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.cxf.jaxrs.lifecycle.ResourceProvider;
 import org.apache.cxf.jaxrs.lifecycle.SingletonResourceProvider;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,17 +53,16 @@ import org.apache.tika.exception.TikaConfigException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.TikaCoreProperties;
 import org.apache.tika.parser.ParseContext;
-import org.apache.tika.pipes.core.FetchEmitTuple;
-import org.apache.tika.pipes.core.HandlerConfig;
-import org.apache.tika.pipes.core.emitter.EmitKey;
-import org.apache.tika.pipes.core.fetcher.FetchKey;
-import org.apache.tika.pipes.core.fetcher.FetcherManager;
+import org.apache.tika.pipes.api.FetchEmitTuple;
+import org.apache.tika.pipes.api.ParseMode;
+import org.apache.tika.pipes.api.emitter.EmitKey;
+import org.apache.tika.pipes.api.fetcher.FetchKey;
 import org.apache.tika.pipes.core.serialization.JsonFetchEmitTuple;
 import org.apache.tika.sax.BasicContentHandlerFactory;
+import org.apache.tika.sax.ContentHandlerFactory;
 import org.apache.tika.serialization.JsonMetadataList;
 import org.apache.tika.server.core.resource.PipesResource;
 import org.apache.tika.server.core.writer.JSONObjWriter;
-import org.apache.tika.utils.ProcessUtils;
 
 /**
  * This offers basic integration tests with fetchers and emitters.
@@ -77,13 +77,13 @@ public class TikaPipesTest extends CXFTestBase {
     private static Path TIKA_PIPES_LOG4j2_PATH;
     private static Path TMP_NPE_OUTPUT_FILE;
     private static Path TIKA_CONFIG_PATH;
-    private static String TIKA_CONFIG_XML;
-    private static FetcherManager FETCHER_MANAGER;
     private static String HELLO_WORLD = "hello_world.xml";
     private static String HELLO_WORLD_JSON = "hello_world.xml.json";
     private static String NPE_JSON = "null_pointer.xml.json";
 
     private static String[] VALUE_ARRAY = new String[]{"my-value-1", "my-value-2", "my-value-3"};
+
+    private PipesResource pipesResource;
 
     @BeforeAll
     public static void setUpBeforeClass() throws Exception {
@@ -99,27 +99,27 @@ public class TikaPipesTest extends CXFTestBase {
         for (String mockFile : new String[]{"hello_world.xml", "null_pointer.xml"}) {
             Files.copy(TikaPipesTest.class.getResourceAsStream("/test-documents/mock/" + mockFile), inputDir.resolve(mockFile));
         }
-        TIKA_CONFIG_PATH = Files.createTempFile(TMP_DIR, "tika-pipes-", ".xml");
         TIKA_PIPES_LOG4j2_PATH = Files.createTempFile(TMP_DIR, "log4j2-", ".xml");
         Files.copy(TikaPipesTest.class.getResourceAsStream("/log4j2.xml"), TIKA_PIPES_LOG4j2_PATH, StandardCopyOption.REPLACE_EXISTING);
-        TIKA_CONFIG_XML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "<properties>" +
-                "<fetchers>" + "<fetcher class=\"org.apache.tika.pipes.fetcher.fs.FileSystemFetcher\">" +
-                "<name>fsf</name>" + "<basePath>" + inputDir.toAbsolutePath() + "</basePath>"
-                + "</fetcher>" + "</fetchers>" + "<emitters>" +
-                "<emitter class=\"org.apache.tika.pipes.emitter.fs.FileSystemEmitter\">" + "<name>fse</name>"
-                + "<basePath>" + TMP_OUTPUT_DIR.toAbsolutePath() + "</basePath>" +
-                "</emitter>" + "</emitters>" + "<pipes><tikaConfig>" + ProcessUtils.escapeCommandLine(TIKA_CONFIG_PATH
-                .toAbsolutePath()
-                .toString()) + "</tikaConfig><numClients>10</numClients>" + "<forkedJvmArgs>" + "<arg>-Xmx256m</arg>" + "<arg>-Dlog4j.configurationFile=file:" +
-                ProcessUtils.escapeCommandLine(TIKA_PIPES_LOG4j2_PATH
-                        .toAbsolutePath()
-                        .toString()) + "</arg>" + "</forkedJvmArgs>" + "</pipes>" + "</properties>";
-        Files.write(TIKA_CONFIG_PATH, TIKA_CONFIG_XML.getBytes(StandardCharsets.UTF_8));
+
+        TIKA_CONFIG_PATH = Files.createTempFile(TMP_DIR, "tika-pipes-config-", ".json");
+
+        CXFTestBase.createPluginsConfig(TIKA_CONFIG_PATH, inputDir, TMP_OUTPUT_DIR, null, 10000L);
     }
 
     @AfterAll
     public static void tearDownAfterClass() throws Exception {
         FileUtils.deleteDirectory(TMP_DIR.toFile());
+    }
+
+    @Override
+    @AfterEach
+    public void tearDown() throws Exception {
+        if (pipesResource != null) {
+            pipesResource.close();
+            pipesResource = null;
+        }
+        super.tearDown();
     }
 
     @BeforeEach
@@ -137,7 +137,8 @@ public class TikaPipesTest extends CXFTestBase {
     protected void setUpResources(JAXRSServerFactoryBean sf) {
         List<ResourceProvider> rCoreProviders = new ArrayList<>();
         try {
-            rCoreProviders.add(new SingletonResourceProvider(new PipesResource(TIKA_CONFIG_PATH)));
+            pipesResource = new PipesResource(TIKA_CONFIG_PATH);
+            rCoreProviders.add(new SingletonResourceProvider(pipesResource));
         } catch (IOException | TikaConfigException e) {
             throw new RuntimeException(e);
         }
@@ -153,14 +154,10 @@ public class TikaPipesTest extends CXFTestBase {
     }
 
     @Override
-    protected InputStream getTikaConfigInputStream() {
-        return new ByteArrayInputStream(TIKA_CONFIG_XML.getBytes(StandardCharsets.UTF_8));
+    protected InputStream getTikaConfigInputStream() throws IOException {
+        return new ByteArrayInputStream(Files.readAllBytes(TIKA_CONFIG_PATH));
     }
 
-    @Override
-    protected InputStreamFactory getInputStreamFactory(InputStream tikaConfigInputStream) {
-        return new FetcherStreamFactory(FETCHER_MANAGER);
-    }
 
 
     @Test
@@ -172,7 +169,8 @@ public class TikaPipesTest extends CXFTestBase {
             userMetadata.add("my-key-multi", s);
         }
 
-        FetchEmitTuple t = new FetchEmitTuple("myId", new FetchKey("fsf", "hello_world.xml"), new EmitKey("fse", ""), userMetadata);
+        FetchEmitTuple t = new FetchEmitTuple("myId",
+                new FetchKey(FETCHER_ID, "hello_world.xml"), new EmitKey(EMITTER_JSON_ID, ""), userMetadata);
         StringWriter writer = new StringWriter();
         JsonFetchEmitTuple.toJson(t, writer);
 
@@ -208,13 +206,14 @@ public class TikaPipesTest extends CXFTestBase {
             userMetadata.add("my-key-multi", s);
         }
         ParseContext parseContext = new ParseContext();
-        HandlerConfig handlerConfig = new HandlerConfig(BasicContentHandlerFactory.HANDLER_TYPE.XML, HandlerConfig.PARSE_MODE.RMETA, -1, -1, true);
-        parseContext.set(HandlerConfig.class, handlerConfig);
+        parseContext.set(ContentHandlerFactory.class,
+                new BasicContentHandlerFactory(BasicContentHandlerFactory.HANDLER_TYPE.XML, -1));
+        parseContext.set(ParseMode.class, ParseMode.RMETA);
         FetchEmitTuple t =
-                new FetchEmitTuple("myId", new FetchKey("fsf", "hello_world.xml"), new EmitKey("fse", ""), userMetadata, parseContext, FetchEmitTuple.ON_PARSE_EXCEPTION.EMIT);
+                new FetchEmitTuple("myId", new FetchKey(FETCHER_ID, "hello_world.xml"),
+                        new EmitKey(EMITTER_JSON_ID, ""), userMetadata, parseContext, FetchEmitTuple.ON_PARSE_EXCEPTION.EMIT);
         StringWriter writer = new StringWriter();
         JsonFetchEmitTuple.toJson(t, writer);
-
         String getUrl = endPoint + PIPES_PATH;
         Response response = WebClient
                 .create(getUrl)
@@ -241,7 +240,8 @@ public class TikaPipesTest extends CXFTestBase {
             userMetadata.add("my-key-multi", s);
         }
 
-        FetchEmitTuple t = new FetchEmitTuple("myId", new FetchKey("fsf", "null_pointer.xml"), new EmitKey("fse", ""), userMetadata);
+        FetchEmitTuple t = new FetchEmitTuple("myId", new FetchKey(FETCHER_ID,
+                "null_pointer.xml"), new EmitKey(EMITTER_JSON_ID, ""), userMetadata);
         StringWriter writer = new StringWriter();
         JsonFetchEmitTuple.toJson(t, writer);
 
@@ -278,7 +278,8 @@ public class TikaPipesTest extends CXFTestBase {
 
     @Test
     public void testPostNPENoEmit() throws Exception {
-        FetchEmitTuple t = new FetchEmitTuple("myId", new FetchKey("fsf", "null_pointer.xml"), new EmitKey("fse", ""), new Metadata(), new ParseContext(),
+        FetchEmitTuple t = new FetchEmitTuple("myId", new FetchKey(FETCHER_ID,
+                "null_pointer.xml"), new EmitKey(EMITTER_JSON_ID, ""), new Metadata(), new ParseContext(),
                 FetchEmitTuple.ON_PARSE_EXCEPTION.SKIP);
         StringWriter writer = new StringWriter();
         JsonFetchEmitTuple.toJson(t, writer);

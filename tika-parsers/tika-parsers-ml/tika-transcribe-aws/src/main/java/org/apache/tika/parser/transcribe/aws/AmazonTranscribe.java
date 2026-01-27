@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.tika.parser.transcribe.aws;
 
 import java.io.IOException;
@@ -22,7 +21,6 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -63,12 +61,11 @@ import software.amazon.awssdk.services.transcribe.model.StartTranscriptionJobReq
 import software.amazon.awssdk.services.transcribe.model.TranscriptionJob;
 import software.amazon.awssdk.services.transcribe.model.TranscriptionJobStatus;
 
-import org.apache.tika.config.Field;
 import org.apache.tika.config.Initializable;
-import org.apache.tika.config.InitializableProblemHandler;
-import org.apache.tika.config.Param;
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.exception.TikaConfigException;
 import org.apache.tika.exception.TikaException;
+import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
 import org.apache.tika.parser.ParseContext;
@@ -88,6 +85,7 @@ import org.apache.tika.sax.XHTMLContentHandler;
  * @since Tika 2.0
  */
 
+@TikaComponent
 public class AmazonTranscribe implements Parser, Initializable {
     private static final Logger LOG = LoggerFactory.getLogger(AmazonTranscribe.class);
     private TranscribeAsyncClient amazonTranscribeAsync;
@@ -118,7 +116,7 @@ public class AmazonTranscribe implements Parser, Initializable {
     /**
      * Starts AWS Transcribe Job with language specification.
      *
-     * @param stream   the source input stream.
+     * @param stream   the source input tis.
      * @param handler  handler to use
      * @param metadata
      * @param context  -- set the {@link LanguageCode} in the ParseContext if known
@@ -129,7 +127,7 @@ public class AmazonTranscribe implements Parser, Initializable {
      * Language Code</a>
      */
     @Override
-    public void parse(InputStream stream, ContentHandler handler, Metadata metadata,
+    public void parse(TikaInputStream tis, ContentHandler handler, Metadata metadata,
                       ParseContext context) throws IOException, SAXException, TikaException {
 
         if (!isAvailable) {
@@ -141,7 +139,7 @@ public class AmazonTranscribe implements Parser, Initializable {
         }
         String jobName = getJobKey();
         LanguageCode languageCode = context.get(LanguageCode.class);
-        uploadFileToBucket(stream, jobName);
+        uploadFileToBucket(tis, jobName);
         StartTranscriptionJobRequest startTranscriptionJobRequest =
                 StartTranscriptionJobRequest.builder()
                         .build();
@@ -181,7 +179,6 @@ public class AmazonTranscribe implements Parser, Initializable {
      *
      * @param id The ID to set.
      */
-    @Field
     public void setClientId(String id) {
         this.clientId = id;
         this.isAvailable = checkAvailable();
@@ -192,7 +189,6 @@ public class AmazonTranscribe implements Parser, Initializable {
      *
      * @param secret The secret to set.
      */
-    @Field
     public void setClientSecret(String secret) {
         this.clientSecret = secret;
         this.isAvailable = checkAvailable();
@@ -203,13 +199,11 @@ public class AmazonTranscribe implements Parser, Initializable {
      *
      * @param bucket The bucket to set.
      */
-    @Field
     public void setBucket(String bucket) {
         this.bucketName = bucket;
         this.isAvailable = checkAvailable();
     }
 
-    @Field
     public void setRegion(String region) {
         this.region = region;
         this.isAvailable = checkAvailable();
@@ -328,7 +322,7 @@ public class AmazonTranscribe implements Parser, Initializable {
     }
 
     @Override
-    public void initialize(Map<String, Param> params) throws TikaConfigException {
+    public void initialize() throws TikaConfigException {
         if (!checkAvailable()) {
             return;
         }
@@ -369,13 +363,6 @@ public class AmazonTranscribe implements Parser, Initializable {
             isAvailable = false;
         }
 
-    }
-
-    @Override
-    public void checkInitialization(InitializableProblemHandler problemHandler)
-            throws TikaConfigException {
-        //TODO alert user if they've gotten 1 or 2 out of three?
-        this.isAvailable = checkAvailable();
     }
     
     // Thanks, ChatGPT

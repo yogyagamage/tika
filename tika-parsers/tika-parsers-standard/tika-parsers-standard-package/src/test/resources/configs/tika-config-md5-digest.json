@@ -1,0 +1,11 @@
+{
+  "auto-detect-parser": {
+    "digesterFactory": {
+      "commons-digester-factory": {
+        "digests": [
+          { "algorithm": "MD5" }
+        ]
+      }
+    }
+  }
+}

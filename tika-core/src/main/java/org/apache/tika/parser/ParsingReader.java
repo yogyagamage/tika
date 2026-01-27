@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -33,6 +33,7 @@ import java.util.concurrent.Executor;
 import org.xml.sax.ContentHandler;
 
 import org.apache.tika.exception.ZeroByteFileException;
+import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.TikaCoreProperties;
 import org.apache.tika.sax.BodyContentHandler;
@@ -263,19 +264,11 @@ public class ParsingReader extends Reader {
          * stored before the input stream is closed and processing is stopped.
          */
         public void run() {
-            try {
+            try (TikaInputStream tis = TikaInputStream.get(stream)) {
                 ContentHandler handler = new BodyContentHandler(writer);
-                parser.parse(stream, handler, metadata, context);
+                parser.parse(tis, handler, metadata, context);
             } catch (Throwable t) {
                 throwable = t;
-            }
-
-            try {
-                stream.close();
-            } catch (Throwable t) {
-                if (throwable == null) {
-                    throwable = t;
-                }
             }
 
             try {

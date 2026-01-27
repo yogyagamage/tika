@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.tika.server.standard;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -51,7 +50,7 @@ public class RecursiveMetadataFilterTest extends CXFTestBase {
 
     @Override
     protected InputStream getTikaConfigInputStream() {
-        return getClass().getResourceAsStream("/config/TIKA-3137-include.xml");
+        return getClass().getResourceAsStream("/configs/TIKA-3137-include.json");
     }
 
     @Override

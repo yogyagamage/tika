@@ -16,10 +16,10 @@
  */
 package org.apache.tika.parser.pdf;
 
-import static org.apache.tika.parser.pdf.PDFParserConfig.OCR_STRATEGY.AUTO;
-import static org.apache.tika.parser.pdf.PDFParserConfig.OCR_STRATEGY.NO_OCR;
-import static org.apache.tika.parser.pdf.PDFParserConfig.OCR_STRATEGY.OCR_AND_TEXT_EXTRACTION;
-import static org.apache.tika.parser.pdf.PDFParserConfig.OCR_STRATEGY.OCR_ONLY;
+import static org.apache.tika.parser.pdf.OcrConfig.Strategy.AUTO;
+import static org.apache.tika.parser.pdf.OcrConfig.Strategy.NO_OCR;
+import static org.apache.tika.parser.pdf.OcrConfig.Strategy.OCR_AND_TEXT_EXTRACTION;
+import static org.apache.tika.parser.pdf.OcrConfig.Strategy.OCR_ONLY;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
@@ -163,6 +163,7 @@ class AbstractPDF2XHTML extends PDFTextStripper {
     final EmbeddedDocumentExtractor embeddedDocumentExtractor;
     final PDFParserConfig config;
     final Parser ocrParser;
+    final Renderer renderer;
     /**
      * Format used for signature dates
      * TODO Make this thread-safe
@@ -199,12 +200,13 @@ class AbstractPDF2XHTML extends PDFTextStripper {
     int num3DAnnotations = 0;
 
     AbstractPDF2XHTML(PDDocument pdDocument, ContentHandler handler, ParseContext context,
-                      Metadata metadata, PDFParserConfig config) throws IOException {
+                      Metadata metadata, PDFParserConfig config, Renderer renderer) throws IOException {
         this.pdDocument = pdDocument;
         this.xhtml = new XHTMLContentHandler(handler, metadata);
         this.context = context;
         this.metadata = metadata;
         this.config = config;
+        this.renderer = renderer;
         embeddedDocumentExtractor = EmbeddedDocumentUtil.getEmbeddedDocumentExtractor(context);
         if (config.getOcrStrategy() == NO_OCR) {
             ocrParser = null;
@@ -332,7 +334,7 @@ class AbstractPDF2XHTML extends PDFTextStripper {
             throws IOException, SAXException {
         try {
             embeddedDocumentExtractor.parseEmbedded(tis, new EmbeddedContentHandler(xhtml),
-                    embeddedMetadata, true);
+                    embeddedMetadata, context, true);
         } catch (IOException e) {
             handleCatchableIOE(e);
         }
@@ -485,9 +487,9 @@ class AbstractPDF2XHTML extends PDFTextStripper {
         if (!embeddedDocumentExtractor.shouldParseEmbedded(embeddedMetadata)) {
             return;
         }
-        TikaInputStream stream = null;
+        TikaInputStream tis = null;
         try {
-            stream = TikaInputStream.get(pdEmbeddedFile.createInputStream());
+            tis = TikaInputStream.get(pdEmbeddedFile.createInputStream());
         } catch (IOException e) {
             //store this exception in the parent's metadata
             EmbeddedDocumentUtil.recordEmbeddedStreamException(e, metadata);
@@ -500,10 +502,10 @@ class AbstractPDF2XHTML extends PDFTextStripper {
         xhtml.endElement("div");
 
         try {
-            embeddedDocumentExtractor.parseEmbedded(stream, new EmbeddedContentHandler(xhtml),
-                    embeddedMetadata, false);
+            embeddedDocumentExtractor.parseEmbedded(tis, new EmbeddedContentHandler(xhtml),
+                    embeddedMetadata, context, false);
         } finally {
-            IOUtils.closeQuietly(stream);
+            IOUtils.closeQuietly(tis);
         }
 
     }
@@ -528,7 +530,7 @@ class AbstractPDF2XHTML extends PDFTextStripper {
         }
     }
 
-    void doOCROnCurrentPage(PDPage pdPage, PDFParserConfig.OCR_STRATEGY ocrStrategy)
+    void doOCROnCurrentPage(PDPage pdPage, OcrConfig.Strategy ocrStrategy)
             throws IOException, TikaException, SAXException {
         if (ocrStrategy.equals(NO_OCR)) {
             //I don't think this is reachable?
@@ -539,7 +541,7 @@ class AbstractPDF2XHTML extends PDFTextStripper {
         if (c != null) {
             c.increment();
         }
-        MediaType ocrImageMediaType = MediaType.image("ocr-" + config.getOcrImageFormatName());
+        MediaType ocrImageMediaType = MediaType.image("ocr-" + config.getOcrImageFormat().getFormatName());
         if (!ocrParser.getSupportedTypes(context).contains(ocrImageMediaType)) {
             if (ocrStrategy == OCR_ONLY || ocrStrategy == OCR_AND_TEXT_EXTRACTION) {
                 throw new TikaException(
@@ -592,10 +594,10 @@ class AbstractPDF2XHTML extends PDFTextStripper {
             }
         }
         Metadata pageMetadata = getCurrentPageMetadata(pdPage);
-        Renderer thisRenderer = getPDFRenderer(config.getRenderer());
+        Renderer thisRenderer = getPDFRenderer(renderer);
         //if there's a configured renderer and if the rendering strategy is "all"
         if (thisRenderer != null &&
-                config.getOcrRenderingStrategy() == PDFParserConfig.OCR_RENDERING_STRATEGY.ALL) {
+                config.getOcrRenderingStrategy() == OcrConfig.RenderingStrategy.ALL) {
             PageRangeRequest pageRangeRequest =
                     new PageRangeRequest(getCurrentPageNo(), getCurrentPageNo());
             if (thisRenderer instanceof PDDocumentRenderer) {
@@ -671,13 +673,13 @@ class AbstractPDF2XHTML extends PDFTextStripper {
 
         try {
             BufferedImage image =
-                    renderer.renderImageWithDPI(pageIndex, dpi, config.getOcrImageType().getImageType());
+                    renderer.renderImageWithDPI(pageIndex, dpi, config.getOcrImageType().getPdfBoxImageType());
 
             //TODO -- get suffix based on OcrImageType
             tmpFile = tmpResources.createTempFile();
             try (OutputStream os = Files.newOutputStream(tmpFile)) {
                 //TODO: get output format from TesseractConfig
-                ImageIOUtil.writeImage(image, config.getOcrImageFormatName(), os, dpi,
+                ImageIOUtil.writeImage(image, config.getOcrImageFormat().getFormatName(), os, dpi,
                         config.getOcrImageQuality());
             }
         } catch (SecurityException e) {
@@ -705,9 +707,9 @@ class AbstractPDF2XHTML extends PDFTextStripper {
             for (PDAnnotation annotation : page.getAnnotations()) {
                 processPageAnnotation(annotation);
             }
-            if (config.getOcrStrategy() == PDFParserConfig.OCR_STRATEGY.OCR_AND_TEXT_EXTRACTION) {
+            if (config.getOcrStrategy() == OCR_AND_TEXT_EXTRACTION) {
                 doOCROnCurrentPage(page, OCR_AND_TEXT_EXTRACTION);
-            } else if (config.getOcrStrategy() == PDFParserConfig.OCR_STRATEGY.AUTO) {
+            } else if (config.getOcrStrategy() == AUTO) {
                 boolean unmappedExceedsLimit = false;
                 if (totalCharsPerPage > config.getOcrStrategyAuto().getTotalCharsPerPage()) {
                     // There are enough characters to not have to do OCR.  Check number of unmapped characters
@@ -861,7 +863,7 @@ class AbstractPDF2XHTML extends PDFTextStripper {
         Metadata m = getJavascriptMetadata("3DD_ON_INSTANTIATE", null, null);
         if (embeddedDocumentExtractor.shouldParseEmbedded(m)) {
             try (TikaInputStream tis = TikaInputStream.get(stream.createInputStream())) {
-                embeddedDocumentExtractor.parseEmbedded(tis, xhtml, m, true);
+                embeddedDocumentExtractor.parseEmbedded(tis, xhtml, m, context, true);
             }
         }
         AttributesImpl attrs = new AttributesImpl();
@@ -1054,7 +1056,7 @@ class AbstractPDF2XHTML extends PDFTextStripper {
         js = (js == null) ? "" : js;
         if (embeddedDocumentExtractor.shouldParseEmbedded(m)) {
             try (TikaInputStream tis = TikaInputStream.get(js.getBytes(StandardCharsets.UTF_8))) {
-                embeddedDocumentExtractor.parseEmbedded(tis, xhtml, m, true);
+                embeddedDocumentExtractor.parseEmbedded(tis, xhtml, m, context, true);
             }
         };
         addNonNullAttribute("class", "javascript", attrs);
@@ -1200,7 +1202,7 @@ class AbstractPDF2XHTML extends PDFTextStripper {
             if (embeddedDocumentExtractor.shouldParseEmbedded(updateMetadata)) {
                 try (TikaInputStream tis = TikaInputStream.get(update)) {
                     context.set(IsIncrementalUpdate.class, IsIncrementalUpdate.IS_INCREMENTAL_UPDATE);
-                    embeddedDocumentExtractor.parseEmbedded(tis, xhtml, updateMetadata, false);
+                    embeddedDocumentExtractor.parseEmbedded(tis, xhtml, updateMetadata, context, false);
                 }
             }
         } finally {

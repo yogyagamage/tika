@@ -24,10 +24,12 @@ import java.nio.charset.Charset;
 
 import org.apache.commons.io.input.BoundedInputStream;
 
-import org.apache.tika.config.Field;
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.detect.EncodingDetector;
+import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
+import org.apache.tika.parser.ParseContext;
 
 /**
  * An encoding detector that tries to respect the spirit of the HTML spec
@@ -51,10 +53,10 @@ import org.apache.tika.mime.MediaType;
  * }</pre>
  * <p>
  */
+@TikaComponent(spi = false)
 public final class StandardHtmlEncodingDetector implements EncodingDetector {
     private static final int META_TAG_BUFFER_SIZE = 8192;
 
-    @Field
     private int markLimit = META_TAG_BUFFER_SIZE;
 
     /**
@@ -74,11 +76,11 @@ public final class StandardHtmlEncodingDetector implements EncodingDetector {
     }
 
     @Override
-    public Charset detect(InputStream input, Metadata metadata) throws IOException {
+    public Charset detect(TikaInputStream tis, Metadata metadata, ParseContext context) throws IOException {
         int limit = getMarkLimit();
-        input.mark(limit);
+        tis.mark(limit);
         // Never read more than the first META_TAG_BUFFER_SIZE bytes
-        InputStream limitedStream = BoundedInputStream.builder().setInputStream(input).setMaxCount(limit).get();
+        InputStream limitedStream = BoundedInputStream.builder().setInputStream(tis).setMaxCount(limit).get();
         PreScanner preScanner = new PreScanner(limitedStream);
 
         // The order of priority for detection is:
@@ -93,7 +95,7 @@ public final class StandardHtmlEncodingDetector implements EncodingDetector {
             detectedCharset = preScanner.scan();
         }
 
-        input.reset();
+        tis.reset();
         return detectedCharset;
     }
 
@@ -105,7 +107,6 @@ public final class StandardHtmlEncodingDetector implements EncodingDetector {
      * How far into the stream to read for charset detection.
      * Default is 8192.
      */
-    @Field
     public void setMarkLimit(int markLimit) {
         this.markLimit = markLimit;
     }

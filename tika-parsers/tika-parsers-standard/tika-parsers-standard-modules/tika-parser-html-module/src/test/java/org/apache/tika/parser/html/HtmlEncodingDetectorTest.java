@@ -14,22 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.tika.parser.html;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
+import org.apache.tika.parser.ParseContext;
 
 public class HtmlEncodingDetectorTest {
 
@@ -133,7 +132,8 @@ public class HtmlEncodingDetectorTest {
 
     private Charset detectCharset(String test) throws IOException {
         Metadata metadata = new Metadata();
-        InputStream inStream = new ByteArrayInputStream(test.getBytes(StandardCharsets.UTF_8));
-        return new HtmlEncodingDetector().detect(inStream, metadata);
+        try (TikaInputStream tis = TikaInputStream.get(test.getBytes(StandardCharsets.UTF_8))) {
+            return new HtmlEncodingDetector().detect(tis, metadata, new ParseContext());
+        }
     }
 }

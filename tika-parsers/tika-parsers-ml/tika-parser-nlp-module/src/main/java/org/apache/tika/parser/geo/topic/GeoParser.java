@@ -1,7 +1,7 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright owlocationNameEntitieship.
+ * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
@@ -14,11 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.tika.parser.geo.topic;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -35,8 +33,11 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
-import org.apache.tika.config.Field;
+import org.apache.tika.config.ConfigDeserializer;
+import org.apache.tika.config.JsonConfig;
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.exception.TikaException;
+import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
 import org.apache.tika.parser.ParseContext;
@@ -44,6 +45,7 @@ import org.apache.tika.parser.Parser;
 import org.apache.tika.parser.geo.topic.gazetteer.GeoGazetteerClient;
 import org.apache.tika.parser.geo.topic.gazetteer.Location;
 
+@TikaComponent
 public class GeoParser implements Parser {
     private static final long serialVersionUID = -2241391757440215491L;
     private static final Logger LOG = LoggerFactory.getLogger(GeoParser.class);
@@ -57,6 +59,18 @@ public class GeoParser implements Parser {
     private URL modelUrl;
     private NameFinderME nameFinder;
     private boolean available;
+
+    public GeoParser() {
+        // Default constructor - uses default GeoParserConfig
+    }
+
+    public GeoParser(GeoParserConfig config) {
+        this.defaultConfig = config;
+    }
+
+    public GeoParser(JsonConfig jsonConfig) {
+        this(ConfigDeserializer.buildConfig(jsonConfig, GeoParserConfig.class));
+    }
 
     @Override
     public Set<MediaType> getSupportedTypes(ParseContext parseContext) {
@@ -97,7 +111,7 @@ public class GeoParser implements Parser {
     }
 
     @Override
-    public void parse(InputStream stream, ContentHandler handler, Metadata metadata,
+    public void parse(TikaInputStream tis, ContentHandler handler, Metadata metadata,
                       ParseContext context) throws IOException, SAXException, TikaException {
 
         /*----------------configure this parser by ParseContext Object---------------------*/
@@ -118,7 +132,7 @@ public class GeoParser implements Parser {
 
         /*----------------get locationNameEntities and best nameEntity for the
         input stream---------------------*/
-        extractor.getAllNameEntitiesfromInput(stream);
+        extractor.getAllNameEntitiesfromInput(tis);
         extractor.getBestNameEntity();
         ArrayList<String> locationNameEntities = extractor.locationNameEntities;
         String bestner = extractor.bestNameEntity;
@@ -160,7 +174,6 @@ public class GeoParser implements Parser {
         return defaultConfig.getGazetteerRestEndpoint();
     }
 
-    @Field
     public void setGazetteerRestEndpoint(String gazetteerRestEndpoint) {
         defaultConfig.setGazetteerRestEndpoint(gazetteerRestEndpoint);
     }
@@ -173,7 +186,6 @@ public class GeoParser implements Parser {
      * @param nerModelUrl url for the NER model
      * @throws IllegalArgumentException for a malformed URL
      */
-    @Field
     public void setNerModelUrl(String nerModelUrl) {
         try {
             defaultConfig.setNerModelUrl(new URL(nerModelUrl));

@@ -20,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.List;
@@ -35,13 +34,13 @@ import org.junit.jupiter.api.Test;
 import org.xml.sax.ContentHandler;
 
 import org.apache.tika.TikaTest;
-import org.apache.tika.config.TikaConfig;
+import org.apache.tika.config.loader.TikaLoader;
+import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.MAPI;
 import org.apache.tika.metadata.Message;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.RTFMetadata;
 import org.apache.tika.metadata.TikaCoreProperties;
-import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
 import org.apache.tika.sax.BasicContentHandlerFactory;
@@ -59,8 +58,8 @@ public class OutlookParserTest extends TikaTest {
         ContentHandler handler = new BodyContentHandler();
         Metadata metadata = new Metadata();
 
-        try (InputStream stream = getResourceAsStream("/test-documents/test-outlook.msg")) {
-            AUTO_DETECT_PARSER.parse(stream, handler, metadata, new ParseContext());
+        try (TikaInputStream tis = getResourceAsStream("/test-documents/test-outlook.msg")) {
+            AUTO_DETECT_PARSER.parse(tis, handler, metadata, new ParseContext());
         }
         assertEquals("application/vnd.ms-outlook", metadata.get(Metadata.CONTENT_TYPE));
         assertEquals("Microsoft Outlook Express 6", metadata.get(TikaCoreProperties.TITLE));
@@ -109,8 +108,8 @@ public class OutlookParserTest extends TikaTest {
         ContentHandler handler = new BodyContentHandler();
         Metadata metadata = new Metadata();
 
-        try (InputStream stream = getResourceAsStream("/test-documents/testMSG.msg")) {
-            AUTO_DETECT_PARSER.parse(stream, handler, metadata, new ParseContext());
+        try (TikaInputStream tis = getResourceAsStream("/test-documents/testMSG.msg")) {
+            AUTO_DETECT_PARSER.parse(tis, handler, metadata, new ParseContext());
         }
 
         assertEquals("application/vnd.ms-outlook", metadata.get(Metadata.CONTENT_TYPE));
@@ -152,8 +151,8 @@ public class OutlookParserTest extends TikaTest {
         ContentHandler handler = new BodyContentHandler();
         Metadata metadata = new Metadata();
 
-        try (InputStream stream = getResourceAsStream("/test-documents/test-outlook2003.msg")) {
-            AUTO_DETECT_PARSER.parse(stream, handler, metadata, new ParseContext());
+        try (TikaInputStream tis = getResourceAsStream("/test-documents/test-outlook2003.msg")) {
+            AUTO_DETECT_PARSER.parse(tis, handler, metadata, new ParseContext());
         }
         assertEquals("application/vnd.ms-outlook", metadata.get(Metadata.CONTENT_TYPE));
         assertEquals("Welcome to Microsoft Office Outlook 2003",
@@ -187,8 +186,8 @@ public class OutlookParserTest extends TikaTest {
         handler.getTransformer().setOutputProperty(OutputKeys.INDENT, "yes");
         handler.setResult(new StreamResult(sw));
 
-        try (InputStream stream = getResourceAsStream("/test-documents/testMSG_chinese.msg")) {
-            AUTO_DETECT_PARSER.parse(stream, handler, metadata, new ParseContext());
+        try (TikaInputStream tis = getResourceAsStream("/test-documents/testMSG_chinese.msg")) {
+            AUTO_DETECT_PARSER.parse(tis, handler, metadata, new ParseContext());
         }
 
         // As the HTML version should have been processed, ensure
@@ -236,8 +235,8 @@ public class OutlookParserTest extends TikaTest {
         handler.getTransformer().setOutputProperty(OutputKeys.INDENT, "yes");
         handler.setResult(new StreamResult(sw));
 
-        try (InputStream stream = getResourceAsStream("/test-documents/testMSG_forwarded.msg")) {
-            AUTO_DETECT_PARSER.parse(stream, handler, metadata, new ParseContext());
+        try (TikaInputStream tis = getResourceAsStream("/test-documents/testMSG_forwarded.msg")) {
+            AUTO_DETECT_PARSER.parse(tis, handler, metadata, new ParseContext());
         }
 
         // Make sure we don't have nested docs
@@ -279,8 +278,8 @@ public class OutlookParserTest extends TikaTest {
         handler.getTransformer().setOutputProperty(OutputKeys.INDENT, "yes");
         handler.setResult(new StreamResult(sw));
 
-        try (InputStream stream = getResourceAsStream("/test-documents/test-outlook2003.msg")) {
-            AUTO_DETECT_PARSER.parse(stream, handler, metadata, new ParseContext());
+        try (TikaInputStream tis = getResourceAsStream("/test-documents/test-outlook2003.msg")) {
+            AUTO_DETECT_PARSER.parse(tis, handler, metadata, new ParseContext());
         }
 
         // As the HTML version should have been processed, ensure
@@ -379,26 +378,25 @@ public class OutlookParserTest extends TikaTest {
         //now try extracting all bodies
         //they should each appear as standalone attachments
         //with no content in the body of the msg level
-        try (InputStream is = getResourceAsStream("tika-config-extract-all-alternatives-msg.xml")) {
-            TikaConfig tikaConfig = new TikaConfig(is);
-            Parser p = new AutoDetectParser(tikaConfig);
+        Parser p = TikaLoader.load(
+                getConfigPath(OutlookParserTest.class, "tika-config-extract-all-alternatives-msg.json"))
+                .loadAutoDetectParser();
 
-            metadataList = getRecursiveMetadata("testMSG.msg", p);
-            assertEquals(3, metadataList.size());
+        metadataList = getRecursiveMetadata("testMSG.msg", p);
+        assertEquals(3, metadataList.size());
 
-            assertNotContained("breaking your application",
-                    metadataList.get(0).get(TikaCoreProperties.TIKA_CONTENT));
-            assertEquals("application/vnd.ms-outlook",
-                    metadataList.get(0).get(Metadata.CONTENT_TYPE));
+        assertNotContained("breaking your application",
+                metadataList.get(0).get(TikaCoreProperties.TIKA_CONTENT));
+        assertEquals("application/vnd.ms-outlook",
+                metadataList.get(0).get(Metadata.CONTENT_TYPE));
 
-            assertContains("breaking your application",
-                    metadataList.get(1).get(TikaCoreProperties.TIKA_CONTENT));
-            assertEquals("application/rtf", metadataList.get(1).get(Metadata.CONTENT_TYPE));
+        assertContains("breaking your application",
+                metadataList.get(1).get(TikaCoreProperties.TIKA_CONTENT));
+        assertEquals("application/rtf", metadataList.get(1).get(Metadata.CONTENT_TYPE));
 
-            assertContains("breaking your application",
-                    metadataList.get(2).get(TikaCoreProperties.TIKA_CONTENT));
-            assertTrue(metadataList.get(2).get(Metadata.CONTENT_TYPE).startsWith("text/plain"));
-        }
+        assertContains("breaking your application",
+                metadataList.get(2).get(TikaCoreProperties.TIKA_CONTENT));
+        assertTrue(metadataList.get(2).get(Metadata.CONTENT_TYPE).startsWith("text/plain"));
 
     }
 

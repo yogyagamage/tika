@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.tika.server.core;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -46,7 +45,7 @@ public class TranslateResourceTest extends CXFTestBase {
     @Override
     protected void setUpResources(JAXRSServerFactoryBean sf) {
         sf.setResourceClasses(TranslateResource.class);
-        sf.setResourceProvider(TranslateResource.class, new SingletonResourceProvider(new TranslateResource(new ServerStatus("", 0), 60000)));
+        sf.setResourceProvider(TranslateResource.class, new SingletonResourceProvider(new TranslateResource(new ServerStatus())));
 
     }
 

@@ -17,7 +17,6 @@
 package org.apache.tika.parser.microsoft.ooxml;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -27,15 +26,21 @@ import org.apache.poi.openxml4j.util.ZipSecureFile;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
+import org.apache.tika.config.ConfigDeserializer;
+import org.apache.tika.config.JsonConfig;
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.exception.TikaException;
+import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.microsoft.AbstractOfficeParser;
+import org.apache.tika.parser.microsoft.OfficeParserConfig;
 
 /**
  * Office Open XML (OOXML) parser.
  */
+@TikaComponent
 public class OOXMLParser extends AbstractOfficeParser {
     protected static final String SIGNATURE_RELATIONSHIP =
             "http://schemas.openxmlformats.org/package/2006/relationships/digital-signature/origin";
@@ -105,15 +110,26 @@ public class OOXMLParser extends AbstractOfficeParser {
         ZipSecureFile.setMaxFileCount(10000);
     }
 
+    public OOXMLParser() {
+    }
+
+    public OOXMLParser(OfficeParserConfig config) {
+        setDefaultOfficeParserConfig(config);
+    }
+
+    public OOXMLParser(JsonConfig jsonConfig) {
+        this(ConfigDeserializer.buildConfig(jsonConfig, OfficeParserConfig.class));
+    }
+
     public Set<MediaType> getSupportedTypes(ParseContext context) {
         return SUPPORTED_TYPES;
     }
 
-    public void parse(InputStream stream, ContentHandler handler, Metadata metadata,
+    public void parse(TikaInputStream tis, ContentHandler handler, Metadata metadata,
                       ParseContext context) throws IOException, SAXException, TikaException {
         //set OfficeParserConfig if the user hasn't specified one
         configure(context);
         // Have the OOXML file processed
-        OOXMLExtractorFactory.parse(stream, handler, metadata, context);
+        OOXMLExtractorFactory.parse(tis, handler, metadata, context);
     }
 }

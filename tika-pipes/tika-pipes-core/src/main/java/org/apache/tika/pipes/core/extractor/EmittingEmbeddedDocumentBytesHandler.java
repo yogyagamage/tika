@@ -21,13 +21,14 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.tika.exception.TikaConfigException;
+import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;
-import org.apache.tika.pipes.core.FetchEmitTuple;
-import org.apache.tika.pipes.core.emitter.EmitKey;
-import org.apache.tika.pipes.core.emitter.Emitter;
+import org.apache.tika.pipes.api.FetchEmitTuple;
+import org.apache.tika.pipes.api.emitter.EmitKey;
+import org.apache.tika.pipes.api.emitter.Emitter;
+import org.apache.tika.pipes.api.emitter.StreamEmitter;
 import org.apache.tika.pipes.core.emitter.EmitterManager;
-import org.apache.tika.pipes.core.emitter.StreamEmitter;
 import org.apache.tika.pipes.core.emitter.TikaEmitterException;
 
 public class EmittingEmbeddedDocumentBytesHandler extends AbstractEmbeddedDocumentBytesHandler {
@@ -39,7 +40,7 @@ public class EmittingEmbeddedDocumentBytesHandler extends AbstractEmbeddedDocume
     private static final ParseContext PARSE_CONTEXT = new ParseContext();
 
     public EmittingEmbeddedDocumentBytesHandler(FetchEmitTuple fetchEmitTuple,
-                                                EmitterManager emitterManager) throws TikaConfigException {
+                                                EmitterManager emitterManager) throws TikaException, IOException {
 
         this.containerEmitKey = fetchEmitTuple.getEmitKey();
         this.embeddedDocumentBytesConfig = fetchEmitTuple.getParseContext().get(EmbeddedDocumentBytesConfig.class);

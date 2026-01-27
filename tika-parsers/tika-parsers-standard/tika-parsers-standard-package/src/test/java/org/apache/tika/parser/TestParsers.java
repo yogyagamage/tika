@@ -20,8 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
@@ -30,7 +28,6 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import org.apache.tika.MultiThreadedTikaTest;
 import org.apache.tika.Tika;
-import org.apache.tika.config.TikaConfig;
 import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.TikaCoreProperties;
@@ -40,14 +37,11 @@ import org.apache.tika.metadata.TikaCoreProperties;
  */
 public class TestParsers extends MultiThreadedTikaTest {
 
-    private static TikaConfig TIKA_CONFIG;
-
     private static Tika TIKA;
 
     @BeforeAll
     public static void setUp() throws Exception {
-        TIKA_CONFIG = TikaConfig.getDefaultConfig();
-        TIKA = new Tika(TIKA_CONFIG);
+        TIKA = new Tika();
     }
 
     @Test
@@ -56,8 +50,8 @@ public class TestParsers extends MultiThreadedTikaTest {
         Metadata metadata = new Metadata();
         try (TikaInputStream tis = TikaInputStream
                 .get(getResourceAsStream("/test-documents/testWORD.doc"))) {
-            try (InputStream stream = new FileInputStream(tis.getFile())) {
-                parser.parse(stream, new DefaultHandler(), metadata, new ParseContext());
+            try (TikaInputStream inner = TikaInputStream.get(tis.getPath())) {
+                parser.parse(inner, new DefaultHandler(), metadata, new ParseContext());
             }
         }
         assertEquals("Sample Word Document", metadata.get(TikaCoreProperties.TITLE));
@@ -73,8 +67,8 @@ public class TestParsers extends MultiThreadedTikaTest {
             String s1 = TIKA.parseToString(file);
             assertTrue(s1.contains(expected), "Text does not contain '" + expected + "'");
             Parser parser = TIKA.getParser();
-            try (InputStream stream = new FileInputStream(file)) {
-                parser.parse(stream, new DefaultHandler(), metadata, new ParseContext());
+            try (TikaInputStream inner = TikaInputStream.get(file.toPath())) {
+                parser.parse(inner, new DefaultHandler(), metadata, new ParseContext());
             }
         }
         assertEquals("Simple Excel document", metadata.get(TikaCoreProperties.TITLE));

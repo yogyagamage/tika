@@ -35,8 +35,10 @@ import org.apache.commons.io.input.UnsynchronizedByteArrayInputStream;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.detect.XmlRootExtractor;
 import org.apache.tika.exception.TikaException;
+import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
 import org.apache.tika.parser.ParseContext;
@@ -55,6 +57,7 @@ import org.apache.tika.utils.XMLReaderUtils;
  * <li>Numbers format version 1.x. Currently only tested with Numbers version 2.0.x
  * </ol>
  */
+@TikaComponent
 public class IWorkPackageParser implements Parser {
 
     /**
@@ -83,9 +86,9 @@ public class IWorkPackageParser implements Parser {
         return supportedTypes;
     }
 
-    public void parse(InputStream stream, ContentHandler handler, Metadata metadata,
+    public void parse(TikaInputStream tis, ContentHandler handler, Metadata metadata,
                       ParseContext context) throws IOException, SAXException, TikaException {
-        ZipArchiveInputStream zip = new ZipArchiveInputStream(stream);
+        ZipArchiveInputStream zip = new ZipArchiveInputStream(tis);
         ZipArchiveEntry entry = zip.getNextEntry();
 
         while (entry != null) {
@@ -196,8 +199,8 @@ public class IWorkPackageParser implements Parser {
             return detectType(zip);
         }
 
-        public static IWORKDocumentType detectType(InputStream stream) {
-            QName qname = new XmlRootExtractor().extractRootElement(stream);
+        public static IWORKDocumentType detectType(InputStream tis) {
+            QName qname = new XmlRootExtractor().extractRootElement(tis);
             if (qname != null) {
                 String uri = qname.getNamespaceURI();
                 String local = qname.getLocalPart();

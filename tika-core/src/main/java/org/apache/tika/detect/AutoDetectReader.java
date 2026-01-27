@@ -16,7 +16,6 @@
  */
 package org.apache.tika.detect;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,12 +24,13 @@ import java.nio.charset.Charset;
 
 import org.xml.sax.InputSource;
 
-import org.apache.tika.config.LoadErrorHandler;
 import org.apache.tika.config.ServiceLoader;
 import org.apache.tika.exception.TikaException;
+import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.TikaCoreProperties;
 import org.apache.tika.mime.MediaType;
+import org.apache.tika.parser.ParseContext;
 import org.apache.tika.utils.CharsetUtils;
 
 /**
@@ -64,31 +64,23 @@ public class AutoDetectReader extends BufferedReader {
         }
     }
 
-    /**
-     * @param stream    stream from which to read -- make sure that it supports mark!
-     * @param metadata
-     * @param detector
-     * @param handler
-     * @throws IOException
-     * @throws TikaException
-     */
-    private AutoDetectReader(InputStream stream, Metadata metadata,
-                             EncodingDetector detector, LoadErrorHandler handler)
-            throws IOException, TikaException {
-        this(stream, detect(stream, metadata, detector, handler));
-    }
-
     public AutoDetectReader(InputStream stream, Metadata metadata,
                             EncodingDetector encodingDetector) throws IOException, TikaException {
-        this(getBuffered(stream), metadata, encodingDetector,
-                DEFAULT_LOADER.getLoadErrorHandler());
+        // IMPORTANT: Only call getTikaInputStream once, then reuse the same instance.
+        // Calling it twice creates two different TikaInputStreams sharing the same underlying
+        // stream, causing the second one's reads to advance the position for both.
+        this(getTikaInputStream(stream), metadata, encodingDetector);
+    }
+
+    private AutoDetectReader(TikaInputStream tis, Metadata metadata,
+                             EncodingDetector encodingDetector) throws IOException, TikaException {
+        this(tis, detect(tis, metadata, encodingDetector));
     }
 
     public AutoDetectReader(InputStream stream, Metadata metadata, ServiceLoader loader)
             throws IOException, TikaException {
-        this(getBuffered(stream), metadata,
-                new CompositeEncodingDetector(loader.loadServiceProviders(EncodingDetector.class)),
-                loader.getLoadErrorHandler());
+        this(getTikaInputStream(stream), metadata,
+                new CompositeEncodingDetector(loader.loadServiceProviders(EncodingDetector.class)));
     }
 
     public AutoDetectReader(InputStream stream, Metadata metadata)
@@ -100,27 +92,22 @@ public class AutoDetectReader extends BufferedReader {
         this(stream, new Metadata());
     }
 
-    private static Charset detect(InputStream input, Metadata metadata,
-                                  EncodingDetector detector, LoadErrorHandler handler)
+    private static Charset detect(TikaInputStream tis, Metadata metadata,
+                                  EncodingDetector detector)
             throws IOException, TikaException {
         // Ask all given detectors for the character encoding
-        try {
-            Charset charset = detector.detect(input, metadata);
-            if (charset != null) {
-                return charset;
-            }
-        } catch (NoClassDefFoundError e) {
-            // TIKA-1041: Detector dependencies not present.
-            handler.handleLoadError(detector.getClass().getName(), e);
+        Charset charset = detector.detect(tis, metadata, new ParseContext());
+        if (charset != null) {
+            return charset;
         }
 
         // Try determining the encoding based on hints in document metadata
         MediaType type = MediaType.parse(metadata.get(Metadata.CONTENT_TYPE));
         if (type != null) {
-            String charset = type.getParameters().get("charset");
-            if (charset != null) {
+            String charsetParam = type.getParameters().get("charset");
+            if (charsetParam != null) {
                 try {
-                    Charset cs = CharsetUtils.forName(charset);
+                    Charset cs = CharsetUtils.forName(charsetParam);
                     metadata.set(TikaCoreProperties.DETECTED_ENCODING, cs.name());
                     metadata.set(TikaCoreProperties.ENCODING_DETECTOR,
                             "AutoDetectReader-charset-metadata-fallback");
@@ -134,11 +121,11 @@ public class AutoDetectReader extends BufferedReader {
         throw new TikaException("Failed to detect the character encoding of a document");
     }
 
-    private static InputStream getBuffered(InputStream stream) {
-        if (stream.markSupported()) {
-            return stream;
+    private static TikaInputStream getTikaInputStream(InputStream stream) {
+        if (stream instanceof TikaInputStream) {
+            return (TikaInputStream) stream;
         }
-        return new BufferedInputStream(stream);
+        return TikaInputStream.get(stream);
     }
 
 

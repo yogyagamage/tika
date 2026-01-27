@@ -19,7 +19,6 @@ package org.apache.tika.renderer.pdf.mutool;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -29,6 +28,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.io.TemporaryResources;
 import org.apache.tika.io.TikaInputStream;
@@ -47,6 +47,7 @@ import org.apache.tika.renderer.RenderingTracker;
 import org.apache.tika.utils.FileProcessResult;
 import org.apache.tika.utils.ProcessUtils;
 
+@TikaComponent(name = "mupdf-renderer", spi = false)
 public class MuPDFRenderer implements Renderer {
 
     Set<MediaType> SUPPORTED_TYPES = Collections.singleton(MediaType.application("pdf"));
@@ -57,11 +58,11 @@ public class MuPDFRenderer implements Renderer {
     }
 
     @Override
-    public RenderResults render(InputStream is, Metadata metadata, ParseContext parseContext,
+    public RenderResults render(TikaInputStream tis, Metadata metadata, ParseContext parseContext,
                                 RenderRequest... requests) throws IOException, TikaException {
         TemporaryResources tmp = new TemporaryResources();
         PageBasedRenderResults results = new PageBasedRenderResults(tmp);
-        Path path = TikaInputStream.get(is, tmp, metadata).getPath();
+        Path path = tis.getPath();
         for (RenderRequest request : requests) {
             renderRequest(path, metadata, parseContext, request, results, tmp);
         }

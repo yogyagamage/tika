@@ -16,7 +16,6 @@
  */
 package org.apache.tika.bundle;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -26,13 +25,9 @@ import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.systemPackages;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -41,8 +36,8 @@ import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
-import jakarta.inject.Inject;
 
+import jakarta.inject.Inject;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,7 +57,6 @@ import org.apache.tika.detect.DefaultDetector;
 import org.apache.tika.detect.Detector;
 import org.apache.tika.exception.EncryptedDocumentException;
 import org.apache.tika.exception.TikaException;
-import org.apache.tika.fork.ForkParser;
 import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.TikaCoreProperties;
@@ -72,7 +66,6 @@ import org.apache.tika.parser.CompositeParser;
 import org.apache.tika.parser.DefaultParser;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
-import org.apache.tika.parser.internal.Activator;
 import org.apache.tika.parser.ocr.TesseractOCRParser;
 import org.apache.tika.sax.BodyContentHandler;
 
@@ -151,29 +144,8 @@ public class BundleIT {
         metadataPDF.set(TikaCoreProperties.RESOURCE_NAME_KEY, "test.pdf");
 
         // Simple type detection
-        assertEquals(MediaType.TEXT_PLAIN, contentTypeDetector.detect(null, metadataTXT));
-        assertEquals(MediaType.application("pdf"), contentTypeDetector.detect(null, metadataPDF));
-    }
-
-    @Test
-    public void testForkParser() throws Exception {
-        try (ForkParser parser = new ForkParser(Activator.class.getClassLoader(), defaultParser)) {
-            String data =
-                    "<!DOCTYPE html>\n<html><body><p>test <span>content</span></p></body></html>";
-            InputStream stream = new ByteArrayInputStream(data.getBytes(UTF_8));
-            Writer writer = new StringWriter();
-            ContentHandler contentHandler = new BodyContentHandler(writer);
-            Metadata metadata = new Metadata();
-            MediaType type = contentTypeDetector.detect(stream, metadata);
-            assertEquals(type.toString(), "text/html");
-            metadata.add(Metadata.CONTENT_TYPE, type.toString());
-            ParseContext parseCtx = new ParseContext();
-            parser.parse(stream, contentHandler, metadata, parseCtx);
-            writer.flush();
-            String content = writer.toString();
-            assertTrue(content.length() > 0);
-            assertEquals("test content", content.trim());
-        }
+        assertEquals(MediaType.TEXT_PLAIN, contentTypeDetector.detect(null, metadataTXT, new ParseContext()));
+        assertEquals(MediaType.application("pdf"), contentTypeDetector.detect(null, metadataPDF, new ParseContext()));
     }
 
     @Test
@@ -259,8 +231,8 @@ public class BundleIT {
         ContentHandler handler = new BodyContentHandler();
         ParseContext context = new ParseContext();
         Parser tesseractParser = new TesseractOCRParser();
-        try (InputStream stream = new FileInputStream("src/test/resources/testOCR.jpg")) {
-            tesseractParser.parse(stream, handler, new Metadata(), context);
+        try (TikaInputStream tis = TikaInputStream.get(Paths.get("src/test/resources/testOCR.jpg"))) {
+            tesseractParser.parse(tis, handler, new Metadata(), context);
         }
     }
 
@@ -274,9 +246,9 @@ public class BundleIT {
         ParseContext context = new ParseContext();
         context.set(Parser.class, parser);
 
-        try (InputStream stream = TikaInputStream.get(
+        try (TikaInputStream tis = TikaInputStream.get(
                 Paths.get("src/test/resources/test-documents.zip"))) {
-            parser.parse(stream, handler, new Metadata(), context);
+            parser.parse(tis, handler, new Metadata(), context);
         }
 
         String content = handler.toString();
@@ -310,9 +282,9 @@ public class BundleIT {
         ParseContext context = new ParseContext();
         context.set(Parser.class, parser);
 
-        try (InputStream stream = TikaInputStream.get(
+        try (TikaInputStream tis = TikaInputStream.get(
                 Paths.get("src/test/resources/testPPT.pptx"))) {
-            parser.parse(stream, handler, new Metadata(), context);
+            parser.parse(tis, handler, new Metadata(), context);
         }
 
         String content = handler.toString();
@@ -340,8 +312,8 @@ public class BundleIT {
             }
             System.out.println("about to parse " + f);
             Metadata metadata = new Metadata();
-            try (InputStream is = TikaInputStream.get(f.toPath())) {
-                parser.parse(is, handler, metadata, context);
+            try (TikaInputStream tis = TikaInputStream.get(f.toPath())) {
+                parser.parse(tis, handler, metadata, context);
             } catch (EncryptedDocumentException e) {
                 //swallow
             } catch (SAXException e) {

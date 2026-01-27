@@ -21,15 +21,16 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -53,7 +54,8 @@ import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import org.apache.tika.cli.TikaCLI;
-import org.apache.tika.pipes.core.HandlerConfig;
+import org.apache.tika.config.JsonConfigHelper;
+import org.apache.tika.pipes.api.ParseMode;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Testcontainers(disabledWithoutDocker = true)
@@ -126,26 +128,33 @@ class S3PipeIntegrationTest {
         // create some test files and insert into fetch bucket
         createTestFiles();
 
-        // Let's fetch it
-        File tikaConfigFile = new File("target", "ta.xml");
-        File log4jPropFile = new File("target", "tmp-log4j2.xml");
+        // Setup config files
+        Path log4jPropFile = Path.of("target", "tmp-log4j2.xml");
+        Path tikaConfigFile = Path.of("target", "plugins-config-s3.json");
+
         try (InputStream is = this.getClass()
                 .getResourceAsStream("/pipes-fork-server-custom-log4j2.xml")) {
             Assertions.assertNotNull(is);
-            FileUtils.copyInputStreamToFile(is, log4jPropFile);
+            FileUtils.copyInputStreamToFile(is, log4jPropFile.toFile());
         }
-        String tikaConfigTemplateXml;
-        try (InputStream is = this.getClass()
-                .getResourceAsStream("/tika-config-s3-integration-test.xml")) {
-            assert is != null;
-            tikaConfigTemplateXml = IOUtils.toString(is, StandardCharsets.UTF_8);
-        }
-        try {
-            String tikaConfigXml =
-                    createTikaConfigXml(tikaConfigFile, log4jPropFile, tikaConfigTemplateXml);
 
-            FileUtils.writeStringToFile(tikaConfigFile, tikaConfigXml, StandardCharsets.UTF_8);
-            TikaCLI.main(new String[]{"-a", "-c", tikaConfigFile.getAbsolutePath()});
+        // Create plugins config JSON
+        Map<String, Object> replacements = new HashMap<>();
+        replacements.put("LOG4J_JVM_ARG", "-Dlog4j.configurationFile=" + log4jPropFile.toAbsolutePath());
+        replacements.put("PARSE_MODE", ParseMode.RMETA.name());
+        replacements.put("PIPE_ITERATOR_BUCKET", FETCH_BUCKET);
+        replacements.put("EMIT_BUCKET", EMIT_BUCKET);
+        replacements.put("FETCH_BUCKET", FETCH_BUCKET);
+        replacements.put("ACCESS_KEY", ACCESS_KEY);
+        replacements.put("SECRET_KEY", SECRET_KEY);
+        replacements.put("ENDPOINT_CONFIGURATION_SERVICE", MINIO_ENDPOINT);
+        replacements.put("REGION", REGION.id());
+
+        JsonConfigHelper.writeConfigFromResource("/s3/plugins-template.json",
+                S3PipeIntegrationTest.class, replacements, tikaConfigFile);
+
+        try {
+            TikaCLI.main(new String[]{"-a", "-c", tikaConfigFile.toAbsolutePath().toString()});
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -157,19 +166,5 @@ class S3PipeIntegrationTest {
             Assertions.assertTrue(data.contains("body-of-" + testFile),
                         "Should be able to read the parsed body of the HTML file as the body of the document");
         }
-    }
-
-    @NotNull
-    private String createTikaConfigXml(File tikaConfigFile, File log4jPropFile,
-                                       String tikaConfigTemplateXml) {
-        return tikaConfigTemplateXml.replace("{TIKA_CONFIG}", tikaConfigFile.getAbsolutePath())
-                .replace("{LOG4J_PROPERTIES_FILE}", log4jPropFile.getAbsolutePath())
-                .replace("{PATH_TO_DOCS}", testFileFolder.getAbsolutePath())
-                .replace("{PARSE_MODE}", HandlerConfig.PARSE_MODE.RMETA.name())
-                .replace("{PIPE_ITERATOR_BUCKET}", FETCH_BUCKET)
-                .replace("{EMIT_BUCKET}", EMIT_BUCKET).replace("{FETCH_BUCKET}", FETCH_BUCKET)
-                .replace("{ACCESS_KEY}", ACCESS_KEY).replace("{SECRET_KEY}", SECRET_KEY)
-                .replace("{ENDPOINT_CONFIGURATION_SERVICE}", MINIO_ENDPOINT)
-                .replace("{REGION}", REGION.id());
     }
 }

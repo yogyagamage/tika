@@ -16,43 +16,52 @@
  */
 package org.apache.tika.parser.digestutils;
 
-import org.apache.tika.config.Field;
-import org.apache.tika.parser.DigestingParser;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.tika.config.TikaComponent;
+import org.apache.tika.digest.DigestDef;
+import org.apache.tika.digest.Digester;
+import org.apache.tika.digest.DigesterFactory;
 
 /**
- * Simple factory for {@link CommonsDigester} with
- * default markLimit = 1000000 and md5 digester.
+ * Factory for {@link CommonsDigester} with configurable algorithms and encodings.
+ * <p>
+ * Default: MD5 with HEX encoding.
+ * <p>
+ * Example JSON configuration:
+ * <pre>
+ * {
+ *   "digesterFactory": {
+ *     "commons-digester": {
+ *       "digests": [
+ *         { "algorithm": "MD5" },
+ *         { "algorithm": "SHA256", "encoding": "BASE32" }
+ *       ]
+ *     }
+ *   }
+ * }
+ * </pre>
  */
-public class CommonsDigesterFactory implements DigestingParser.DigesterFactory {
+@TikaComponent
+public class CommonsDigesterFactory implements DigesterFactory {
 
-    private int markLimit = 1000000;
-    private String algorithmString = "md5";
+    private List<DigestDef> digests = new ArrayList<>();
 
-    private boolean skipContainerDocument = false;
-
-    @Override
-    public DigestingParser.Digester build() {
-        return new CommonsDigester(markLimit, algorithmString);
-    }
-
-    @Field
-    public void setMarkLimit(int markLimit) {
-        this.markLimit = markLimit;
-    }
-
-    @Field
-    public void setAlgorithmString(String algorithmString) {
-        this.algorithmString = algorithmString;
-    }
-
-    @Field
-    @Override
-    public void setSkipContainerDocument(boolean skipContainerDocument) {
-        this.skipContainerDocument = skipContainerDocument;
+    public CommonsDigesterFactory() {
+        digests.add(new DigestDef(DigestDef.Algorithm.MD5));
     }
 
     @Override
-    public boolean isSkipContainerDocument() {
-        return skipContainerDocument;
+    public Digester build() {
+        return new CommonsDigester(digests);
+    }
+
+    public List<DigestDef> getDigests() {
+        return digests;
+    }
+
+    public void setDigests(List<DigestDef> digests) {
+        this.digests = digests;
     }
 }

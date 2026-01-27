@@ -17,29 +17,23 @@
 package org.apache.tika.parser.microsoft.libpst;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
-import org.apache.tika.config.Field;
 import org.apache.tika.config.Initializable;
-import org.apache.tika.config.InitializableProblemHandler;
-import org.apache.tika.config.Param;
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.exception.TikaConfigException;
 import org.apache.tika.exception.TikaException;
-import org.apache.tika.io.TemporaryResources;
 import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
@@ -55,6 +49,7 @@ import org.apache.tika.utils.StringUtils;
  * the GPL-3 libpst/readpst commandline tool and configuring
  * Tika to call this library via tika-config.xml
  */
+@TikaComponent(spi = false)
 public class LibPstParser implements Parser, Initializable {
 
     public static final MediaType MS_OUTLOOK_PST_MIMETYPE = MediaType.application("vnd.ms-outlook-pst");
@@ -69,7 +64,7 @@ public class LibPstParser implements Parser, Initializable {
 
     private final LibPstParserConfig defaultConfig = new LibPstParserConfig();
     //for security purposes, this cannot be set via the parseContext. This must
-    //be set via the usual @Field setters in tika-config.xml
+    //be set via config
     private String readPstPath = "";
     @Override
     public Set<MediaType> getSupportedTypes(ParseContext parseContext) {
@@ -77,18 +72,8 @@ public class LibPstParser implements Parser, Initializable {
     }
 
     @Override
-    public void parse(InputStream inputStream, ContentHandler contentHandler, Metadata metadata, ParseContext parseContext) throws IOException, SAXException, TikaException {
-        TikaInputStream tis = TikaInputStream.cast(inputStream);
-        TemporaryResources tmp = null;
-        if (tis == null) {
-            tmp = new TemporaryResources();
-            tis = TikaInputStream.get(inputStream, tmp, metadata);
-        }
-        try {
-            _parse(tis.getPath(), contentHandler, metadata, parseContext);
-        } finally {
-            IOUtils.closeQuietly(tmp);
-        }
+    public void parse(TikaInputStream tis, ContentHandler contentHandler, Metadata metadata, ParseContext parseContext) throws IOException, SAXException, TikaException {
+        _parse(tis.getPath(), contentHandler, metadata, parseContext);
     }
 
     private void _parse(Path pst, ContentHandler contentHandler, Metadata metadata, ParseContext parseContext) throws TikaException, IOException, SAXException {
@@ -161,7 +146,7 @@ public class LibPstParser implements Parser, Initializable {
     }
 
     @Override
-    public void initialize(Map<String, Param> map) throws TikaConfigException {
+    public void initialize() throws TikaConfigException {
         if (readPstPath.contains("\u0000")) {
             throw new TikaConfigException("path can't include null values");
         }
@@ -175,11 +160,6 @@ public class LibPstParser implements Parser, Initializable {
             LOGGER.error("Couldn't get version of libpst", e);
             throw new TikaConfigException("Unable to check version of readpst. Is it installed?!", e);
         }
-    }
-
-    @Override
-    public void checkInitialization(InitializableProblemHandler initializableProblemHandler) throws TikaConfigException {
-
     }
 
     //throws exception if readpst is not available
@@ -216,22 +196,18 @@ public class LibPstParser implements Parser, Initializable {
         return readPstPath + READ_PST_COMMAND;
     }
 
-    @Field
     public void setTimeoutSeconds(long timeoutSeconds) {
         defaultConfig.setTimeoutSeconds(timeoutSeconds);
     }
 
-    @Field
     public void setProcessEmailAsMsg(boolean processEmailAsMsg) {
         defaultConfig.setProcessEmailAsMsg(processEmailAsMsg);
     }
 
-    @Field
     public void setIncludeDeleted(boolean includeDeleted) {
         defaultConfig.setIncludeDeleted(includeDeleted);
     }
 
-    @Field
     public void setMaxEmails(int maxEmails) {
         defaultConfig.setMaxEmails(maxEmails);
     }
@@ -241,7 +217,6 @@ public class LibPstParser implements Parser, Initializable {
      * readpst is at "C:\my_bin\readpst"
      * @param readPstPath
      */
-    @Field
     public void setReadPstPath(String readPstPath) {
         this.readPstPath = readPstPath;
     }

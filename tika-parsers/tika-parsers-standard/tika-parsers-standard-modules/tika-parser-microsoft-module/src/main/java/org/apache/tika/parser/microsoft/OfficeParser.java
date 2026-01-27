@@ -18,7 +18,6 @@ package org.apache.tika.parser.microsoft;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
@@ -30,8 +29,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.input.CloseShieldInputStream;
 import org.apache.poi.hdgf.extractor.VisioTextExtractor;
 import org.apache.poi.hpbf.extractor.PublisherTextExtractor;
 import org.apache.poi.poifs.crypt.Decryptor;
@@ -45,6 +42,9 @@ import org.apache.poi.util.LocaleUtil;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
+import org.apache.tika.config.ConfigDeserializer;
+import org.apache.tika.config.JsonConfig;
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.detect.microsoft.POIFSContainerDetector;
 import org.apache.tika.exception.EncryptedDocumentException;
 import org.apache.tika.exception.TikaException;
@@ -65,6 +65,7 @@ import org.apache.tika.utils.StringUtils;
 /**
  * Defines a Microsoft document content extractor.
  */
+@TikaComponent
 public class OfficeParser extends AbstractOfficeParser {
 
     /**
@@ -84,6 +85,17 @@ public class OfficeParser extends AbstractOfficeParser {
                     POIFSDocumentType.OUTLOOK.type, POIFSDocumentType.SOLIDWORKS_PART.type,
                     POIFSDocumentType.SOLIDWORKS_ASSEMBLY.type,
                     POIFSDocumentType.SOLIDWORKS_DRAWING.type)));
+
+    public OfficeParser() {
+    }
+
+    public OfficeParser(OfficeParserConfig config) {
+        setDefaultOfficeParserConfig(config);
+    }
+
+    public OfficeParser(JsonConfig jsonConfig) {
+        this(ConfigDeserializer.buildConfig(jsonConfig, OfficeParserConfig.class));
+    }
 
     /**
      * Helper to extract macros from an NPOIFS/vbaProject.bin
@@ -117,7 +129,7 @@ public class OfficeParser extends AbstractOfficeParser {
             if (embeddedDocumentExtractor.shouldParseEmbedded(m)) {
                 embeddedDocumentExtractor.parseEmbedded(
                         //pass in space character so that we don't trigger a zero-byte exception
-                        TikaInputStream.get(new byte[]{'\u0020'}), xhtml, m, true);
+                        TikaInputStream.get(new byte[]{'\u0020'}), xhtml, m, new ParseContext(), true);
             }
             return;
         }
@@ -131,7 +143,7 @@ public class OfficeParser extends AbstractOfficeParser {
             }
             if (embeddedDocumentExtractor.shouldParseEmbedded(m)) {
                 try (TikaInputStream tis = TikaInputStream.get(e.getValue().getBytes(StandardCharsets.UTF_8))) {
-                    embeddedDocumentExtractor.parseEmbedded(tis, xhtml, m, true);
+                    embeddedDocumentExtractor.parseEmbedded(tis, xhtml, m, new ParseContext(), true);
                 }
             }
         }
@@ -144,7 +156,7 @@ public class OfficeParser extends AbstractOfficeParser {
     /**
      * Extracts properties and text from an MS Document input stream
      */
-    public void parse(InputStream stream, ContentHandler handler, Metadata metadata,
+    public void parse(TikaInputStream tis, ContentHandler handler, Metadata metadata,
                       ParseContext context) throws IOException, SAXException, TikaException {
 
         configure(context);
@@ -152,32 +164,25 @@ public class OfficeParser extends AbstractOfficeParser {
         xhtml.startDocument();
 
         final DirectoryNode root;
-        TikaInputStream tstream = TikaInputStream.cast(stream);
-        POIFSFileSystem mustCloseFs = null;
         boolean isDirectoryNode = false;
+        tis.setCloseShield();
         try {
-            if (tstream == null) {
-                mustCloseFs = new POIFSFileSystem(CloseShieldInputStream.wrap(stream));
-                root = mustCloseFs.getRoot();
+            final Object container = tis.getOpenContainer();
+            if (container instanceof POIFSFileSystem) {
+                root = ((POIFSFileSystem) container).getRoot();
+            } else if (container instanceof DirectoryNode) {
+                root = (DirectoryNode) container;
+                isDirectoryNode = true;
             } else {
-                final Object container = tstream.getOpenContainer();
-                if (container instanceof POIFSFileSystem) {
-                    root = ((POIFSFileSystem) container).getRoot();
-                } else if (container instanceof DirectoryNode) {
-                    root = (DirectoryNode) container;
-                    isDirectoryNode = true;
+                POIFSFileSystem fs = null;
+                if (tis.hasFile()) {
+                    fs = new POIFSFileSystem(tis.getFile(), true);
                 } else {
-                    POIFSFileSystem fs = null;
-                    if (tstream.hasFile()) {
-                        fs = new POIFSFileSystem(tstream.getFile(), true);
-                    } else {
-                        fs = new POIFSFileSystem(CloseShieldInputStream.wrap(tstream));
-                    }
-                    //tstream will close the fs, no need to close this below
-                    tstream.setOpenContainer(fs);
-                    root = fs.getRoot();
-
+                    fs = new POIFSFileSystem(tis);
                 }
+                //stream will close the fs, no need to close this below
+                tis.setOpenContainer(fs);
+                root = fs.getRoot();
             }
             parse(root, context, metadata, xhtml);
             OfficeParserConfig officeParserConfig = context.get(OfficeParserConfig.class);
@@ -188,16 +193,15 @@ public class OfficeParser extends AbstractOfficeParser {
 
                 //We might consider not bothering to check for macros in root,
                 //if we know we're processing ppt based on content-type identified in metadata
-                if (! isDirectoryNode) {
+                if (!isDirectoryNode) {
                     // if the "root" is a directory node, we assume that the macros have already
                     // been extracted from the parent's fileSystem -- TIKA-4116
-                    extractMacros(root.getFileSystem(), xhtml,
-                            EmbeddedDocumentUtil.getEmbeddedDocumentExtractor(context));
+                    extractMacros(root.getFileSystem(), xhtml, EmbeddedDocumentUtil.getEmbeddedDocumentExtractor(context));
                 }
 
             }
         } finally {
-            IOUtils.closeQuietly(mustCloseFs);
+            tis.removeCloseShield();
         }
         xhtml.endDocument();
     }
@@ -272,7 +276,7 @@ public class OfficeParser extends AbstractOfficeParser {
                         throw new EncryptedDocumentException();
                     }
 
-                    // Decrypt the OLE2 stream, and delegate the resulting OOXML
+                    // Decrypt the OLE2 tis, and delegate the resulting OOXML
                     //  file to the regular OOXML parser for normal handling
                     OOXMLParser parser = new OOXMLParser();
                     try (TikaInputStream tis = TikaInputStream.get(d.getDataStream(root))) {

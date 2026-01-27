@@ -24,10 +24,10 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;
-import org.apache.tika.pipes.core.FetchEmitTuple;
-import org.apache.tika.pipes.core.emitter.EmitData;
-import org.apache.tika.serialization.MetadataSerializer;
-import org.apache.tika.serialization.ParseContextSerializer;
+import org.apache.tika.pipes.api.FetchEmitTuple;
+import org.apache.tika.pipes.core.emitter.EmitDataImpl;
+import org.apache.tika.serialization.serdes.MetadataSerializer;
+import org.apache.tika.serialization.serdes.ParseContextSerializer;
 
 public class JsonEmitData {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -40,7 +40,7 @@ public class JsonEmitData {
         OBJECT_MAPPER.registerModule(module);
     }
 
-    public static void toJson(EmitData emitData, Writer writer) throws IOException {
-        OBJECT_MAPPER.writeValue(writer, emitData);
+    public static void toJson(EmitDataImpl emitDataTuple, Writer writer) throws IOException {
+        OBJECT_MAPPER.writeValue(writer, emitDataTuple);
     }
 }

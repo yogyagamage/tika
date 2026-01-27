@@ -17,7 +17,6 @@
 package org.apache.tika.parser.font;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,7 +27,9 @@ import org.apache.fontbox.afm.FontMetrics;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.exception.TikaException;
+import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.Property;
 import org.apache.tika.metadata.TikaCoreProperties;
@@ -40,6 +41,7 @@ import org.apache.tika.sax.XHTMLContentHandler;
 /**
  * Parser for AFM Font Files
  */
+@TikaComponent
 public class AdobeFontMetricParser implements Parser {
     // TIKA-1325 Replace these with properties, from a well known standard
     static final String MET_AVG_CHAR_WIDTH = "AvgCharacterWidth";
@@ -64,10 +66,10 @@ public class AdobeFontMetricParser implements Parser {
         return SUPPORTED_TYPES;
     }
 
-    public void parse(InputStream stream, ContentHandler handler, Metadata metadata,
+    public void parse(TikaInputStream tis, ContentHandler handler, Metadata metadata,
                       ParseContext context) throws IOException, SAXException, TikaException {
         FontMetrics fontMetrics;
-        AFMParser parser = new AFMParser(stream);
+        AFMParser parser = new AFMParser(tis);
 
         // Have FontBox process the file
         fontMetrics = parser.parse();

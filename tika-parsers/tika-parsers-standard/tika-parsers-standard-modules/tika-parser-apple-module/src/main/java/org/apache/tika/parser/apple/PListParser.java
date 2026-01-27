@@ -17,7 +17,6 @@
 package org.apache.tika.parser.apple;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -43,6 +42,7 @@ import com.dd.plist.UID;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.detect.apple.BPListDetector;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.extractor.EmbeddedDocumentExtractor;
@@ -63,6 +63,7 @@ import org.apache.tika.sax.XHTMLContentHandler;
  *
  * @since 1.25
  */
+@TikaComponent
 public class PListParser implements Parser {
 
     private static final String ARR = "array";
@@ -87,7 +88,7 @@ public class PListParser implements Parser {
     }
 
     @Override
-    public void parse(InputStream stream, ContentHandler handler, Metadata metadata,
+    public void parse(TikaInputStream tis, ContentHandler handler, Metadata metadata,
                       ParseContext context) throws IOException, SAXException, TikaException {
 
         EmbeddedDocumentExtractor embeddedDocumentExtractor =
@@ -96,16 +97,14 @@ public class PListParser implements Parser {
         NSObject rootObj = null;
         //if this already went through the PListDetector,
         //there should be an NSObject in the open container
-        if (stream instanceof TikaInputStream) {
-            rootObj = (NSObject) ((TikaInputStream) stream).getOpenContainer();
-        }
+        rootObj = (NSObject) tis.getOpenContainer();
 
         if (rootObj == null) {
             try {
-                if (stream instanceof TikaInputStream && ((TikaInputStream) stream).hasFile()) {
-                    rootObj = PropertyListParser.parse(((TikaInputStream) stream).getFile());
+                if (tis.hasFile()) {
+                    rootObj = PropertyListParser.parse(tis.getFile());
                 } else {
-                    rootObj = PropertyListParser.parse(stream);
+                    rootObj = PropertyListParser.parse(tis);
                 }
             } catch (PropertyListFormatException | ParseException |
                     ParserConfigurationException e) {
@@ -199,7 +198,7 @@ public class PListParser implements Parser {
 
         try (TikaInputStream tis = TikaInputStream.get(value.bytes())) {
             state.embeddedDocumentExtractor
-                    .parseEmbedded(tis, state.xhtml, embeddedMetadata, true);
+                    .parseEmbedded(tis, state.xhtml, embeddedMetadata, new ParseContext(), true);
         }
     }
 

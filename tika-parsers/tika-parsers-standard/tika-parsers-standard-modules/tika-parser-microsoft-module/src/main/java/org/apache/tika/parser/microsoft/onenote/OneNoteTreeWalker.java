@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.tika.parser.microsoft.onenote;
 
 import java.io.IOException;
@@ -342,7 +341,7 @@ class OneNoteTreeWalker {
     }
 
     private void handleEmbedded(int length) throws TikaException, IOException, SAXException {
-        TikaInputStream stream = null;
+        TikaInputStream tis = null;
         ByteBuffer buf;
         try {
             buf = ByteBuffer.allocate(length);
@@ -353,16 +352,17 @@ class OneNoteTreeWalker {
             return;
         }
         Metadata embeddedMetadata = new Metadata();
+        ParseContext parseContext = new ParseContext();
         try {
             AttributesImpl attributes = new AttributesImpl();
             attributes.addAttribute("", "class", "class", "CDATA", "embedded");
             xhtml.startElement("div", attributes);
             xhtml.endElement("div");
-            stream = TikaInputStream.get(buf.array());
-            embeddedDocumentExtractor.parseEmbedded(stream, new EmbeddedContentHandler(xhtml),
-                    embeddedMetadata, false);
+            tis = TikaInputStream.get(buf.array());
+            embeddedDocumentExtractor.parseEmbedded(tis, new EmbeddedContentHandler(xhtml),
+                    embeddedMetadata, parseContext, false);
         } finally {
-            IOUtils.closeQuietly(stream);
+            IOUtils.closeQuietly(tis);
         }
 
     }

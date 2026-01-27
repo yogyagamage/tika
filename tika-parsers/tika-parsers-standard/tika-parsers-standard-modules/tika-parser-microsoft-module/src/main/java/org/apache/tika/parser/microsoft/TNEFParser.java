@@ -17,7 +17,6 @@
 package org.apache.tika.parser.microsoft;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -31,6 +30,7 @@ import org.apache.poi.hsmf.datatypes.MAPIProperty;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
+import org.apache.tika.config.TikaComponent;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.extractor.EmbeddedDocumentExtractor;
 import org.apache.tika.extractor.EmbeddedDocumentUtil;
@@ -47,6 +47,7 @@ import org.apache.tika.sax.XHTMLContentHandler;
  * A POI-powered Tika Parser for TNEF (Transport Neutral
  * Encoding Format) messages, aka winmail.dat
  */
+@TikaComponent
 public class TNEFParser implements Parser {
     private static final long serialVersionUID = 4611820730372823452L;
 
@@ -61,7 +62,7 @@ public class TNEFParser implements Parser {
     /**
      * Extracts properties and text from an MS Document input stream
      */
-    public void parse(InputStream stream, ContentHandler handler, Metadata metadata,
+    public void parse(TikaInputStream tis, ContentHandler handler, Metadata metadata,
                       ParseContext context) throws IOException, SAXException, TikaException {
 
         // We work by recursing, so get the appropriate bits
@@ -69,7 +70,7 @@ public class TNEFParser implements Parser {
                 EmbeddedDocumentUtil.getEmbeddedDocumentExtractor(context);
 
         // Ask POI to process the file for us
-        HMEFMessage msg = new HMEFMessage(stream);
+        HMEFMessage msg = new HMEFMessage(tis);
 
         // Set the message subject if known
         String subject = msg.getSubject();
@@ -84,7 +85,7 @@ public class TNEFParser implements Parser {
         if (attr != null && attr instanceof MAPIRtfAttribute) {
             MAPIRtfAttribute rtf = (MAPIRtfAttribute) attr;
             handleEmbedded("message.rtf", "application/rtf", rtf.getData(), embeddedExtractor,
-                    xhtml);
+                    xhtml, context);
         }
 
         // Recurse into each attachment in turn
@@ -99,13 +100,14 @@ public class TNEFParser implements Parser {
                     name = "unknown" + ext;
                 }
             }
-            handleEmbedded(name, null, attachment.getContents(), embeddedExtractor, xhtml);
+            handleEmbedded(name, null, attachment.getContents(), embeddedExtractor, xhtml, context);
         }
         xhtml.endDocument();
     }
 
     private void handleEmbedded(String name, String type, byte[] contents,
-                                EmbeddedDocumentExtractor embeddedExtractor, ContentHandler handler)
+                                EmbeddedDocumentExtractor embeddedExtractor, ContentHandler handler,
+                                ParseContext context)
             throws IOException, SAXException, TikaException {
         Metadata metadata = new Metadata();
         if (name != null) {
@@ -116,8 +118,10 @@ public class TNEFParser implements Parser {
         }
 
         if (embeddedExtractor.shouldParseEmbedded(metadata)) {
-            embeddedExtractor.parseEmbedded(TikaInputStream.get(contents),
-                    new EmbeddedContentHandler(handler), metadata, true);
+            try (TikaInputStream tis = TikaInputStream.get(contents)) {
+                embeddedExtractor.parseEmbedded(tis,
+                        new EmbeddedContentHandler(handler), metadata, context, true);
+            }
         }
     }
 }
