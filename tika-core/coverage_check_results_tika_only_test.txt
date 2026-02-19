@@ -1,0 +1,63 @@
+================================================================================
+JACOCO COVERAGE CHECK RESULTS
+================================================================================
+
+================================================================================
+COVERED Call Sites (Dynamically Reachable)
+================================================================================
+Count: 0
+
+No covered call sites found.
+
+================================================================================
+NOT COVERED Call Sites
+================================================================================
+Count: 8
+
+1.
+  Caller: org.apache.tika.embedder.ExternalEmbedder.lambda.multiThreadedStreamCopy(java.io.InputStream, java.io.OutputStream)
+  Target: org.apache.commons.io.IOUtils.copy(java.io.InputStream, java.io.OutputStream)
+  Details: Method multiThreadedStreamCopy has no covered lines (lines 470-489)
+
+2.
+  Caller: org.apache.tika.io.TikaInputStream.<init>(java.io.InputStream, long)
+  Target: org.apache.commons.io.input.TaggedInputStream.<init>(java.io.InputStream)
+  Details: No calls to <init> found in HTML
+
+3.
+  Caller: org.apache.tika.parser.external.ExternalParser.lambda.extractMetadata(java.io.InputStream, org.apache.tika.metadata.Metadata)
+  Target: org.apache.commons.io.IOUtils.closeQuietly(java.io.InputStream)
+  Details: Method extractMetadata has no covered lines (lines 413-end)
+
+4.
+  Caller: org.apache.tika.parser.external.ExternalParser.lambda.extractMetadata(java.io.InputStream, org.apache.tika.metadata.Metadata)
+  Target: org.apache.commons.io.IOUtils.closeQuietly(java.io.Reader)
+  Details: Method extractMetadata has no covered lines (lines 413-end)
+
+5.
+  Caller: org.apache.tika.parser.external.ExternalParser.lambda.ignoreStream(java.io.InputStream)
+  Target: org.apache.commons.io.IOUtils.closeQuietly(java.io.InputStream)
+  Details: Method ignoreStream has no covered lines (lines 109-122)
+
+6.
+  Caller: org.apache.tika.parser.external.ExternalParser.lambda.ignoreStream(java.io.InputStream)
+  Target: org.apache.commons.io.IOUtils.copy(java.io.InputStream, java.io.OutputStream)
+  Details: Method ignoreStream has no covered lines (lines 109-122)
+
+7.
+  Caller: org.apache.tika.parser.external.ExternalParser.lambda.sendInput(java.lang.Process, java.io.InputStream)
+  Target: org.apache.commons.io.IOUtils.copy(java.io.InputStream, java.io.OutputStream)
+  Details: Method sendInput has no covered lines (lines 397-412)
+
+8.
+  Caller: org.apache.tika.utils.XMLReaderUtils.lambda.static(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+  Target: org.apache.commons.io.input.UnsynchronizedByteArrayInputStream.nullInputStream()
+  Details: Method static not found in XML for class org.apache.tika.utils.XMLReaderUtils
+
+================================================================================
+SUMMARY
+================================================================================
+Total Potentially Unreachable: 8
+Actually Covered (False Positives): 0
+Not Covered : 8
+Errors: 0
