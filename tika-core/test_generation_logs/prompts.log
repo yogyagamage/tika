@@ -1,0 +1,1837 @@
+
+====================================================================================================
+PROMPTS LOG SESSION STARTED: 2026-02-21T12:00:39.451986
+====================================================================================================
+
+====================================================================================================
+TEST CASE 1/24 — ITERATION 1
+Entry Point: org.apache.tika.config.TikaActivator.start(org.osgi.framework.BundleContext)
+Third Party Method: org.osgi.util.tracker.ServiceTracker.open()
+====================================================================================================
+You are an expert Java developer who writes good unit tests in order to maximize code coverage. You are specialized in Maven and JUnit 5 testing framework.
+
+Generate a JUnit 5 test that executes the given method and reaches the specified third-party method within it. No assertions, inspections, or verifications are required. The test’s only goal is to try invoking the given third-party method during execution. 
+
+You are provided with:
+thirdPartyMethod: Fully qualified third-party method that must be invoked.
+methodSources: Complete and exact source code for the method that contains the target third-party method.
+
+thirdPartyMethod: org.osgi.util.tracker.ServiceTracker.open()
+methodSources:
+// -----------------------------------------------------< BundleActivator >
+public void start(final BundleContext context) throws Exception // PATH: Test should invoke the next ServiceTracker.open(...) [step in execution path]
+{
+    bundleContext = context;
+    detectorTracker = new ServiceTracker(context, Detector.class.getName(), this);
+    parserTracker = new ServiceTracker(context, Parser.class.getName(), this);
+    detectorTracker.open();
+    parserTracker.open();
+}
+
+Hard constraints:
+- The test class MUST NOT extend any other class (no 'extends' keyword).
+- The test class MUST NOT override any methods (no @Override annotations).
+- Do NOT create anonymous inner classes (e.g., new ClassName() { ... }).
+- Use real objects whenever possible.
+- Use mocks only when necessary, provided those objects are not directly related to the target method call.
+- Do NOT mock or spy on the class under test.
+- Do NOT alter, stub, or control the behavior of ANY method in the call path.
+- Use only the following test-related libraries: junit-jupiter, mockito-core, and mockito-junit-jupiter. Do not use any other testing or mocking libraries.
+- Do NOT add any assertions, verifications, or inspections of state/logs/output.
+- package declaration MUST be: org.apache.tika.config
+- class name MUST be: TikaActivatorstart_ServiceTrackeropenFikaTest
+- exactly ONE @Test method
+- Return ONLY the complete Java source code.
+- Do NOT include explanations, markdown, or extra text.
+
+
+Previous Maven test output (if any; fix compilation/runtime issues while keeping ALL constraints):
+
+
+
+====================================================================================================
+TEST CASE 2/24 — ITERATION 1
+Entry Point: org.apache.tika.io.BoundedInputStream.transferTo(java.io.OutputStream)
+Third Party Method: org.apache.commons.io.IOUtils.copy(java.io.InputStream, java.io.OutputStream)
+====================================================================================================
+You are an expert Java developer who writes good unit tests in order to maximize code coverage. You are specialized in Maven and JUnit 5 testing framework.
+
+Generate a JUnit 5 test that executes the given method and reaches the specified third-party method within it. No assertions, inspections, or verifications are required. The test’s only goal is to try invoking the given third-party method during execution. 
+
+You are provided with:
+thirdPartyMethod: Fully qualified third-party method that must be invoked.
+methodSources: Complete and exact source code for the method that contains the target third-party method.
+
+thirdPartyMethod: org.apache.commons.io.IOUtils.copy(java.io.InputStream, java.io.OutputStream)
+methodSources:
+@Override
+public long transferTo(OutputStream out) throws IOException {
+    // PATH: Test should invoke the next IOUtils.copy(...) [step in execution path]
+    return IOUtils.copy(this, out);
+}
+
+Hard constraints:
+- The test class MUST NOT extend any other class (no 'extends' keyword).
+- The test class MUST NOT override any methods (no @Override annotations).
+- Do NOT create anonymous inner classes (e.g., new ClassName() { ... }).
+- Use real objects whenever possible.
+- Use mocks only when necessary, provided those objects are not directly related to the target method call.
+- Do NOT mock or spy on the class under test.
+- Do NOT alter, stub, or control the behavior of ANY method in the call path.
+- Use only the following test-related libraries: junit-jupiter, mockito-core, and mockito-junit-jupiter. Do not use any other testing or mocking libraries.
+- Do NOT add any assertions, verifications, or inspections of state/logs/output.
+- package declaration MUST be: org.apache.tika.io
+- class name MUST be: BoundedInputStreamtransferTo_IOUtilscopyFikaTest
+- exactly ONE @Test method
+- Return ONLY the complete Java source code.
+- Do NOT include explanations, markdown, or extra text.
+
+
+Previous Maven test output (if any; fix compilation/runtime issues while keeping ALL constraints):
+
+
+
+====================================================================================================
+TEST CASE 3/24 — ITERATION 1
+Entry Point: org.apache.tika.config.TikaActivator.start(org.osgi.framework.BundleContext)
+Third Party Method: org.osgi.util.tracker.ServiceTracker.<init>(org.osgi.framework.BundleContext, java.lang.String, org.osgi.util.tracker.ServiceTrackerCustomizer)
+====================================================================================================
+You are an expert Java developer who writes good unit tests in order to maximize code coverage. You are specialized in Maven and JUnit 5 testing framework.
+
+Generate a JUnit 5 test that executes the given method and reaches the specified third-party method within it. No assertions, inspections, or verifications are required. The test’s only goal is to try invoking the given third-party method during execution. 
+
+You are provided with:
+thirdPartyMethod: Fully qualified third-party method that must be invoked.
+methodSources: Complete and exact source code for the method that contains the target third-party method.
+
+thirdPartyMethod: org.osgi.util.tracker.ServiceTracker.<init>(org.osgi.framework.BundleContext, java.lang.String, org.osgi.util.tracker.ServiceTrackerCustomizer)
+methodSources:
+// -----------------------------------------------------< BundleActivator >
+public void start(final BundleContext context) throws Exception // PATH: Test should invoke the next new ServiceTracker(...) [step in execution path]
+{
+    bundleContext = context;
+    detectorTracker = new ServiceTracker(context, Detector.class.getName(), this);
+    parserTracker = new ServiceTracker(context, Parser.class.getName(), this);
+    detectorTracker.open();
+    parserTracker.open();
+}
+
+Hard constraints:
+- The test class MUST NOT extend any other class (no 'extends' keyword).
+- The test class MUST NOT override any methods (no @Override annotations).
+- Do NOT create anonymous inner classes (e.g., new ClassName() { ... }).
+- Use real objects whenever possible.
+- Use mocks only when necessary, provided those objects are not directly related to the target method call.
+- Do NOT mock or spy on the class under test.
+- Do NOT alter, stub, or control the behavior of ANY method in the call path.
+- Use only the following test-related libraries: junit-jupiter, mockito-core, and mockito-junit-jupiter. Do not use any other testing or mocking libraries.
+- Do NOT add any assertions, verifications, or inspections of state/logs/output.
+- package declaration MUST be: org.apache.tika.config
+- class name MUST be: TikaActivatorstart_ServiceTrackermethodFikaTest
+- exactly ONE @Test method
+- Return ONLY the complete Java source code.
+- Do NOT include explanations, markdown, or extra text.
+
+
+Previous Maven test output (if any; fix compilation/runtime issues while keeping ALL constraints):
+
+
+
+====================================================================================================
+TEST CASE 4/24 — ITERATION 1
+Entry Point: org.apache.tika.parser.NetworkParser.ParsingTask.run()
+Third Party Method: org.apache.commons.io.IOUtils.copy(java.io.InputStream, java.io.OutputStream)
+====================================================================================================
+You are an expert Java developer who writes good unit tests in order to maximize code coverage. You are specialized in Maven and JUnit 5 testing framework.
+
+Generate a JUnit 5 test that executes the given method and reaches the specified third-party method within it. No assertions, inspections, or verifications are required. The test’s only goal is to try invoking the given third-party method during execution. 
+
+You are provided with:
+thirdPartyMethod: Fully qualified third-party method that must be invoked.
+methodSources: Complete and exact source code for the method that contains the target third-party method.
+
+thirdPartyMethod: org.apache.commons.io.IOUtils.copy(java.io.InputStream, java.io.OutputStream)
+methodSources:
+// ----------------------------------------------------------<Runnable>
+public void run() {
+    try {
+        try // PATH: Test should invoke the next IOUtils.copy(...) [step in execution path]
+        {
+            IOUtils.copy(input, output);
+        } finally {
+            output.close();
+        }
+    } catch (Exception e) {
+        exception = e;
+    }
+}
+
+Hard constraints:
+- The test class MUST NOT extend any other class (no 'extends' keyword).
+- The test class MUST NOT override any methods (no @Override annotations).
+- Do NOT create anonymous inner classes (e.g., new ClassName() { ... }).
+- Use real objects whenever possible.
+- Use mocks only when necessary, provided those objects are not directly related to the target method call.
+- Do NOT mock or spy on the class under test.
+- Do NOT alter, stub, or control the behavior of ANY method in the call path.
+- Use only the following test-related libraries: junit-jupiter, mockito-core, and mockito-junit-jupiter. Do not use any other testing or mocking libraries.
+- Do NOT add any assertions, verifications, or inspections of state/logs/output.
+- package declaration MUST be: org.apache.tika.parser
+- class name MUST be: ParsingTaskrun_IOUtilscopyFikaTest
+- exactly ONE @Test method
+- Return ONLY the complete Java source code.
+- Do NOT include explanations, markdown, or extra text.
+
+
+Previous Maven test output (if any; fix compilation/runtime issues while keeping ALL constraints):
+
+
+
+====================================================================================================
+TEST CASE 5/24 — ITERATION 1
+Entry Point: org.apache.tika.io.FileSource.skip(long)
+Third Party Method: org.apache.commons.io.IOUtils.skip(java.io.InputStream, long)
+====================================================================================================
+You are an expert Java developer who writes good unit tests in order to maximize code coverage. You are specialized in Maven and JUnit 5 testing framework.
+
+Generate a JUnit 5 test that executes the given method and reaches the specified third-party method within it. No assertions, inspections, or verifications are required. The test’s only goal is to try invoking the given third-party method during execution. 
+
+You are provided with:
+thirdPartyMethod: Fully qualified third-party method that must be invoked.
+methodSources: Complete and exact source code for the method that contains the target third-party method.
+
+thirdPartyMethod: org.apache.commons.io.IOUtils.skip(java.io.InputStream, long)
+methodSources:
+@Override
+public long skip(long n) throws IOException {
+    // PATH: Test should invoke the next IOUtils.skip(...) [step in execution path]
+    long skipped = IOUtils.skip(currentStream, n);
+    position += skipped;
+    return skipped;
+}
+
+Hard constraints:
+- The test class MUST NOT extend any other class (no 'extends' keyword).
+- The test class MUST NOT override any methods (no @Override annotations).
+- Do NOT create anonymous inner classes (e.g., new ClassName() { ... }).
+- Use real objects whenever possible.
+- Use mocks only when necessary, provided those objects are not directly related to the target method call.
+- Do NOT mock or spy on the class under test.
+- Do NOT alter, stub, or control the behavior of ANY method in the call path.
+- Use only the following test-related libraries: junit-jupiter, mockito-core, and mockito-junit-jupiter. Do not use any other testing or mocking libraries.
+- Do NOT add any assertions, verifications, or inspections of state/logs/output.
+- package declaration MUST be: org.apache.tika.io
+- class name MUST be: FileSourceskip_IOUtilsskipFikaTest
+- exactly ONE @Test method
+- Return ONLY the complete Java source code.
+- Do NOT include explanations, markdown, or extra text.
+
+
+Previous Maven test output (if any; fix compilation/runtime issues while keeping ALL constraints):
+
+
+
+====================================================================================================
+TEST CASE 6/24 — ITERATION 1
+Entry Point: org.apache.tika.config.TikaActivator.removedService(org.osgi.framework.ServiceReference, java.lang.Object)
+Third Party Method: org.osgi.framework.BundleContext.ungetService(org.osgi.framework.ServiceReference)
+====================================================================================================
+You are an expert Java developer who writes good unit tests in order to maximize code coverage. You are specialized in Maven and JUnit 5 testing framework.
+
+Generate a JUnit 5 test that executes the given method and reaches the specified third-party method within it. No assertions, inspections, or verifications are required. The test’s only goal is to try invoking the given third-party method during execution. 
+
+You are provided with:
+thirdPartyMethod: Fully qualified third-party method that must be invoked.
+methodSources: Complete and exact source code for the method that contains the target third-party method.
+
+thirdPartyMethod: org.osgi.framework.BundleContext.ungetService(org.osgi.framework.ServiceReference)
+methodSources:
+public void removedService(ServiceReference reference, Object service) // PATH: Test should invoke the next BundleContext.ungetService(...) [step in execution path]
+{
+    ServiceLoader.removeService(reference);
+    bundleContext.ungetService(reference);
+}
+
+Hard constraints:
+- The test class MUST NOT extend any other class (no 'extends' keyword).
+- The test class MUST NOT override any methods (no @Override annotations).
+- Do NOT create anonymous inner classes (e.g., new ClassName() { ... }).
+- Use real objects whenever possible.
+- Use mocks only when necessary, provided those objects are not directly related to the target method call.
+- Do NOT mock or spy on the class under test.
+- Do NOT alter, stub, or control the behavior of ANY method in the call path.
+- Use only the following test-related libraries: junit-jupiter, mockito-core, and mockito-junit-jupiter. Do not use any other testing or mocking libraries.
+- Do NOT add any assertions, verifications, or inspections of state/logs/output.
+- package declaration MUST be: org.apache.tika.config
+- class name MUST be: TikaActivatorremovedService_BundleContextungetServiceFikaTest
+- exactly ONE @Test method
+- Return ONLY the complete Java source code.
+- Do NOT include explanations, markdown, or extra text.
+
+
+Previous Maven test output (if any; fix compilation/runtime issues while keeping ALL constraints):
+
+
+
+====================================================================================================
+TEST CASE 7/24 — ITERATION 1
+Entry Point: org.apache.tika.config.TikaActivator.stop(org.osgi.framework.BundleContext)
+Third Party Method: org.osgi.util.tracker.ServiceTracker.close()
+====================================================================================================
+You are an expert Java developer who writes good unit tests in order to maximize code coverage. You are specialized in Maven and JUnit 5 testing framework.
+
+Generate a JUnit 5 test that executes the given method and reaches the specified third-party method within it. No assertions, inspections, or verifications are required. The test’s only goal is to try invoking the given third-party method during execution. 
+
+You are provided with:
+thirdPartyMethod: Fully qualified third-party method that must be invoked.
+methodSources: Complete and exact source code for the method that contains the target third-party method.
+
+thirdPartyMethod: org.osgi.util.tracker.ServiceTracker.close()
+methodSources:
+public void stop(BundleContext context) throws Exception // PATH: Test should invoke the next ServiceTracker.close(...) [step in execution path]
+{
+    parserTracker.close();
+    detectorTracker.close();
+}
+
+Hard constraints:
+- The test class MUST NOT extend any other class (no 'extends' keyword).
+- The test class MUST NOT override any methods (no @Override annotations).
+- Do NOT create anonymous inner classes (e.g., new ClassName() { ... }).
+- Use real objects whenever possible.
+- Use mocks only when necessary, provided those objects are not directly related to the target method call.
+- Do NOT mock or spy on the class under test.
+- Do NOT alter, stub, or control the behavior of ANY method in the call path.
+- Use only the following test-related libraries: junit-jupiter, mockito-core, and mockito-junit-jupiter. Do not use any other testing or mocking libraries.
+- Do NOT add any assertions, verifications, or inspections of state/logs/output.
+- package declaration MUST be: org.apache.tika.config
+- class name MUST be: TikaActivatorstop_ServiceTrackercloseFikaTest
+- exactly ONE @Test method
+- Return ONLY the complete Java source code.
+- Do NOT include explanations, markdown, or extra text.
+
+
+Previous Maven test output (if any; fix compilation/runtime issues while keeping ALL constraints):
+
+
+
+====================================================================================================
+TEST CASE 8/24 — ITERATION 1
+Entry Point: org.apache.tika.io.TikaInputStream.skip(long)
+Third Party Method: org.apache.commons.io.IOUtils.skip(java.io.InputStream, long)
+====================================================================================================
+You are an expert Java developer who writes good unit tests in order to maximize code coverage. You are specialized in Maven and JUnit 5 testing framework.
+
+Generate a JUnit 5 test that executes the given method and reaches the specified third-party method within it. No assertions, inspections, or verifications are required. The test’s only goal is to try invoking the given third-party method during execution. 
+
+You are provided with:
+thirdPartyMethod: Fully qualified third-party method that must be invoked.
+methodSources: Complete and exact source code for the method that contains the target third-party method.
+
+thirdPartyMethod: org.apache.commons.io.IOUtils.skip(java.io.InputStream, long)
+methodSources:
+// ========== InputStream Methods ==========
+/**
+ * Skips up to {@code n} bytes. Returns the actual number of bytes skipped,
+ * which may be less than requested if the end of stream is reached.
+ * <p>
+ * This method does NOT throw {@link java.io.EOFException} if fewer bytes
+ * are available. Callers must check the return value to determine how many
+ * bytes were actually skipped.
+ *
+ * @param n
+ * 		the number of bytes to skip
+ * @return the actual number of bytes skipped (may be less than {@code n})
+ */
+@Override
+public long skip(long n) throws IOException {
+    // PATH: Test should invoke the next IOUtils.skip(...) [step in execution path]
+    long skipped = IOUtils.skip(in, n);
+    position += skipped;
+    return skipped;
+}
+
+Hard constraints:
+- The test class MUST NOT extend any other class (no 'extends' keyword).
+- The test class MUST NOT override any methods (no @Override annotations).
+- Do NOT create anonymous inner classes (e.g., new ClassName() { ... }).
+- Use real objects whenever possible.
+- Use mocks only when necessary, provided those objects are not directly related to the target method call.
+- Do NOT mock or spy on the class under test.
+- Do NOT alter, stub, or control the behavior of ANY method in the call path.
+- Use only the following test-related libraries: junit-jupiter, mockito-core, and mockito-junit-jupiter. Do not use any other testing or mocking libraries.
+- Do NOT add any assertions, verifications, or inspections of state/logs/output.
+- package declaration MUST be: org.apache.tika.io
+- class name MUST be: TikaInputStreamskip_IOUtilsskipFikaTest
+- exactly ONE @Test method
+- Return ONLY the complete Java source code.
+- Do NOT include explanations, markdown, or extra text.
+
+
+Previous Maven test output (if any; fix compilation/runtime issues while keeping ALL constraints):
+
+
+
+====================================================================================================
+TEST CASE 9/24 — ITERATION 1
+Entry Point: org.apache.tika.parser.NetworkParser.parse(org.apache.tika.io.TikaInputStream, org.xml.sax.ContentHandler, org.apache.tika.metadata.Metadata, org.apache.tika.parser.ParseContext)
+Third Party Method: org.apache.commons.io.input.CloseShieldInputStream.wrap(java.io.InputStream)
+====================================================================================================
+You are an expert Java developer who writes good unit tests in order to maximize code coverage. You are specialized in Maven and JUnit 5 testing framework.
+
+Generate a JUnit 5 test that executes the given method and reaches the specified third-party method within it. No assertions, inspections, or verifications are required. The test’s only goal is to try invoking the given third-party method during execution. 
+
+You are provided with:
+thirdPartyMethod: Fully qualified third-party method that must be invoked.
+methodSources: Complete and exact source code for the method that contains the target third-party method.
+
+thirdPartyMethod: org.apache.commons.io.input.CloseShieldInputStream.wrap(java.io.InputStream)
+methodSources:
+public void parse(TikaInputStream tis, ContentHandler handler, Metadata metadata, ParseContext context) throws IOException, SAXException, TikaException {
+    if ("telnet".equals(uri.getScheme())) {
+        try (Socket socket = new Socket(uri.getHost(), uri.getPort())) {
+            new ParsingTask(tis, new FilterOutputStream(socket.getOutputStream()) {
+                @Override
+                public void close() throws IOException {
+                    socket.shutdownOutput();
+                }
+            }).parse(socket.getInputStream(), handler, metadata, context);
+        }
+    } else {
+        URL url = uri.toURL();
+        URLConnection connection = url.openConnection();
+        connection.setDoOutput(true);
+        connection.connect();
+        try (InputStream input = connection.getInputStream()) {
+            // PATH: Test should invoke the next CloseShieldInputStream.wrap(...) [step in execution path]
+            new ParsingTask(tis, connection.getOutputStream()).parse(CloseShieldInputStream.wrap(input), handler, metadata, context);
+        }
+    }
+}
+
+Hard constraints:
+- The test class MUST NOT extend any other class (no 'extends' keyword).
+- The test class MUST NOT override any methods (no @Override annotations).
+- Do NOT create anonymous inner classes (e.g., new ClassName() { ... }).
+- Use real objects whenever possible.
+- Use mocks only when necessary, provided those objects are not directly related to the target method call.
+- Do NOT mock or spy on the class under test.
+- Do NOT alter, stub, or control the behavior of ANY method in the call path.
+- Use only the following test-related libraries: junit-jupiter, mockito-core, and mockito-junit-jupiter. Do not use any other testing or mocking libraries.
+- Do NOT add any assertions, verifications, or inspections of state/logs/output.
+- package declaration MUST be: org.apache.tika.parser
+- class name MUST be: NetworkParserparse_CloseShieldInputStreamwrapFikaTest
+- exactly ONE @Test method
+- Return ONLY the complete Java source code.
+- Do NOT include explanations, markdown, or extra text.
+
+
+Previous Maven test output (if any; fix compilation/runtime issues while keeping ALL constraints):
+
+
+
+====================================================================================================
+TEST CASE 10/24 — ITERATION 1
+Entry Point: org.apache.tika.config.TikaActivator.addingService(org.osgi.framework.ServiceReference)
+Third Party Method: org.osgi.framework.BundleContext.getService(org.osgi.framework.ServiceReference)
+====================================================================================================
+You are an expert Java developer who writes good unit tests in order to maximize code coverage. You are specialized in Maven and JUnit 5 testing framework.
+
+Generate a JUnit 5 test that executes the given method and reaches the specified third-party method within it. No assertions, inspections, or verifications are required. The test’s only goal is to try invoking the given third-party method during execution. 
+
+You are provided with:
+thirdPartyMethod: Fully qualified third-party method that must be invoked.
+methodSources: Complete and exact source code for the method that contains the target third-party method.
+
+thirdPartyMethod: org.osgi.framework.BundleContext.getService(org.osgi.framework.ServiceReference)
+methodSources:
+public Object addingService(ServiceReference reference) {
+    int rank = 0;
+    Object property = reference.getProperty(Constants.SERVICE_RANKING);
+    if (property instanceof Integer) {
+        rank = ((Integer) (property));
+    }
+    // PATH: Test should invoke the next BundleContext.getService(...) [step in execution path]
+    Object service = bundleContext.getService(reference);
+    ServiceLoader.addService(reference, service, rank);
+    return service;
+}
+
+Hard constraints:
+- The test class MUST NOT extend any other class (no 'extends' keyword).
+- The test class MUST NOT override any methods (no @Override annotations).
+- Do NOT create anonymous inner classes (e.g., new ClassName() { ... }).
+- Use real objects whenever possible.
+- Use mocks only when necessary, provided those objects are not directly related to the target method call.
+- Do NOT mock or spy on the class under test.
+- Do NOT alter, stub, or control the behavior of ANY method in the call path.
+- Use only the following test-related libraries: junit-jupiter, mockito-core, and mockito-junit-jupiter. Do not use any other testing or mocking libraries.
+- Do NOT add any assertions, verifications, or inspections of state/logs/output.
+- package declaration MUST be: org.apache.tika.config
+- class name MUST be: TikaActivatoraddingService_BundleContextgetServiceFikaTest
+- exactly ONE @Test method
+- Return ONLY the complete Java source code.
+- Do NOT include explanations, markdown, or extra text.
+
+
+Previous Maven test output (if any; fix compilation/runtime issues while keeping ALL constraints):
+
+
+
+====================================================================================================
+TEST CASE 11/24 — ITERATION 1
+Entry Point: org.apache.tika.config.TikaActivator.addingService(org.osgi.framework.ServiceReference)
+Third Party Method: org.osgi.framework.ServiceReference.getProperty(java.lang.String)
+====================================================================================================
+You are an expert Java developer who writes good unit tests in order to maximize code coverage. You are specialized in Maven and JUnit 5 testing framework.
+
+Generate a JUnit 5 test that executes the given method and reaches the specified third-party method within it. No assertions, inspections, or verifications are required. The test’s only goal is to try invoking the given third-party method during execution. 
+
+You are provided with:
+thirdPartyMethod: Fully qualified third-party method that must be invoked.
+methodSources: Complete and exact source code for the method that contains the target third-party method.
+
+thirdPartyMethod: org.osgi.framework.ServiceReference.getProperty(java.lang.String)
+methodSources:
+public Object addingService(ServiceReference reference) {
+    int rank = 0;
+    // PATH: Test should invoke the next ServiceReference.getProperty(...) [step in execution path]
+    Object property = reference.getProperty(Constants.SERVICE_RANKING);
+    if (property instanceof Integer) {
+        rank = ((Integer) (property));
+    }
+    Object service = bundleContext.getService(reference);
+    ServiceLoader.addService(reference, service, rank);
+    return service;
+}
+
+Hard constraints:
+- The test class MUST NOT extend any other class (no 'extends' keyword).
+- The test class MUST NOT override any methods (no @Override annotations).
+- Do NOT create anonymous inner classes (e.g., new ClassName() { ... }).
+- Use real objects whenever possible.
+- Use mocks only when necessary, provided those objects are not directly related to the target method call.
+- Do NOT mock or spy on the class under test.
+- Do NOT alter, stub, or control the behavior of ANY method in the call path.
+- Use only the following test-related libraries: junit-jupiter, mockito-core, and mockito-junit-jupiter. Do not use any other testing or mocking libraries.
+- Do NOT add any assertions, verifications, or inspections of state/logs/output.
+- package declaration MUST be: org.apache.tika.config
+- class name MUST be: TikaActivatoraddingService_ServiceReferencegetPropertyFikaTest
+- exactly ONE @Test method
+- Return ONLY the complete Java source code.
+- Do NOT include explanations, markdown, or extra text.
+
+
+Previous Maven test output (if any; fix compilation/runtime issues while keeping ALL constraints):
+
+
+
+====================================================================================================
+TEST CASE 12/24 — ITERATION 1
+Entry Point: org.apache.tika.io.CachingSource.skip(long)
+Third Party Method: org.apache.commons.io.IOUtils.skip(java.io.InputStream, long)
+====================================================================================================
+You are an expert Java developer who writes good unit tests in order to maximize code coverage. You are specialized in Maven and JUnit 5 testing framework.
+
+Generate a JUnit 5 test that executes the given method and reaches the specified third-party method within it. No assertions, inspections, or verifications are required. The test’s only goal is to try invoking the given third-party method during execution. 
+
+You are provided with:
+thirdPartyMethod: Fully qualified third-party method that must be invoked.
+methodSources: Complete and exact source code for the method that contains the target third-party method.
+
+thirdPartyMethod: org.apache.commons.io.IOUtils.skip(java.io.InputStream, long)
+methodSources:
+@Override
+public long skip(long n) throws IOException {
+    if (fileStream != null) {
+        // PATH: Test should invoke the next IOUtils.skip(...) [step in execution path]
+        long skipped = IOUtils.skip(fileStream, n);
+        filePosition += skipped;
+        return skipped;
+    }
+    if (cachingStream != null) {
+        return cachingStream.skip(n);
+    }
+    long skipped = IOUtils.skip(passthroughStream, n);
+    passthroughPosition += skipped;
+    return skipped;
+}
+
+Hard constraints:
+- The test class MUST NOT extend any other class (no 'extends' keyword).
+- The test class MUST NOT override any methods (no @Override annotations).
+- Do NOT create anonymous inner classes (e.g., new ClassName() { ... }).
+- Use real objects whenever possible.
+- Use mocks only when necessary, provided those objects are not directly related to the target method call.
+- Do NOT mock or spy on the class under test.
+- Do NOT alter, stub, or control the behavior of ANY method in the call path.
+- Use only the following test-related libraries: junit-jupiter, mockito-core, and mockito-junit-jupiter. Do not use any other testing or mocking libraries.
+- Do NOT add any assertions, verifications, or inspections of state/logs/output.
+- package declaration MUST be: org.apache.tika.io
+- class name MUST be: CachingSourceskip_IOUtilsskipFikaTest
+- exactly ONE @Test method
+- Return ONLY the complete Java source code.
+- Do NOT include explanations, markdown, or extra text.
+
+
+Previous Maven test output (if any; fix compilation/runtime issues while keeping ALL constraints):
+
+
+
+====================================================================================================
+TEST CASE 13/24 — ITERATION 1
+Entry Point: org.apache.tika.io.FileSource.seekTo(long)
+Third Party Method: org.apache.commons.io.IOUtils.skipFully(java.io.InputStream, long)
+====================================================================================================
+You are an expert Java developer who writes good unit tests in order to maximize code coverage. You are specialized in Maven and JUnit 5 testing framework.
+
+Generate a JUnit 5 test that executes the given method and reaches the specified third-party method within it. No assertions, inspections, or verifications are required. The test’s only goal is to try invoking the given third-party method during execution. 
+
+You are provided with:
+thirdPartyMethod: Fully qualified third-party method that must be invoked.
+methodSources: Complete and exact source code for the method that contains the target third-party method.
+
+thirdPartyMethod: org.apache.commons.io.IOUtils.skipFully(java.io.InputStream, long)
+methodSources:
+@Override
+public void seekTo(long newPosition) throws IOException {
+    if (newPosition < 0) {
+        throw new IOException("Cannot seek to negative position: " + newPosition);
+    }
+    if (newPosition > length) {
+        throw new IOException((("Cannot seek past end of file. Position: " + newPosition) + ", length: ") + length);
+    }
+    // Close current stream and reopen at the beginning
+    currentStream.close();
+    currentStream = new BufferedInputStream(Files.newInputStream(path));
+    // Skip to the new position
+    if (newPosition > 0) // PATH: Test should invoke the next IOUtils.skipFully(...) [step in execution path]
+    {
+        IOUtils.skipFully(currentStream, newPosition);
+    }
+    this.position = newPosition;
+}
+
+Hard constraints:
+- The test class MUST NOT extend any other class (no 'extends' keyword).
+- The test class MUST NOT override any methods (no @Override annotations).
+- Do NOT create anonymous inner classes (e.g., new ClassName() { ... }).
+- Use real objects whenever possible.
+- Use mocks only when necessary, provided those objects are not directly related to the target method call.
+- Do NOT mock or spy on the class under test.
+- Do NOT alter, stub, or control the behavior of ANY method in the call path.
+- Use only the following test-related libraries: junit-jupiter, mockito-core, and mockito-junit-jupiter. Do not use any other testing or mocking libraries.
+- Do NOT add any assertions, verifications, or inspections of state/logs/output.
+- package declaration MUST be: org.apache.tika.io
+- class name MUST be: FileSourceseekTo_IOUtilsskipFullyFikaTest
+- exactly ONE @Test method
+- Return ONLY the complete Java source code.
+- Do NOT include explanations, markdown, or extra text.
+
+
+Previous Maven test output (if any; fix compilation/runtime issues while keeping ALL constraints):
+
+
+
+====================================================================================================
+TEST CASE 14/24 — ITERATION 1
+Entry Point: org.apache.tika.embedder.ExternalEmbedder.embed(org.apache.tika.metadata.Metadata, java.io.InputStream, java.io.OutputStream, org.apache.tika.parser.ParseContext)
+Third Party Method: org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream.Builder.get()
+====================================================================================================
+You are an expert Java developer who writes good unit tests in order to maximize code coverage. You are specialized in Maven and JUnit 5 testing framework.
+
+Generate a JUnit 5 test that executes the given method and reaches the specified third-party method within it. No assertions, inspections, or verifications are required. The test’s only goal is to try invoking the given third-party method during execution. 
+
+You are provided with:
+thirdPartyMethod: Fully qualified third-party method that must be invoked.
+methodSources: Complete and exact source code for the method that contains the target third-party method.
+
+thirdPartyMethod: org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream.Builder.get()
+methodSources:
+/**
+ * Executes the configured external command and passes the given document
+ * stream as a simple XHTML document to the given SAX content handler.
+ * Metadata is only extracted if {@link #setMetadataCommandArguments(Map)}
+ * has been called to set arguments.
+ */
+@Override
+public void embed(final Metadata metadata, final InputStream inputStream, final OutputStream outputStream, final ParseContext context) throws IOException, TikaException {
+    boolean inputToStdIn = true;
+    boolean outputFromStdOut = true;
+    boolean hasMetadataCommandArguments = (metadataCommandArguments != null) && (!metadataCommandArguments.isEmpty());
+    boolean serializeMetadataCommandArgumentsToken = false;
+    boolean replacedMetadataCommandArgumentsToken = false;
+    TikaInputStream tikaInputStream = TikaInputStream.get(inputStream);
+    File tempOutputFile = null;
+    List<String> commandMetadataSegments = null;
+    if (hasMetadataCommandArguments) {
+        commandMetadataSegments = getCommandMetadataSegments(metadata);
+    }
+    // Build our command
+    String[] origCmd = command;
+    List<String> cmd = new ArrayList<>();
+    for (String commandSegment : origCmd) {
+        if (commandSegment.contains(ExternalParser.INPUT_FILE_TOKEN)) {
+            commandSegment = commandSegment.replace(ExternalParser.INPUT_FILE_TOKEN, tikaInputStream.getFile().toString());
+            inputToStdIn = false;
+        }
+        if (commandSegment.contains(ExternalParser.OUTPUT_FILE_TOKEN)) {
+            tempOutputFile = tmp.createTemporaryFile();
+            commandSegment = commandSegment.replace(ExternalParser.OUTPUT_FILE_TOKEN, tempOutputFile.toString());
+            outputFromStdOut = false;
+        }
+        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {
+            serializeMetadataCommandArgumentsToken = true;
+        }
+        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_TOKEN)) {
+            if (hasMetadataCommandArguments) {
+                cmd.addAll(commandMetadataSegments);
+            }
+            replacedMetadataCommandArgumentsToken = true;
+        } else {
+            cmd.add(commandSegment);
+        }
+    }
+    if (hasMetadataCommandArguments) {
+        if (serializeMetadataCommandArgumentsToken) {
+            // Find all metadata tokens and replace with encapsulated metadata
+            int i = 0;
+            for (String commandSegment : cmd) {
+                if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {
+                    commandSegment = commandSegment.replace(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN, serializeMetadata(commandMetadataSegments));
+                    cmd.set(i, commandSegment);
+                }
+                i++;
+            }
+        } else if ((!replacedMetadataCommandArgumentsToken) && (!serializeMetadataCommandArgumentsToken)) {
+            // Tack metadata onto the end of the cmd as arguments
+            cmd.addAll(commandMetadataSegments);
+        }
+    }
+    // Execute
+    Process process;
+    if (cmd.toArray().length == 1) {
+        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new)[0]);
+    } else {
+        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new));
+    }
+    // PATH: Test should invoke the next UnsynchronizedByteArrayOutputStream$Builder.get(...) [step in execution path]
+    UnsynchronizedByteArrayOutputStream stdErrOutputStream = UnsynchronizedByteArrayOutputStream.builder().get();
+    try {
+        sendStdErrToOutputStream(process, stdErrOutputStream);
+        if (inputToStdIn) {
+            sendInputStreamToStdIn(inputStream, process);
+        } else {
+            // We're not writing to std in this case so close
+            process.getOutputStream().close();
+        }
+        if (outputFromStdOut) {
+            sendStdOutToOutputStream(process, outputStream);
+        } else {
+            tmp.dispose();
+            try {
+                process.waitFor();
+            } catch (InterruptedException ignore) {
+            }
+            // The command is finished, read the output file into the given output stream
+            InputStream tempOutputFileInputStream = TikaInputStream.get(tempOutputFile.toPath());
+            IOUtils.copy(tempOutputFileInputStream, outputStream);
+        }
+    } finally {
+        if (outputFromStdOut) {
+            try {
+                process.waitFor();
+            } catch (InterruptedException ignore) {
+            }
+        } else {
+            try {
+                // Clean up temp output files
+                tempOutputFile.delete();
+            } catch (Exception e) {
+                // swallow
+            }
+        }
+        if (!inputToStdIn) {
+            // Close input file (and delete if created by up
+            // TemporaryResources.createTemporaryFile)
+            IOUtils.closeQuietly(tikaInputStream);
+        }
+        IOUtils.closeQuietly(outputStream);
+        IOUtils.closeQuietly(stdErrOutputStream);
+        if (process.exitValue() != 0) {
+            throw new TikaException(((("There was an error executing the command line" + "
+Executable Command:
+
+") + cmd) + "
+Executable Error:
+
+") + stdErrOutputStream.toString(UTF_8.name()));
+        }
+    }
+}
+
+Hard constraints:
+- The test class MUST NOT extend any other class (no 'extends' keyword).
+- The test class MUST NOT override any methods (no @Override annotations).
+- Do NOT create anonymous inner classes (e.g., new ClassName() { ... }).
+- Use real objects whenever possible.
+- Use mocks only when necessary, provided those objects are not directly related to the target method call.
+- Do NOT mock or spy on the class under test.
+- Do NOT alter, stub, or control the behavior of ANY method in the call path.
+- Use only the following test-related libraries: junit-jupiter, mockito-core, and mockito-junit-jupiter. Do not use any other testing or mocking libraries.
+- Do NOT add any assertions, verifications, or inspections of state/logs/output.
+- package declaration MUST be: org.apache.tika.embedder
+- class name MUST be: ExternalEmbedderembed_BuildergetFikaTest
+- exactly ONE @Test method
+- Return ONLY the complete Java source code.
+- Do NOT include explanations, markdown, or extra text.
+
+
+Previous Maven test output (if any; fix compilation/runtime issues while keeping ALL constraints):
+
+
+
+====================================================================================================
+TEST CASE 15/24 — ITERATION 1
+Entry Point: org.apache.tika.embedder.ExternalEmbedder.embed(org.apache.tika.metadata.Metadata, java.io.InputStream, java.io.OutputStream, org.apache.tika.parser.ParseContext)
+Third Party Method: org.apache.commons.io.IOUtils.closeQuietly(java.io.InputStream)
+====================================================================================================
+You are an expert Java developer who writes good unit tests in order to maximize code coverage. You are specialized in Maven and JUnit 5 testing framework.
+
+Generate a JUnit 5 test that executes the given method and reaches the specified third-party method within it. No assertions, inspections, or verifications are required. The test’s only goal is to try invoking the given third-party method during execution. 
+
+You are provided with:
+thirdPartyMethod: Fully qualified third-party method that must be invoked.
+methodSources: Complete and exact source code for the method that contains the target third-party method.
+
+thirdPartyMethod: org.apache.commons.io.IOUtils.closeQuietly(java.io.InputStream)
+methodSources:
+/**
+ * Executes the configured external command and passes the given document
+ * stream as a simple XHTML document to the given SAX content handler.
+ * Metadata is only extracted if {@link #setMetadataCommandArguments(Map)}
+ * has been called to set arguments.
+ */
+@Override
+public void embed(final Metadata metadata, final InputStream inputStream, final OutputStream outputStream, final ParseContext context) throws IOException, TikaException {
+    boolean inputToStdIn = true;
+    boolean outputFromStdOut = true;
+    boolean hasMetadataCommandArguments = (metadataCommandArguments != null) && (!metadataCommandArguments.isEmpty());
+    boolean serializeMetadataCommandArgumentsToken = false;
+    boolean replacedMetadataCommandArgumentsToken = false;
+    TikaInputStream tikaInputStream = TikaInputStream.get(inputStream);
+    File tempOutputFile = null;
+    List<String> commandMetadataSegments = null;
+    if (hasMetadataCommandArguments) {
+        commandMetadataSegments = getCommandMetadataSegments(metadata);
+    }
+    // Build our command
+    String[] origCmd = command;
+    List<String> cmd = new ArrayList<>();
+    for (String commandSegment : origCmd) {
+        if (commandSegment.contains(ExternalParser.INPUT_FILE_TOKEN)) {
+            commandSegment = commandSegment.replace(ExternalParser.INPUT_FILE_TOKEN, tikaInputStream.getFile().toString());
+            inputToStdIn = false;
+        }
+        if (commandSegment.contains(ExternalParser.OUTPUT_FILE_TOKEN)) {
+            tempOutputFile = tmp.createTemporaryFile();
+            commandSegment = commandSegment.replace(ExternalParser.OUTPUT_FILE_TOKEN, tempOutputFile.toString());
+            outputFromStdOut = false;
+        }
+        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {
+            serializeMetadataCommandArgumentsToken = true;
+        }
+        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_TOKEN)) {
+            if (hasMetadataCommandArguments) {
+                cmd.addAll(commandMetadataSegments);
+            }
+            replacedMetadataCommandArgumentsToken = true;
+        } else {
+            cmd.add(commandSegment);
+        }
+    }
+    if (hasMetadataCommandArguments) {
+        if (serializeMetadataCommandArgumentsToken) {
+            // Find all metadata tokens and replace with encapsulated metadata
+            int i = 0;
+            for (String commandSegment : cmd) {
+                if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {
+                    commandSegment = commandSegment.replace(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN, serializeMetadata(commandMetadataSegments));
+                    cmd.set(i, commandSegment);
+                }
+                i++;
+            }
+        } else if ((!replacedMetadataCommandArgumentsToken) && (!serializeMetadataCommandArgumentsToken)) {
+            // Tack metadata onto the end of the cmd as arguments
+            cmd.addAll(commandMetadataSegments);
+        }
+    }
+    // Execute
+    Process process;
+    if (cmd.toArray().length == 1) {
+        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new)[0]);
+    } else {
+        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new));
+    }
+    UnsynchronizedByteArrayOutputStream stdErrOutputStream = UnsynchronizedByteArrayOutputStream.builder().get();
+    try {
+        sendStdErrToOutputStream(process, stdErrOutputStream);
+        if (inputToStdIn) {
+            sendInputStreamToStdIn(inputStream, process);
+        } else {
+            // We're not writing to std in this case so close
+            process.getOutputStream().close();
+        }
+        if (outputFromStdOut) {
+            sendStdOutToOutputStream(process, outputStream);
+        } else {
+            tmp.dispose();
+            try {
+                process.waitFor();
+            } catch (InterruptedException ignore) {
+            }
+            // The command is finished, read the output file into the given output stream
+            InputStream tempOutputFileInputStream = TikaInputStream.get(tempOutputFile.toPath());
+            IOUtils.copy(tempOutputFileInputStream, outputStream);
+        }
+    } finally {
+        if (outputFromStdOut) {
+            try {
+                process.waitFor();
+            } catch (InterruptedException ignore) {
+            }
+        } else {
+            try {
+                // Clean up temp output files
+                tempOutputFile.delete();
+            } catch (Exception e) {
+                // swallow
+            }
+        }
+        if (!inputToStdIn) // PATH: Test should invoke the next IOUtils.closeQuietly(...) [step in execution path]
+        {
+            // Close input file (and delete if created by up
+            // TemporaryResources.createTemporaryFile)
+            IOUtils.closeQuietly(tikaInputStream);
+        }
+        IOUtils.closeQuietly(outputStream);
+        IOUtils.closeQuietly(stdErrOutputStream);
+        if (process.exitValue() != 0) {
+            throw new TikaException(((("There was an error executing the command line" + "
+Executable Command:
+
+") + cmd) + "
+Executable Error:
+
+") + stdErrOutputStream.toString(UTF_8.name()));
+        }
+    }
+}
+
+Hard constraints:
+- The test class MUST NOT extend any other class (no 'extends' keyword).
+- The test class MUST NOT override any methods (no @Override annotations).
+- Do NOT create anonymous inner classes (e.g., new ClassName() { ... }).
+- Use real objects whenever possible.
+- Use mocks only when necessary, provided those objects are not directly related to the target method call.
+- Do NOT mock or spy on the class under test.
+- Do NOT alter, stub, or control the behavior of ANY method in the call path.
+- Use only the following test-related libraries: junit-jupiter, mockito-core, and mockito-junit-jupiter. Do not use any other testing or mocking libraries.
+- Do NOT add any assertions, verifications, or inspections of state/logs/output.
+- package declaration MUST be: org.apache.tika.embedder
+- class name MUST be: ExternalEmbedderembed_IOUtilscloseQuietlyFikaTest
+- exactly ONE @Test method
+- Return ONLY the complete Java source code.
+- Do NOT include explanations, markdown, or extra text.
+
+
+Previous Maven test output (if any; fix compilation/runtime issues while keeping ALL constraints):
+
+
+
+====================================================================================================
+TEST CASE 16/24 — ITERATION 1
+Entry Point: org.apache.tika.embedder.ExternalEmbedder.embed(org.apache.tika.metadata.Metadata, java.io.InputStream, java.io.OutputStream, org.apache.tika.parser.ParseContext)
+Third Party Method: org.apache.commons.io.IOUtils.closeQuietly(java.io.OutputStream)
+====================================================================================================
+You are an expert Java developer who writes good unit tests in order to maximize code coverage. You are specialized in Maven and JUnit 5 testing framework.
+
+Generate a JUnit 5 test that executes the given method and reaches the specified third-party method within it. No assertions, inspections, or verifications are required. The test’s only goal is to try invoking the given third-party method during execution. 
+
+You are provided with:
+thirdPartyMethod: Fully qualified third-party method that must be invoked.
+methodSources: Complete and exact source code for the method that contains the target third-party method.
+
+thirdPartyMethod: org.apache.commons.io.IOUtils.closeQuietly(java.io.OutputStream)
+methodSources:
+/**
+ * Executes the configured external command and passes the given document
+ * stream as a simple XHTML document to the given SAX content handler.
+ * Metadata is only extracted if {@link #setMetadataCommandArguments(Map)}
+ * has been called to set arguments.
+ */
+@Override
+public void embed(final Metadata metadata, final InputStream inputStream, final OutputStream outputStream, final ParseContext context) throws IOException, TikaException {
+    boolean inputToStdIn = true;
+    boolean outputFromStdOut = true;
+    boolean hasMetadataCommandArguments = (metadataCommandArguments != null) && (!metadataCommandArguments.isEmpty());
+    boolean serializeMetadataCommandArgumentsToken = false;
+    boolean replacedMetadataCommandArgumentsToken = false;
+    TikaInputStream tikaInputStream = TikaInputStream.get(inputStream);
+    File tempOutputFile = null;
+    List<String> commandMetadataSegments = null;
+    if (hasMetadataCommandArguments) {
+        commandMetadataSegments = getCommandMetadataSegments(metadata);
+    }
+    // Build our command
+    String[] origCmd = command;
+    List<String> cmd = new ArrayList<>();
+    for (String commandSegment : origCmd) {
+        if (commandSegment.contains(ExternalParser.INPUT_FILE_TOKEN)) {
+            commandSegment = commandSegment.replace(ExternalParser.INPUT_FILE_TOKEN, tikaInputStream.getFile().toString());
+            inputToStdIn = false;
+        }
+        if (commandSegment.contains(ExternalParser.OUTPUT_FILE_TOKEN)) {
+            tempOutputFile = tmp.createTemporaryFile();
+            commandSegment = commandSegment.replace(ExternalParser.OUTPUT_FILE_TOKEN, tempOutputFile.toString());
+            outputFromStdOut = false;
+        }
+        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {
+            serializeMetadataCommandArgumentsToken = true;
+        }
+        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_TOKEN)) {
+            if (hasMetadataCommandArguments) {
+                cmd.addAll(commandMetadataSegments);
+            }
+            replacedMetadataCommandArgumentsToken = true;
+        } else {
+            cmd.add(commandSegment);
+        }
+    }
+    if (hasMetadataCommandArguments) {
+        if (serializeMetadataCommandArgumentsToken) {
+            // Find all metadata tokens and replace with encapsulated metadata
+            int i = 0;
+            for (String commandSegment : cmd) {
+                if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {
+                    commandSegment = commandSegment.replace(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN, serializeMetadata(commandMetadataSegments));
+                    cmd.set(i, commandSegment);
+                }
+                i++;
+            }
+        } else if ((!replacedMetadataCommandArgumentsToken) && (!serializeMetadataCommandArgumentsToken)) {
+            // Tack metadata onto the end of the cmd as arguments
+            cmd.addAll(commandMetadataSegments);
+        }
+    }
+    // Execute
+    Process process;
+    if (cmd.toArray().length == 1) {
+        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new)[0]);
+    } else {
+        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new));
+    }
+    UnsynchronizedByteArrayOutputStream stdErrOutputStream = UnsynchronizedByteArrayOutputStream.builder().get();
+    try {
+        sendStdErrToOutputStream(process, stdErrOutputStream);
+        if (inputToStdIn) {
+            sendInputStreamToStdIn(inputStream, process);
+        } else {
+            // We're not writing to std in this case so close
+            process.getOutputStream().close();
+        }
+        if (outputFromStdOut) {
+            sendStdOutToOutputStream(process, outputStream);
+        } else {
+            tmp.dispose();
+            try {
+                process.waitFor();
+            } catch (InterruptedException ignore) {
+            }
+            // The command is finished, read the output file into the given output stream
+            InputStream tempOutputFileInputStream = TikaInputStream.get(tempOutputFile.toPath());
+            IOUtils.copy(tempOutputFileInputStream, outputStream);
+        }
+    } finally {
+        if (outputFromStdOut) {
+            try {
+                process.waitFor();
+            } catch (InterruptedException ignore) {
+            }
+        } else {
+            try {
+                // Clean up temp output files
+                tempOutputFile.delete();
+            } catch (Exception e) {
+                // swallow
+            }
+        }
+        if (!inputToStdIn) // PATH: Test should invoke the next IOUtils.closeQuietly(...) [step in execution path]
+        {
+            // Close input file (and delete if created by up
+            // TemporaryResources.createTemporaryFile)
+            IOUtils.closeQuietly(tikaInputStream);
+        }
+        IOUtils.closeQuietly(outputStream);
+        IOUtils.closeQuietly(stdErrOutputStream);
+        if (process.exitValue() != 0) {
+            throw new TikaException(((("There was an error executing the command line" + "
+Executable Command:
+
+") + cmd) + "
+Executable Error:
+
+") + stdErrOutputStream.toString(UTF_8.name()));
+        }
+    }
+}
+
+Hard constraints:
+- The test class MUST NOT extend any other class (no 'extends' keyword).
+- The test class MUST NOT override any methods (no @Override annotations).
+- Do NOT create anonymous inner classes (e.g., new ClassName() { ... }).
+- Use real objects whenever possible.
+- Use mocks only when necessary, provided those objects are not directly related to the target method call.
+- Do NOT mock or spy on the class under test.
+- Do NOT alter, stub, or control the behavior of ANY method in the call path.
+- Use only the following test-related libraries: junit-jupiter, mockito-core, and mockito-junit-jupiter. Do not use any other testing or mocking libraries.
+- Do NOT add any assertions, verifications, or inspections of state/logs/output.
+- package declaration MUST be: org.apache.tika.embedder
+- class name MUST be: ExternalEmbedderembed_IOUtilscloseQuietlyFikaTest2
+- exactly ONE @Test method
+- Return ONLY the complete Java source code.
+- Do NOT include explanations, markdown, or extra text.
+
+
+Previous Maven test output (if any; fix compilation/runtime issues while keeping ALL constraints):
+
+
+
+====================================================================================================
+TEST CASE 17/24 — ITERATION 1
+Entry Point: org.apache.tika.embedder.ExternalEmbedder.embed(org.apache.tika.metadata.Metadata, java.io.InputStream, java.io.OutputStream, org.apache.tika.parser.ParseContext)
+Third Party Method: org.apache.commons.io.IOUtils.copy(java.io.InputStream, java.io.OutputStream)
+====================================================================================================
+You are an expert Java developer who writes good unit tests in order to maximize code coverage. You are specialized in Maven and JUnit 5 testing framework.
+
+Generate a JUnit 5 test that executes the given method and reaches the specified third-party method within it. No assertions, inspections, or verifications are required. The test’s only goal is to try invoking the given third-party method during execution. 
+
+You are provided with:
+thirdPartyMethod: Fully qualified third-party method that must be invoked.
+methodSources: Complete and exact source code for the method that contains the target third-party method.
+
+thirdPartyMethod: org.apache.commons.io.IOUtils.copy(java.io.InputStream, java.io.OutputStream)
+methodSources:
+/**
+ * Executes the configured external command and passes the given document
+ * stream as a simple XHTML document to the given SAX content handler.
+ * Metadata is only extracted if {@link #setMetadataCommandArguments(Map)}
+ * has been called to set arguments.
+ */
+@Override
+public void embed(final Metadata metadata, final InputStream inputStream, final OutputStream outputStream, final ParseContext context) throws IOException, TikaException {
+    boolean inputToStdIn = true;
+    boolean outputFromStdOut = true;
+    boolean hasMetadataCommandArguments = (metadataCommandArguments != null) && (!metadataCommandArguments.isEmpty());
+    boolean serializeMetadataCommandArgumentsToken = false;
+    boolean replacedMetadataCommandArgumentsToken = false;
+    TikaInputStream tikaInputStream = TikaInputStream.get(inputStream);
+    File tempOutputFile = null;
+    List<String> commandMetadataSegments = null;
+    if (hasMetadataCommandArguments) {
+        commandMetadataSegments = getCommandMetadataSegments(metadata);
+    }
+    // Build our command
+    String[] origCmd = command;
+    List<String> cmd = new ArrayList<>();
+    for (String commandSegment : origCmd) {
+        if (commandSegment.contains(ExternalParser.INPUT_FILE_TOKEN)) {
+            commandSegment = commandSegment.replace(ExternalParser.INPUT_FILE_TOKEN, tikaInputStream.getFile().toString());
+            inputToStdIn = false;
+        }
+        if (commandSegment.contains(ExternalParser.OUTPUT_FILE_TOKEN)) {
+            tempOutputFile = tmp.createTemporaryFile();
+            commandSegment = commandSegment.replace(ExternalParser.OUTPUT_FILE_TOKEN, tempOutputFile.toString());
+            outputFromStdOut = false;
+        }
+        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {
+            serializeMetadataCommandArgumentsToken = true;
+        }
+        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_TOKEN)) {
+            if (hasMetadataCommandArguments) {
+                cmd.addAll(commandMetadataSegments);
+            }
+            replacedMetadataCommandArgumentsToken = true;
+        } else {
+            cmd.add(commandSegment);
+        }
+    }
+    if (hasMetadataCommandArguments) {
+        if (serializeMetadataCommandArgumentsToken) {
+            // Find all metadata tokens and replace with encapsulated metadata
+            int i = 0;
+            for (String commandSegment : cmd) {
+                if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {
+                    commandSegment = commandSegment.replace(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN, serializeMetadata(commandMetadataSegments));
+                    cmd.set(i, commandSegment);
+                }
+                i++;
+            }
+        } else if ((!replacedMetadataCommandArgumentsToken) && (!serializeMetadataCommandArgumentsToken)) {
+            // Tack metadata onto the end of the cmd as arguments
+            cmd.addAll(commandMetadataSegments);
+        }
+    }
+    // Execute
+    Process process;
+    if (cmd.toArray().length == 1) {
+        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new)[0]);
+    } else {
+        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new));
+    }
+    UnsynchronizedByteArrayOutputStream stdErrOutputStream = UnsynchronizedByteArrayOutputStream.builder().get();
+    try {
+        sendStdErrToOutputStream(process, stdErrOutputStream);
+        if (inputToStdIn) {
+            sendInputStreamToStdIn(inputStream, process);
+        } else {
+            // We're not writing to std in this case so close
+            process.getOutputStream().close();
+        }
+        if (outputFromStdOut) {
+            sendStdOutToOutputStream(process, outputStream);
+        } else // PATH: Test should invoke the next IOUtils.copy(...) [step in execution path]
+        {
+            tmp.dispose();
+            try {
+                process.waitFor();
+            } catch (InterruptedException ignore) {
+            }
+            // The command is finished, read the output file into the given output stream
+            InputStream tempOutputFileInputStream = TikaInputStream.get(tempOutputFile.toPath());
+            IOUtils.copy(tempOutputFileInputStream, outputStream);
+        }
+    } finally {
+        if (outputFromStdOut) {
+            try {
+                process.waitFor();
+            } catch (InterruptedException ignore) {
+            }
+        } else {
+            try {
+                // Clean up temp output files
+                tempOutputFile.delete();
+            } catch (Exception e) {
+                // swallow
+            }
+        }
+        if (!inputToStdIn) {
+            // Close input file (and delete if created by up
+            // TemporaryResources.createTemporaryFile)
+            IOUtils.closeQuietly(tikaInputStream);
+        }
+        IOUtils.closeQuietly(outputStream);
+        IOUtils.closeQuietly(stdErrOutputStream);
+        if (process.exitValue() != 0) {
+            throw new TikaException(((("There was an error executing the command line" + "
+Executable Command:
+
+") + cmd) + "
+Executable Error:
+
+") + stdErrOutputStream.toString(UTF_8.name()));
+        }
+    }
+}
+
+Hard constraints:
+- The test class MUST NOT extend any other class (no 'extends' keyword).
+- The test class MUST NOT override any methods (no @Override annotations).
+- Do NOT create anonymous inner classes (e.g., new ClassName() { ... }).
+- Use real objects whenever possible.
+- Use mocks only when necessary, provided those objects are not directly related to the target method call.
+- Do NOT mock or spy on the class under test.
+- Do NOT alter, stub, or control the behavior of ANY method in the call path.
+- Use only the following test-related libraries: junit-jupiter, mockito-core, and mockito-junit-jupiter. Do not use any other testing or mocking libraries.
+- Do NOT add any assertions, verifications, or inspections of state/logs/output.
+- package declaration MUST be: org.apache.tika.embedder
+- class name MUST be: ExternalEmbedderembed_IOUtilscopyFikaTest
+- exactly ONE @Test method
+- Return ONLY the complete Java source code.
+- Do NOT include explanations, markdown, or extra text.
+
+
+Previous Maven test output (if any; fix compilation/runtime issues while keeping ALL constraints):
+
+
+
+====================================================================================================
+TEST CASE 18/24 — ITERATION 1
+Entry Point: org.apache.tika.embedder.ExternalEmbedder.embed(org.apache.tika.metadata.Metadata, java.io.InputStream, java.io.OutputStream, org.apache.tika.parser.ParseContext)
+Third Party Method: org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream.builder()
+====================================================================================================
+You are an expert Java developer who writes good unit tests in order to maximize code coverage. You are specialized in Maven and JUnit 5 testing framework.
+
+Generate a JUnit 5 test that executes the given method and reaches the specified third-party method within it. No assertions, inspections, or verifications are required. The test’s only goal is to try invoking the given third-party method during execution. 
+
+You are provided with:
+thirdPartyMethod: Fully qualified third-party method that must be invoked.
+methodSources: Complete and exact source code for the method that contains the target third-party method.
+
+thirdPartyMethod: org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream.builder()
+methodSources:
+/**
+ * Executes the configured external command and passes the given document
+ * stream as a simple XHTML document to the given SAX content handler.
+ * Metadata is only extracted if {@link #setMetadataCommandArguments(Map)}
+ * has been called to set arguments.
+ */
+@Override
+public void embed(final Metadata metadata, final InputStream inputStream, final OutputStream outputStream, final ParseContext context) throws IOException, TikaException {
+    boolean inputToStdIn = true;
+    boolean outputFromStdOut = true;
+    boolean hasMetadataCommandArguments = (metadataCommandArguments != null) && (!metadataCommandArguments.isEmpty());
+    boolean serializeMetadataCommandArgumentsToken = false;
+    boolean replacedMetadataCommandArgumentsToken = false;
+    TikaInputStream tikaInputStream = TikaInputStream.get(inputStream);
+    File tempOutputFile = null;
+    List<String> commandMetadataSegments = null;
+    if (hasMetadataCommandArguments) {
+        commandMetadataSegments = getCommandMetadataSegments(metadata);
+    }
+    // Build our command
+    String[] origCmd = command;
+    List<String> cmd = new ArrayList<>();
+    for (String commandSegment : origCmd) {
+        if (commandSegment.contains(ExternalParser.INPUT_FILE_TOKEN)) {
+            commandSegment = commandSegment.replace(ExternalParser.INPUT_FILE_TOKEN, tikaInputStream.getFile().toString());
+            inputToStdIn = false;
+        }
+        if (commandSegment.contains(ExternalParser.OUTPUT_FILE_TOKEN)) {
+            tempOutputFile = tmp.createTemporaryFile();
+            commandSegment = commandSegment.replace(ExternalParser.OUTPUT_FILE_TOKEN, tempOutputFile.toString());
+            outputFromStdOut = false;
+        }
+        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {
+            serializeMetadataCommandArgumentsToken = true;
+        }
+        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_TOKEN)) {
+            if (hasMetadataCommandArguments) {
+                cmd.addAll(commandMetadataSegments);
+            }
+            replacedMetadataCommandArgumentsToken = true;
+        } else {
+            cmd.add(commandSegment);
+        }
+    }
+    if (hasMetadataCommandArguments) {
+        if (serializeMetadataCommandArgumentsToken) {
+            // Find all metadata tokens and replace with encapsulated metadata
+            int i = 0;
+            for (String commandSegment : cmd) {
+                if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {
+                    commandSegment = commandSegment.replace(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN, serializeMetadata(commandMetadataSegments));
+                    cmd.set(i, commandSegment);
+                }
+                i++;
+            }
+        } else if ((!replacedMetadataCommandArgumentsToken) && (!serializeMetadataCommandArgumentsToken)) {
+            // Tack metadata onto the end of the cmd as arguments
+            cmd.addAll(commandMetadataSegments);
+        }
+    }
+    // Execute
+    Process process;
+    if (cmd.toArray().length == 1) {
+        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new)[0]);
+    } else {
+        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new));
+    }
+    UnsynchronizedByteArrayOutputStream stdErrOutputStream = // PATH: Test should invoke the next UnsynchronizedByteArrayOutputStream.builder(...) [step in execution path]
+    UnsynchronizedByteArrayOutputStream.builder().get();
+    try {
+        sendStdErrToOutputStream(process, stdErrOutputStream);
+        if (inputToStdIn) {
+            sendInputStreamToStdIn(inputStream, process);
+        } else {
+            // We're not writing to std in this case so close
+            process.getOutputStream().close();
+        }
+        if (outputFromStdOut) {
+            sendStdOutToOutputStream(process, outputStream);
+        } else {
+            tmp.dispose();
+            try {
+                process.waitFor();
+            } catch (InterruptedException ignore) {
+            }
+            // The command is finished, read the output file into the given output stream
+            InputStream tempOutputFileInputStream = TikaInputStream.get(tempOutputFile.toPath());
+            IOUtils.copy(tempOutputFileInputStream, outputStream);
+        }
+    } finally {
+        if (outputFromStdOut) {
+            try {
+                process.waitFor();
+            } catch (InterruptedException ignore) {
+            }
+        } else {
+            try {
+                // Clean up temp output files
+                tempOutputFile.delete();
+            } catch (Exception e) {
+                // swallow
+            }
+        }
+        if (!inputToStdIn) {
+            // Close input file (and delete if created by up
+            // TemporaryResources.createTemporaryFile)
+            IOUtils.closeQuietly(tikaInputStream);
+        }
+        IOUtils.closeQuietly(outputStream);
+        IOUtils.closeQuietly(stdErrOutputStream);
+        if (process.exitValue() != 0) {
+            throw new TikaException(((("There was an error executing the command line" + "
+Executable Command:
+
+") + cmd) + "
+Executable Error:
+
+") + stdErrOutputStream.toString(UTF_8.name()));
+        }
+    }
+}
+
+Hard constraints:
+- The test class MUST NOT extend any other class (no 'extends' keyword).
+- The test class MUST NOT override any methods (no @Override annotations).
+- Do NOT create anonymous inner classes (e.g., new ClassName() { ... }).
+- Use real objects whenever possible.
+- Use mocks only when necessary, provided those objects are not directly related to the target method call.
+- Do NOT mock or spy on the class under test.
+- Do NOT alter, stub, or control the behavior of ANY method in the call path.
+- Use only the following test-related libraries: junit-jupiter, mockito-core, and mockito-junit-jupiter. Do not use any other testing or mocking libraries.
+- Do NOT add any assertions, verifications, or inspections of state/logs/output.
+- package declaration MUST be: org.apache.tika.embedder
+- class name MUST be: ExternalEmbedderembed_UnsynchronizedByteArrayOutputStreambuilderFikaTest
+- exactly ONE @Test method
+- Return ONLY the complete Java source code.
+- Do NOT include explanations, markdown, or extra text.
+
+
+Previous Maven test output (if any; fix compilation/runtime issues while keeping ALL constraints):
+
+
+
+====================================================================================================
+TEST CASE 19/24 — ITERATION 1
+Entry Point: org.apache.tika.embedder.ExternalEmbedder.embed(org.apache.tika.metadata.Metadata, java.io.InputStream, java.io.OutputStream, org.apache.tika.parser.ParseContext)
+Third Party Method: org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream.toString(java.lang.String)
+====================================================================================================
+You are an expert Java developer who writes good unit tests in order to maximize code coverage. You are specialized in Maven and JUnit 5 testing framework.
+
+Generate a JUnit 5 test that executes the given method and reaches the specified third-party method within it. No assertions, inspections, or verifications are required. The test’s only goal is to try invoking the given third-party method during execution. 
+
+You are provided with:
+thirdPartyMethod: Fully qualified third-party method that must be invoked.
+methodSources: Complete and exact source code for the method that contains the target third-party method.
+
+thirdPartyMethod: org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream.toString(java.lang.String)
+methodSources:
+/**
+ * Executes the configured external command and passes the given document
+ * stream as a simple XHTML document to the given SAX content handler.
+ * Metadata is only extracted if {@link #setMetadataCommandArguments(Map)}
+ * has been called to set arguments.
+ */
+@Override
+public void embed(final Metadata metadata, final InputStream inputStream, final OutputStream outputStream, final ParseContext context) throws IOException, TikaException {
+    boolean inputToStdIn = true;
+    boolean outputFromStdOut = true;
+    boolean hasMetadataCommandArguments = (metadataCommandArguments != null) && (!metadataCommandArguments.isEmpty());
+    boolean serializeMetadataCommandArgumentsToken = false;
+    boolean replacedMetadataCommandArgumentsToken = false;
+    TikaInputStream tikaInputStream = TikaInputStream.get(inputStream);
+    File tempOutputFile = null;
+    List<String> commandMetadataSegments = null;
+    if (hasMetadataCommandArguments) {
+        commandMetadataSegments = getCommandMetadataSegments(metadata);
+    }
+    // Build our command
+    String[] origCmd = command;
+    List<String> cmd = new ArrayList<>();
+    for (String commandSegment : origCmd) {
+        if (commandSegment.contains(ExternalParser.INPUT_FILE_TOKEN)) {
+            commandSegment = commandSegment.replace(ExternalParser.INPUT_FILE_TOKEN, tikaInputStream.getFile().toString());
+            inputToStdIn = false;
+        }
+        if (commandSegment.contains(ExternalParser.OUTPUT_FILE_TOKEN)) {
+            tempOutputFile = tmp.createTemporaryFile();
+            commandSegment = commandSegment.replace(ExternalParser.OUTPUT_FILE_TOKEN, tempOutputFile.toString());
+            outputFromStdOut = false;
+        }
+        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {
+            serializeMetadataCommandArgumentsToken = true;
+        }
+        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_TOKEN)) {
+            if (hasMetadataCommandArguments) {
+                cmd.addAll(commandMetadataSegments);
+            }
+            replacedMetadataCommandArgumentsToken = true;
+        } else {
+            cmd.add(commandSegment);
+        }
+    }
+    if (hasMetadataCommandArguments) {
+        if (serializeMetadataCommandArgumentsToken) {
+            // Find all metadata tokens and replace with encapsulated metadata
+            int i = 0;
+            for (String commandSegment : cmd) {
+                if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {
+                    commandSegment = commandSegment.replace(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN, serializeMetadata(commandMetadataSegments));
+                    cmd.set(i, commandSegment);
+                }
+                i++;
+            }
+        } else if ((!replacedMetadataCommandArgumentsToken) && (!serializeMetadataCommandArgumentsToken)) {
+            // Tack metadata onto the end of the cmd as arguments
+            cmd.addAll(commandMetadataSegments);
+        }
+    }
+    // Execute
+    Process process;
+    if (cmd.toArray().length == 1) {
+        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new)[0]);
+    } else {
+        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new));
+    }
+    UnsynchronizedByteArrayOutputStream stdErrOutputStream = UnsynchronizedByteArrayOutputStream.builder().get();
+    try {
+        sendStdErrToOutputStream(process, stdErrOutputStream);
+        if (inputToStdIn) {
+            sendInputStreamToStdIn(inputStream, process);
+        } else {
+            // We're not writing to std in this case so close
+            process.getOutputStream().close();
+        }
+        if (outputFromStdOut) {
+            sendStdOutToOutputStream(process, outputStream);
+        } else {
+            tmp.dispose();
+            try {
+                process.waitFor();
+            } catch (InterruptedException ignore) {
+            }
+            // The command is finished, read the output file into the given output stream
+            InputStream tempOutputFileInputStream = TikaInputStream.get(tempOutputFile.toPath());
+            IOUtils.copy(tempOutputFileInputStream, outputStream);
+        }
+    } finally {
+        if (outputFromStdOut) {
+            try {
+                process.waitFor();
+            } catch (InterruptedException ignore) {
+            }
+        } else {
+            try {
+                // Clean up temp output files
+                tempOutputFile.delete();
+            } catch (Exception e) {
+                // swallow
+            }
+        }
+        if (!inputToStdIn) {
+            // Close input file (and delete if created by up
+            // TemporaryResources.createTemporaryFile)
+            IOUtils.closeQuietly(tikaInputStream);
+        }
+        IOUtils.closeQuietly(outputStream);
+        IOUtils.closeQuietly(stdErrOutputStream);
+        if (process.exitValue() != 0) {
+            throw new TikaException(((("There was an error executing the command line" + "
+Executable Command:
+
+") + cmd) + "
+Executable Error:
+
+") + stdErrOutputStream.toString(UTF_8.name()));
+        }
+    }
+}
+
+Hard constraints:
+- The test class MUST NOT extend any other class (no 'extends' keyword).
+- The test class MUST NOT override any methods (no @Override annotations).
+- Do NOT create anonymous inner classes (e.g., new ClassName() { ... }).
+- Use real objects whenever possible.
+- Use mocks only when necessary, provided those objects are not directly related to the target method call.
+- Do NOT mock or spy on the class under test.
+- Do NOT alter, stub, or control the behavior of ANY method in the call path.
+- Use only the following test-related libraries: junit-jupiter, mockito-core, and mockito-junit-jupiter. Do not use any other testing or mocking libraries.
+- Do NOT add any assertions, verifications, or inspections of state/logs/output.
+- package declaration MUST be: org.apache.tika.embedder
+- class name MUST be: ExternalEmbedderembed_UnsynchronizedByteArrayOutputStreamtoStringFikaTest
+- exactly ONE @Test method
+- Return ONLY the complete Java source code.
+- Do NOT include explanations, markdown, or extra text.
+
+
+Previous Maven test output (if any; fix compilation/runtime issues while keeping ALL constraints):
+
+
+
+====================================================================================================
+TEST CASE 20/24 — ITERATION 1
+Entry Point: org.apache.tika.detect.XmlRootExtractor.extractRootElement(java.io.InputStream)
+Third Party Method: org.apache.commons.io.input.CloseShieldInputStream.wrap(java.io.InputStream)
+====================================================================================================
+You are an expert Java developer who writes good unit tests in order to maximize code coverage. You are specialized in Maven and JUnit 5 testing framework.
+
+Generate a JUnit 5 test that executes the given method and reaches the specified third-party method within it. No assertions, inspections, or verifications are required. The test’s only goal is to try invoking the given third-party method during execution. 
+
+You are provided with:
+thirdPartyMethod: Fully qualified third-party method that must be invoked.
+methodSources: Complete and exact source code for the method that contains the target third-party method.
+
+thirdPartyMethod: org.apache.commons.io.input.CloseShieldInputStream.wrap(java.io.InputStream)
+methodSources:
+private QName extractRootElement(InputStream stream, boolean throwMalformed) {
+    ExtractorHandler handler = new ExtractorHandler();
+    try {
+        // PATH: Test should invoke the next CloseShieldInputStream.wrap(...) [step in execution path]
+        XMLReaderUtils.parseSAX(CloseShieldInputStream.wrap(stream), handler, EMPTY_CONTEXT);
+    } catch (SecurityException e) {
+        throw e;
+    } catch (Exception e) {
+        if (throwMalformed && ((e instanceof CharConversionException) || (e.getCause() instanceof CharConversionException))) {
+            throw new MalformedCharException(e);
+        }
+    }
+    return handler.rootElement;
+}
+
+Hard constraints:
+- The test class MUST NOT extend any other class (no 'extends' keyword).
+- The test class MUST NOT override any methods (no @Override annotations).
+- Do NOT create anonymous inner classes (e.g., new ClassName() { ... }).
+- Use real objects whenever possible.
+- Use mocks only when necessary, provided those objects are not directly related to the target method call.
+- Do NOT mock or spy on the class under test.
+- Do NOT alter, stub, or control the behavior of ANY method in the call path.
+- Use only the following test-related libraries: junit-jupiter, mockito-core, and mockito-junit-jupiter. Do not use any other testing or mocking libraries.
+- Do NOT add any assertions, verifications, or inspections of state/logs/output.
+- package declaration MUST be: org.apache.tika.detect
+- class name MUST be: XmlRootExtractorextractRootElement_CloseShieldInputStreamwrapFikaTest
+- exactly ONE @Test method
+- Return ONLY the complete Java source code.
+- Do NOT include explanations, markdown, or extra text.
+
+
+Previous Maven test output (if any; fix compilation/runtime issues while keeping ALL constraints):
+
+
+
+====================================================================================================
+TEST CASE 21/24 — ITERATION 1
+Entry Point: org.apache.tika.detect.XmlRootExtractor.extractRootElement(byte[])
+Third Party Method: org.apache.commons.io.input.CloseShieldInputStream.wrap(java.io.InputStream)
+====================================================================================================
+You are an expert Java developer who writes good unit tests in order to maximize code coverage. You are specialized in Maven and JUnit 5 testing framework.
+
+Generate a JUnit 5 test that executes the given method and reaches the specified third-party method within it. No assertions, inspections, or verifications are required. The test’s only goal is to try invoking the given third-party method during execution. 
+
+You are provided with:
+thirdPartyMethod: Fully qualified third-party method that must be invoked.
+methodSources: Complete and exact source code for the method that contains the target third-party method.
+
+thirdPartyMethod: org.apache.commons.io.input.CloseShieldInputStream.wrap(java.io.InputStream)
+methodSources:
+private QName extractRootElement(InputStream stream, boolean throwMalformed) {
+    ExtractorHandler handler = new ExtractorHandler();
+    try {
+        // PATH: Test should invoke the next CloseShieldInputStream.wrap(...) [step in execution path]
+        XMLReaderUtils.parseSAX(CloseShieldInputStream.wrap(stream), handler, EMPTY_CONTEXT);
+    } catch (SecurityException e) {
+        throw e;
+    } catch (Exception e) {
+        if (throwMalformed && ((e instanceof CharConversionException) || (e.getCause() instanceof CharConversionException))) {
+            throw new MalformedCharException(e);
+        }
+    }
+    return handler.rootElement;
+}
+
+Hard constraints:
+- The test class MUST NOT extend any other class (no 'extends' keyword).
+- The test class MUST NOT override any methods (no @Override annotations).
+- Do NOT create anonymous inner classes (e.g., new ClassName() { ... }).
+- Use real objects whenever possible.
+- Use mocks only when necessary, provided those objects are not directly related to the target method call.
+- Do NOT mock or spy on the class under test.
+- Do NOT alter, stub, or control the behavior of ANY method in the call path.
+- Use only the following test-related libraries: junit-jupiter, mockito-core, and mockito-junit-jupiter. Do not use any other testing or mocking libraries.
+- Do NOT add any assertions, verifications, or inspections of state/logs/output.
+- package declaration MUST be: org.apache.tika.detect
+- class name MUST be: XmlRootExtractorextractRootElement_CloseShieldInputStreamwrapFikaTest2
+- exactly ONE @Test method
+- Return ONLY the complete Java source code.
+- Do NOT include explanations, markdown, or extra text.
+
+
+Previous Maven test output (if any; fix compilation/runtime issues while keeping ALL constraints):
+
+
+
+====================================================================================================
+TEST CASE 22/24 — ITERATION 1
+Entry Point: org.apache.tika.io.FilenameUtils.getSanitizedEmbeddedFileName(org.apache.tika.metadata.Metadata, java.lang.String, int)
+Third Party Method: org.apache.commons.io.FilenameUtils.getPrefixLength(java.lang.String)
+====================================================================================================
+You are an expert Java developer who writes good unit tests in order to maximize code coverage. You are specialized in Maven and JUnit 5 testing framework.
+
+Generate a JUnit 5 test that executes the given method and reaches the specified third-party method within it. No assertions, inspections, or verifications are required. The test’s only goal is to try invoking the given third-party method during execution. 
+
+You are provided with:
+thirdPartyMethod: Fully qualified third-party method that must be invoked.
+methodSources: Complete and exact source code for the method that contains the target third-party method.
+
+thirdPartyMethod: org.apache.commons.io.FilenameUtils.getPrefixLength(java.lang.String)
+methodSources:
+private static int getPrefixLength(String path) {
+    // PATH: Test should invoke the next FilenameUtils.getPrefixLength(...) [step in execution path]
+    int prefixLength = FilenameUtils.getPrefixLength(path);
+    if (prefixLength > 0) {
+        return prefixLength;
+    }
+    if ((((path.length() == 2) && (path.charAt(0) >= 'A')) && (path.charAt(0) <= 'Z')) && (path.charAt(1) == ':')) {
+        return 2;
+    }
+    return 0;
+}
+
+Hard constraints:
+- The test class MUST NOT extend any other class (no 'extends' keyword).
+- The test class MUST NOT override any methods (no @Override annotations).
+- Do NOT create anonymous inner classes (e.g., new ClassName() { ... }).
+- Use real objects whenever possible.
+- Use mocks only when necessary, provided those objects are not directly related to the target method call.
+- Do NOT mock or spy on the class under test.
+- Do NOT alter, stub, or control the behavior of ANY method in the call path.
+- Use only the following test-related libraries: junit-jupiter, mockito-core, and mockito-junit-jupiter. Do not use any other testing or mocking libraries.
+- Do NOT add any assertions, verifications, or inspections of state/logs/output.
+- package declaration MUST be: org.apache.tika.io
+- class name MUST be: FilenameUtilsgetPrefixLength_FilenameUtilsgetPrefixLengthFikaTest
+- exactly ONE @Test method
+- Return ONLY the complete Java source code.
+- Do NOT include explanations, markdown, or extra text.
+
+
+Previous Maven test output (if any; fix compilation/runtime issues while keeping ALL constraints):
+
+
+
+====================================================================================================
+TEST CASE 23/24 — ITERATION 1
+Entry Point: org.apache.tika.io.FilenameUtils.getSanitizedEmbeddedFilePath(org.apache.tika.metadata.Metadata, java.lang.String, int)
+Third Party Method: org.apache.commons.io.FilenameUtils.getPrefixLength(java.lang.String)
+====================================================================================================
+You are an expert Java developer who writes good unit tests in order to maximize code coverage. You are specialized in Maven and JUnit 5 testing framework.
+
+Generate a JUnit 5 test that executes the given method and reaches the specified third-party method within it. No assertions, inspections, or verifications are required. The test’s only goal is to try invoking the given third-party method during execution. 
+
+You are provided with:
+thirdPartyMethod: Fully qualified third-party method that must be invoked.
+methodSources: Complete and exact source code for the method that contains the target third-party method.
+
+thirdPartyMethod: org.apache.commons.io.FilenameUtils.getPrefixLength(java.lang.String)
+methodSources:
+private static int getPrefixLength(String path) {
+    // PATH: Test should invoke the next FilenameUtils.getPrefixLength(...) [step in execution path]
+    int prefixLength = FilenameUtils.getPrefixLength(path);
+    if (prefixLength > 0) {
+        return prefixLength;
+    }
+    if ((((path.length() == 2) && (path.charAt(0) >= 'A')) && (path.charAt(0) <= 'Z')) && (path.charAt(1) == ':')) {
+        return 2;
+    }
+    return 0;
+}
+
+Hard constraints:
+- The test class MUST NOT extend any other class (no 'extends' keyword).
+- The test class MUST NOT override any methods (no @Override annotations).
+- Do NOT create anonymous inner classes (e.g., new ClassName() { ... }).
+- Use real objects whenever possible.
+- Use mocks only when necessary, provided those objects are not directly related to the target method call.
+- Do NOT mock or spy on the class under test.
+- Do NOT alter, stub, or control the behavior of ANY method in the call path.
+- Use only the following test-related libraries: junit-jupiter, mockito-core, and mockito-junit-jupiter. Do not use any other testing or mocking libraries.
+- Do NOT add any assertions, verifications, or inspections of state/logs/output.
+- package declaration MUST be: org.apache.tika.io
+- class name MUST be: FilenameUtilsgetPrefixLength_FilenameUtilsgetPrefixLengthFikaTest2
+- exactly ONE @Test method
+- Return ONLY the complete Java source code.
+- Do NOT include explanations, markdown, or extra text.
+
+
+Previous Maven test output (if any; fix compilation/runtime issues while keeping ALL constraints):
+
+
+
+====================================================================================================
+TEST CASE 24/24 — ITERATION 1
+Entry Point: org.apache.tika.embedder.ExternalEmbedder.embed(org.apache.tika.metadata.Metadata, java.io.InputStream, java.io.OutputStream, org.apache.tika.parser.ParseContext)
+Third Party Method: org.apache.commons.io.IOUtils.copy(java.io.InputStream, java.io.OutputStream)
+====================================================================================================
+You are an expert Java developer who writes good unit tests in order to maximize code coverage. You are specialized in Maven and JUnit 5 testing framework.
+
+Generate a JUnit 5 test that executes the given method and reaches the specified third-party method within it. No assertions, inspections, or verifications are required. The test’s only goal is to try invoking the given third-party method during execution. 
+
+You are provided with:
+thirdPartyMethod: Fully qualified third-party method that must be invoked.
+methodSources: Complete and exact source code for the method that contains the target third-party method.
+
+thirdPartyMethod: org.apache.commons.io.IOUtils.copy(java.io.InputStream, java.io.OutputStream)
+methodSources:
+/**
+ * Sends the standard output of the given
+ * process to the given output stream. Potential exceptions are
+ * ignored.
+ * <p>
+ * Note that the given output stream is <em>not</em> closed by this method.
+ *
+ * @param process
+ * 		the process
+ * @param outputStream
+ * 		the putput stream to send to standard input of the process
+ */
+private void sendStdOutToOutputStream(final Process process, final OutputStream outputStream) {
+    try // PATH: Test should invoke the next IOUtils.copy(...) [step in execution path]
+    {
+        IOUtils.copy(process.getInputStream(), outputStream);
+    } catch (IOException e) {
+        System.out.println("ERROR: " + e.getMessage());
+    }
+}
+
+Hard constraints:
+- The test class MUST NOT extend any other class (no 'extends' keyword).
+- The test class MUST NOT override any methods (no @Override annotations).
+- Do NOT create anonymous inner classes (e.g., new ClassName() { ... }).
+- Use real objects whenever possible.
+- Use mocks only when necessary, provided those objects are not directly related to the target method call.
+- Do NOT mock or spy on the class under test.
+- Do NOT alter, stub, or control the behavior of ANY method in the call path.
+- Use only the following test-related libraries: junit-jupiter, mockito-core, and mockito-junit-jupiter. Do not use any other testing or mocking libraries.
+- Do NOT add any assertions, verifications, or inspections of state/logs/output.
+- package declaration MUST be: org.apache.tika.embedder
+- class name MUST be: ExternalEmbeddersendStdOutToOutputStream_IOUtilscopyFikaTest
+- exactly ONE @Test method
+- Return ONLY the complete Java source code.
+- Do NOT include explanations, markdown, or extra text.
+
+
+Previous Maven test output (if any; fix compilation/runtime issues while keeping ALL constraints):
+
+
+
