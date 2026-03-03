@@ -1,0 +1,2473 @@
+{
+  "version": "1.153.0",
+  "results": [
+    {
+      "check_id": "java.lang.security.audit.unsafe-reflection.unsafe-reflection",
+      "path": "src/main/java/org/apache/tika/config/ServiceLoader.java",
+      "start": {
+        "line": 177,
+        "col": 26,
+        "offset": 5918
+      },
+      "end": {
+        "line": 177,
+        "col": 59,
+        "offset": 5951
+      },
+      "extra": {
+        "metavars": {
+          "$CLASS": {
+            "start": {
+              "line": 177,
+              "col": 40,
+              "offset": 5932
+            },
+            "end": {
+              "line": 177,
+              "col": 44,
+              "offset": 5936
+            },
+            "abstract_content": "name"
+          }
+        },
+        "message": "If an attacker can supply values that the application then uses to determine which class to instantiate or which method to invoke, the potential exists for the attacker to create control flow paths through the application that were not intended by the application developers. This attack vector may allow the attacker to bypass authentication or access control checks or otherwise cause the application to behave in an unexpected manner.",
+        "metadata": {
+          "cwe": [
+            "CWE-470: Use of Externally-Controlled Input to Select Classes or Code ('Unsafe Reflection')"
+          ],
+          "owasp": [
+            "A03:2021 - Injection",
+            "A05:2025 - Injection"
+          ],
+          "source-rule-url": "https://owasp.org/www-community/vulnerabilities/Unsafe_use_of_Reflection",
+          "category": "security",
+          "technology": [
+            "java"
+          ],
+          "references": [
+            "https://owasp.org/Top10/A03_2021-Injection"
+          ],
+          "subcategory": [
+            "audit"
+          ],
+          "likelihood": "LOW",
+          "impact": "LOW",
+          "confidence": "LOW",
+          "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+          "vulnerability_class": [
+            "Improper Authorization"
+          ],
+          "source": "https://semgrep.dev/r/java.lang.security.audit.unsafe-reflection.unsafe-reflection",
+          "shortlink": "https://sg.run/R8X8",
+          "semgrep.dev": {
+            "rule": {
+              "origin": "community",
+              "r_id": 9993,
+              "rule_id": "DbUW1W",
+              "rule_name": "java.lang.security.audit.unsafe-reflection.unsafe-reflection",
+              "rv_id": 1263047,
+              "url": "https://semgrep.dev/playground/r/44TEj5L/java.lang.security.audit.unsafe-reflection.unsafe-reflection",
+              "version_id": "44TEj5L"
+            },
+            "src": "new-rule"
+          },
+          "dev.semgrep.actions": [
+            "monitor"
+          ],
+          "semgrep.policy": {
+            "id": 271716,
+            "name": "Rule Board - Audit column",
+            "slug": "rule-board-audit"
+          },
+          "semgrep.url": "https://semgrep.dev/r/java.lang.security.audit.unsafe-reflection.unsafe-reflection",
+          "semgrep.ruleset": "default",
+          "semgrep.ruleset_id": 3471
+        },
+        "severity": "WARNING",
+        "fingerprint": "f54b55ef19642a19230dcb36538bd580dea2026946e778c3a93845c5a8fb86a67ab19163932d4931d446641721b7b47556a3816458d0d57e79a64e1521830892_0",
+        "lines": "        Class<?> klass = Class.forName(name, true, loader);",
+        "is_ignored": false,
+        "validation_state": "NO_VALIDATOR",
+        "engine_kind": "PRO"
+      }
+    },
+    {
+      "check_id": "java.lang.security.audit.command-injection-process-builder.command-injection-process-builder",
+      "path": "src/main/java/org/apache/tika/detect/FileCommandDetector.java",
+      "start": {
+        "line": 111,
+        "col": 34,
+        "offset": 4617
+      },
+      "end": {
+        "line": 111,
+        "col": 58,
+        "offset": 4641
+      },
+      "extra": {
+        "metavars": {
+          "$CMD": {
+            "start": {
+              "line": 111,
+              "col": 53,
+              "offset": 4636
+            },
+            "end": {
+              "line": 111,
+              "col": 57,
+              "offset": 4640
+            },
+            "abstract_content": "args"
+          }
+        },
+        "message": "A formatted or concatenated string was detected as input to a ProcessBuilder call. This is dangerous if a variable is controlled by user input and could result in a command injection. Ensure your variables are not controlled by users or sufficiently sanitized.",
+        "metadata": {
+          "cwe": [
+            "CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')"
+          ],
+          "owasp": [
+            "A01:2017 - Injection",
+            "A03:2021 - Injection",
+            "A05:2025 - Injection"
+          ],
+          "category": "security",
+          "technology": [
+            "java"
+          ],
+          "references": [
+            "https://owasp.org/Top10/A03_2021-Injection"
+          ],
+          "cwe2022-top25": true,
+          "cwe2021-top25": true,
+          "subcategory": [
+            "audit"
+          ],
+          "likelihood": "LOW",
+          "impact": "HIGH",
+          "confidence": "LOW",
+          "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+          "vulnerability_class": [
+            "Command Injection"
+          ],
+          "source": "https://semgrep.dev/r/java.lang.security.audit.command-injection-process-builder.command-injection-process-builder",
+          "shortlink": "https://sg.run/gJJe",
+          "semgrep.dev": {
+            "rule": {
+              "origin": "community",
+              "r_id": 9941,
+              "rule_id": "4bUzzo",
+              "rule_name": "java.lang.security.audit.command-injection-process-builder.command-injection-process-builder",
+              "rv_id": 1262992,
+              "url": "https://semgrep.dev/playground/r/JdTzxnn/java.lang.security.audit.command-injection-process-builder.command-injection-process-builder",
+              "version_id": "JdTzxnn"
+            },
+            "src": "new-rule"
+          },
+          "dev.semgrep.actions": [
+            "monitor"
+          ],
+          "semgrep.policy": {
+            "id": 271716,
+            "name": "Rule Board - Audit column",
+            "slug": "rule-board-audit"
+          },
+          "semgrep.url": "https://semgrep.dev/r/java.lang.security.audit.command-injection-process-builder.command-injection-process-builder",
+          "semgrep.ruleset": "default",
+          "semgrep.ruleset_id": 3471
+        },
+        "severity": "ERROR",
+        "fingerprint": "5307072cbea236b7135daebbc29d01ba5e2befad26818d0badcc85234f47e436b12b87fe87e706993c6265c5fc89fb0ac13d72801fa7f42595682a9e4fbe19d5_0",
+        "lines": "        ProcessBuilder builder = new ProcessBuilder(args);",
+        "is_ignored": false,
+        "validation_state": "NO_VALIDATOR",
+        "engine_kind": "PRO"
+      }
+    },
+    {
+      "check_id": "java.lang.security.audit.xxe.saxparserfactory-disallow-doctype-decl-missing.saxparserfactory-disallow-doctype-decl-missing",
+      "path": "src/main/java/org/apache/tika/mime/MimeTypesReader.java",
+      "start": {
+        "line": 223,
+        "col": 13,
+        "offset": 7927
+      },
+      "end": {
+        "line": 223,
+        "col": 42,
+        "offset": 7956
+      },
+      "extra": {
+        "metavars": {
+          "$FACTORY": {
+            "start": {
+              "line": 214,
+              "col": 26,
+              "offset": 7490
+            },
+            "end": {
+              "line": 214,
+              "col": 33,
+              "offset": 7497
+            },
+            "abstract_content": "factory"
+          }
+        },
+        "message": "DOCTYPE declarations are enabled for this SAXParserFactory. This is vulnerable to XML external entity attacks. Disable this by setting the feature `http://apache.org/xml/features/disallow-doctype-decl` to true. Alternatively, allow DOCTYPE declarations and only prohibit external entities declarations. This can be done by setting the features `http://xml.org/sax/features/external-general-entities` and `http://xml.org/sax/features/external-parameter-entities` to false. NOTE - The previous links are not meant to be clicked. They are the literal config key values that are supposed to be used to disable these features. For more information, see https://semgrep.dev/docs/cheat-sheets/java-xxe/#3a-documentbuilderfactory.",
+        "fix": "factory.setFeature(\"http://apache.org/xml/features/disallow-doctype-decl\", true);\n            factory.newSAXParser();",
+        "metadata": {
+          "cwe": [
+            "CWE-611: Improper Restriction of XML External Entity Reference"
+          ],
+          "owasp": [
+            "A04:2017 - XML External Entities (XXE)",
+            "A05:2021 - Security Misconfiguration",
+            "A02:2025 - Security Misconfiguration"
+          ],
+          "asvs": {
+            "control_id": "5.5.2 Insecue XML Deserialization",
+            "control_url": "https://github.com/OWASP/ASVS/blob/master/4.0/en/0x13-V5-Validation-Sanitization-Encoding.md#v55-deserialization-prevention",
+            "section": "V5 Validation, Sanitization and Encoding",
+            "version": "4"
+          },
+          "references": [
+            "https://semgrep.dev/blog/2022/xml-security-in-java",
+            "https://semgrep.dev/docs/cheat-sheets/java-xxe/",
+            "https://blog.sonarsource.com/secure-xml-processor",
+            "https://xerces.apache.org/xerces2-j/features.html"
+          ],
+          "category": "security",
+          "technology": [
+            "java",
+            "xml"
+          ],
+          "cwe2022-top25": true,
+          "cwe2021-top25": true,
+          "subcategory": [
+            "vuln"
+          ],
+          "likelihood": "LOW",
+          "impact": "HIGH",
+          "confidence": "HIGH",
+          "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+          "vulnerability_class": [
+            "XML Injection"
+          ],
+          "source": "https://semgrep.dev/r/java.lang.security.audit.xxe.saxparserfactory-disallow-doctype-decl-missing.saxparserfactory-disallow-doctype-decl-missing",
+          "shortlink": "https://sg.run/Gj32",
+          "semgrep.dev": {
+            "rule": {
+              "origin": "community",
+              "r_id": 59048,
+              "rule_id": "j2Udpk",
+              "rule_name": "java.lang.security.audit.xxe.saxparserfactory-disallow-doctype-decl-missing.saxparserfactory-disallow-doctype-decl-missing",
+              "rv_id": 1263061,
+              "url": "https://semgrep.dev/playground/r/YDTZeko/java.lang.security.audit.xxe.saxparserfactory-disallow-doctype-decl-missing.saxparserfactory-disallow-doctype-decl-missing",
+              "version_id": "YDTZeko"
+            },
+            "src": "new-rule"
+          },
+          "dev.semgrep.actions": [
+            "monitor"
+          ],
+          "semgrep.policy": {
+            "id": 271716,
+            "name": "Rule Board - Audit column",
+            "slug": "rule-board-audit"
+          },
+          "semgrep.url": "https://semgrep.dev/r/java.lang.security.audit.xxe.saxparserfactory-disallow-doctype-decl-missing.saxparserfactory-disallow-doctype-decl-missing",
+          "semgrep.ruleset": "comment",
+          "semgrep.ruleset_id": 9381
+        },
+        "severity": "ERROR",
+        "fingerprint": "ff2a14c3a624cd96713641cb5c35aea5795035a47daf5a873a509abd8790493b0150d42263800b46016ed033c5220e90dbda622d495908addbadd6df27b71ab4_0",
+        "lines": "            return factory.newSAXParser();",
+        "is_ignored": false,
+        "validation_state": "NO_VALIDATOR",
+        "dataflow_trace": {
+          "taint_source": [
+            "CliLoc",
+            [
+              {
+                "path": "src/main/java/org/apache/tika/mime/MimeTypesReader.java",
+                "start": {
+                  "line": 214,
+                  "col": 9,
+                  "offset": 7473
+                },
+                "end": {
+                  "line": 214,
+                  "col": 67,
+                  "offset": 7531
+                }
+              },
+              "SAXParserFactory factory = SAXParserFactory.newInstance();"
+            ]
+          ],
+          "intermediate_vars": [
+            {
+              "location": {
+                "path": "src/main/java/org/apache/tika/mime/MimeTypesReader.java",
+                "start": {
+                  "line": 214,
+                  "col": 26,
+                  "offset": 7490
+                },
+                "end": {
+                  "line": 214,
+                  "col": 33,
+                  "offset": 7497
+                }
+              },
+              "content": "factory"
+            }
+          ],
+          "taint_sink": [
+            "CliLoc",
+            [
+              {
+                "path": "src/main/java/org/apache/tika/mime/MimeTypesReader.java",
+                "start": {
+                  "line": 223,
+                  "col": 13,
+                  "offset": 7927
+                },
+                "end": {
+                  "line": 223,
+                  "col": 42,
+                  "offset": 7956
+                }
+              },
+              "return factory.newSAXParser()"
+            ]
+          ]
+        },
+        "engine_kind": "PRO"
+      }
+    },
+    {
+      "check_id": "java.lang.security.audit.crypto.unencrypted-socket.unencrypted-socket",
+      "path": "src/main/java/org/apache/tika/parser/NetworkParser.java",
+      "start": {
+        "line": 68,
+        "col": 34,
+        "offset": 2405
+      },
+      "end": {
+        "line": 68,
+        "col": 74,
+        "offset": 2445
+      },
+      "extra": {
+        "metavars": {},
+        "message": "Detected use of a Java socket that is not encrypted. As a result, the traffic could be read by an attacker intercepting the network traffic. Use an SSLSocket created by 'SSLSocketFactory' or 'SSLServerSocketFactory' instead.",
+        "metadata": {
+          "functional-categories": [
+            "net::search::crypto-config::java.net"
+          ],
+          "cwe": [
+            "CWE-319: Cleartext Transmission of Sensitive Information"
+          ],
+          "owasp": [
+            "A03:2017 - Sensitive Data Exposure",
+            "A02:2021 - Cryptographic Failures",
+            "A04:2025 - Cryptographic Failures"
+          ],
+          "source-rule-url": "https://find-sec-bugs.github.io/bugs.htm#UNENCRYPTED_SOCKET",
+          "asvs": {
+            "control_id": "6.2.5 Insecure Algorithm",
+            "control_url": "https://github.com/OWASP/ASVS/blob/master/4.0/en/0x14-V6-Cryptography.md#v62-algorithms",
+            "section": "V6 Stored Cryptography Verification Requirements",
+            "version": "4"
+          },
+          "category": "security",
+          "technology": [
+            "java"
+          ],
+          "references": [
+            "https://owasp.org/Top10/A02_2021-Cryptographic_Failures"
+          ],
+          "subcategory": [
+            "vuln"
+          ],
+          "likelihood": "MEDIUM",
+          "impact": "MEDIUM",
+          "confidence": "HIGH",
+          "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+          "vulnerability_class": [
+            "Mishandled Sensitive Information"
+          ],
+          "source": "https://semgrep.dev/r/java.lang.security.audit.crypto.unencrypted-socket.unencrypted-socket",
+          "shortlink": "https://sg.run/W8zA",
+          "semgrep.dev": {
+            "rule": {
+              "origin": "community",
+              "r_id": 9197,
+              "rule_id": "BYUN3X",
+              "rule_name": "java.lang.security.audit.crypto.unencrypted-socket.unencrypted-socket",
+              "rv_id": 1263008,
+              "url": "https://semgrep.dev/playground/r/RGT0LEj/java.lang.security.audit.crypto.unencrypted-socket.unencrypted-socket",
+              "version_id": "RGT0LEj"
+            },
+            "src": "new-rule"
+          },
+          "dev.semgrep.actions": [
+            "monitor"
+          ],
+          "semgrep.policy": {
+            "id": 271716,
+            "name": "Rule Board - Audit column",
+            "slug": "rule-board-audit"
+          },
+          "semgrep.url": "https://semgrep.dev/r/java.lang.security.audit.crypto.unencrypted-socket.unencrypted-socket",
+          "semgrep.ruleset": "default",
+          "semgrep.ruleset_id": 3471
+        },
+        "severity": "WARNING",
+        "fingerprint": "037c35a021dc55ecebf4685f641d5c41dcfef4caf14abc5b913f0f4c38dc3b1bfc15787629548ad14fd95592f365652c58f49e0b142544f2ab28f43f0e0a9889_0",
+        "lines": "            try (Socket socket = new Socket(uri.getHost(), uri.getPort())) {",
+        "is_ignored": false,
+        "validation_state": "NO_VALIDATOR",
+        "engine_kind": "PRO"
+      }
+    },
+    {
+      "check_id": "java.lang.security.audit.command-injection-process-builder.command-injection-process-builder",
+      "path": "src/main/java/org/apache/tika/parser/external2/ExternalParser.java",
+      "start": {
+        "line": 145,
+        "col": 47,
+        "offset": 5932
+      },
+      "end": {
+        "line": 145,
+        "col": 82,
+        "offset": 5967
+      },
+      "extra": {
+        "metavars": {
+          "$CMD": {
+            "start": {
+              "line": 145,
+              "col": 66,
+              "offset": 5951
+            },
+            "end": {
+              "line": 145,
+              "col": 81,
+              "offset": 5966
+            },
+            "abstract_content": "thisCommandLine"
+          }
+        },
+        "message": "A formatted or concatenated string was detected as input to a ProcessBuilder call. This is dangerous if a variable is controlled by user input and could result in a command injection. Ensure your variables are not controlled by users or sufficiently sanitized.",
+        "metadata": {
+          "cwe": [
+            "CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')"
+          ],
+          "owasp": [
+            "A01:2017 - Injection",
+            "A03:2021 - Injection",
+            "A05:2025 - Injection"
+          ],
+          "category": "security",
+          "technology": [
+            "java"
+          ],
+          "references": [
+            "https://owasp.org/Top10/A03_2021-Injection"
+          ],
+          "cwe2022-top25": true,
+          "cwe2021-top25": true,
+          "subcategory": [
+            "audit"
+          ],
+          "likelihood": "LOW",
+          "impact": "HIGH",
+          "confidence": "LOW",
+          "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+          "vulnerability_class": [
+            "Command Injection"
+          ],
+          "source": "https://semgrep.dev/r/java.lang.security.audit.command-injection-process-builder.command-injection-process-builder",
+          "shortlink": "https://sg.run/gJJe",
+          "semgrep.dev": {
+            "rule": {
+              "origin": "community",
+              "r_id": 9941,
+              "rule_id": "4bUzzo",
+              "rule_name": "java.lang.security.audit.command-injection-process-builder.command-injection-process-builder",
+              "rv_id": 1262992,
+              "url": "https://semgrep.dev/playground/r/JdTzxnn/java.lang.security.audit.command-injection-process-builder.command-injection-process-builder",
+              "version_id": "JdTzxnn"
+            },
+            "src": "new-rule"
+          },
+          "dev.semgrep.actions": [
+            "monitor"
+          ],
+          "semgrep.policy": {
+            "id": 271716,
+            "name": "Rule Board - Audit column",
+            "slug": "rule-board-audit"
+          },
+          "semgrep.url": "https://semgrep.dev/r/java.lang.security.audit.command-injection-process-builder.command-injection-process-builder",
+          "semgrep.ruleset": "default",
+          "semgrep.ruleset_id": 3471
+        },
+        "severity": "ERROR",
+        "fingerprint": "1e7452904376d380ee2bef1fefd7fba38781fe2dce282954fcd64ed180f2568ded5b0d4105080d444f152e6784f0edcc0103ef0e69a0a806cd897ec2897ac1ea_0",
+        "lines": "                result = ProcessUtils.execute(new ProcessBuilder(thisCommandLine),",
+        "is_ignored": false,
+        "validation_state": "NO_VALIDATOR",
+        "engine_kind": "PRO"
+      }
+    },
+    {
+      "check_id": "java.lang.security.audit.command-injection-process-builder.command-injection-process-builder",
+      "path": "src/main/java/org/apache/tika/parser/external2/ExternalParser.java",
+      "start": {
+        "line": 149,
+        "col": 47,
+        "offset": 6198
+      },
+      "end": {
+        "line": 149,
+        "col": 82,
+        "offset": 6233
+      },
+      "extra": {
+        "metavars": {
+          "$CMD": {
+            "start": {
+              "line": 149,
+              "col": 66,
+              "offset": 6217
+            },
+            "end": {
+              "line": 149,
+              "col": 81,
+              "offset": 6232
+            },
+            "abstract_content": "thisCommandLine"
+          }
+        },
+        "message": "A formatted or concatenated string was detected as input to a ProcessBuilder call. This is dangerous if a variable is controlled by user input and could result in a command injection. Ensure your variables are not controlled by users or sufficiently sanitized.",
+        "metadata": {
+          "cwe": [
+            "CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')"
+          ],
+          "owasp": [
+            "A01:2017 - Injection",
+            "A03:2021 - Injection",
+            "A05:2025 - Injection"
+          ],
+          "category": "security",
+          "technology": [
+            "java"
+          ],
+          "references": [
+            "https://owasp.org/Top10/A03_2021-Injection"
+          ],
+          "cwe2022-top25": true,
+          "cwe2021-top25": true,
+          "subcategory": [
+            "audit"
+          ],
+          "likelihood": "LOW",
+          "impact": "HIGH",
+          "confidence": "LOW",
+          "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+          "vulnerability_class": [
+            "Command Injection"
+          ],
+          "source": "https://semgrep.dev/r/java.lang.security.audit.command-injection-process-builder.command-injection-process-builder",
+          "shortlink": "https://sg.run/gJJe",
+          "semgrep.dev": {
+            "rule": {
+              "origin": "community",
+              "r_id": 9941,
+              "rule_id": "4bUzzo",
+              "rule_name": "java.lang.security.audit.command-injection-process-builder.command-injection-process-builder",
+              "rv_id": 1262992,
+              "url": "https://semgrep.dev/playground/r/JdTzxnn/java.lang.security.audit.command-injection-process-builder.command-injection-process-builder",
+              "version_id": "JdTzxnn"
+            },
+            "src": "new-rule"
+          },
+          "dev.semgrep.actions": [
+            "monitor"
+          ],
+          "semgrep.policy": {
+            "id": 271716,
+            "name": "Rule Board - Audit column",
+            "slug": "rule-board-audit"
+          },
+          "semgrep.url": "https://semgrep.dev/r/java.lang.security.audit.command-injection-process-builder.command-injection-process-builder",
+          "semgrep.ruleset": "default",
+          "semgrep.ruleset_id": 3471
+        },
+        "severity": "ERROR",
+        "fingerprint": "1e7452904376d380ee2bef1fefd7fba38781fe2dce282954fcd64ed180f2568ded5b0d4105080d444f152e6784f0edcc0103ef0e69a0a806cd897ec2897ac1ea_1",
+        "lines": "                result = ProcessUtils.execute(new ProcessBuilder(thisCommandLine),",
+        "is_ignored": false,
+        "validation_state": "NO_VALIDATOR",
+        "engine_kind": "PRO"
+      }
+    },
+    {
+      "check_id": "java.lang.security.audit.active-debug-code-printstacktrace.active-debug-code-printstacktrace",
+      "path": "src/main/java/org/apache/tika/utils/ExceptionUtils.java",
+      "start": {
+        "line": 62,
+        "col": 9,
+        "offset": 2029
+      },
+      "end": {
+        "line": 62,
+        "col": 34,
+        "offset": 2054
+      },
+      "extra": {
+        "metavars": {
+          "$UTIL": {
+            "start": {
+              "line": 62,
+              "col": 9,
+              "offset": 2029
+            },
+            "end": {
+              "line": 62,
+              "col": 10,
+              "offset": 2030
+            },
+            "abstract_content": "t"
+          }
+        },
+        "message": "Possible active debug code detected. Deploying an application with debug code can create unintended entry points or expose sensitive information.",
+        "metadata": {
+          "likelihood": "LOW",
+          "impact": "LOW",
+          "confidence": "MEDIUM",
+          "category": "security",
+          "subcategory": [
+            "audit"
+          ],
+          "cwe": [
+            "CWE-489: Active Debug Code"
+          ],
+          "functional-categories": [
+            "debug::search::active-debug-code::java.lang"
+          ],
+          "owasp": [
+            "A10:2004 - Insecure Configuration Management",
+            "A06:2017 - Security Misconfiguration",
+            "A05:2021 - Security Misconfiguration",
+            "A02:2025 - Security Misconfiguration"
+          ],
+          "references": [
+            "https://cwe.mitre.org/data/definitions/489.html",
+            "https://www.acunetix.com/vulnerabilities/web/stack-trace-disclosure-java/",
+            "https://owasp.org/www-project-web-security-testing-guide/v41/4-Web_Application_Security_Testing/08-Testing_for_Error_Handling/02-Testing_for_Stack_Traces",
+            "https://www.securecodewarrior.com/blog/coders-conquer-security-share-learn-series-information-exposure"
+          ],
+          "technology": [
+            "java"
+          ],
+          "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+          "vulnerability_class": [
+            "Active Debug Code"
+          ],
+          "source": "https://semgrep.dev/r/java.lang.security.audit.active-debug-code-printstacktrace.active-debug-code-printstacktrace",
+          "shortlink": "https://sg.run/4K8z",
+          "semgrep.dev": {
+            "rule": {
+              "origin": "pro_rules",
+              "r_id": 27144,
+              "rule_id": "v8U0rZ",
+              "rule_name": "java.lang.security.audit.active-debug-code-printstacktrace.active-debug-code-printstacktrace",
+              "rv_id": 1236400,
+              "url": "https://semgrep.dev/playground/r/zyTb9Oq/java.lang.security.audit.active-debug-code-printstacktrace.active-debug-code-printstacktrace",
+              "version_id": "zyTb9Oq"
+            },
+            "src": "new-rule"
+          },
+          "dev.semgrep.actions": [
+            "monitor"
+          ],
+          "semgrep.policy": {
+            "id": 271716,
+            "name": "Rule Board - Audit column",
+            "slug": "rule-board-audit"
+          },
+          "semgrep.url": "https://semgrep.dev/r/java.lang.security.audit.active-debug-code-printstacktrace.active-debug-code-printstacktrace",
+          "semgrep.ruleset": "default",
+          "semgrep.ruleset_id": 3471
+        },
+        "severity": "WARNING",
+        "fingerprint": "64ff268839370d65a210917c3eb9a1b34fad10fcac6742bf7430ecce8096e6a5ae1c86959f95359c965a4b23ceb615eef84cdee20a7bce0d1e02754025aa669c_0",
+        "lines": "        t.printStackTrace(writer);",
+        "is_ignored": false,
+        "validation_state": "NO_VALIDATOR",
+        "engine_kind": "PRO"
+      }
+    },
+    {
+      "check_id": "java.lang.security.audit.xxe.saxparserfactory-disallow-doctype-decl-missing.saxparserfactory-disallow-doctype-decl-missing",
+      "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+      "start": {
+        "line": 204,
+        "col": 13,
+        "offset": 8096
+      },
+      "end": {
+        "line": 204,
+        "col": 69,
+        "offset": 8152
+      },
+      "extra": {
+        "metavars": {
+          "$FACTORY": {
+            "start": {
+              "line": 225,
+              "col": 26,
+              "offset": 9015
+            },
+            "end": {
+              "line": 225,
+              "col": 33,
+              "offset": 9022
+            },
+            "abstract_content": "factory"
+          }
+        },
+        "message": "DOCTYPE declarations are enabled for this SAXParserFactory. This is vulnerable to XML external entity attacks. Disable this by setting the feature `http://apache.org/xml/features/disallow-doctype-decl` to true. Alternatively, allow DOCTYPE declarations and only prohibit external entities declarations. This can be done by setting the features `http://xml.org/sax/features/external-general-entities` and `http://xml.org/sax/features/external-parameter-entities` to false. NOTE - The previous links are not meant to be clicked. They are the literal config key values that are supposed to be used to disable these features. For more information, see https://semgrep.dev/docs/cheat-sheets/java-xxe/#3a-documentbuilderfactory.",
+        "fix": "factory.setFeature(\"http://apache.org/xml/features/disallow-doctype-decl\", true);\n            factory.newSAXParser();",
+        "metadata": {
+          "cwe": [
+            "CWE-611: Improper Restriction of XML External Entity Reference"
+          ],
+          "owasp": [
+            "A04:2017 - XML External Entities (XXE)",
+            "A05:2021 - Security Misconfiguration",
+            "A02:2025 - Security Misconfiguration"
+          ],
+          "asvs": {
+            "control_id": "5.5.2 Insecue XML Deserialization",
+            "control_url": "https://github.com/OWASP/ASVS/blob/master/4.0/en/0x13-V5-Validation-Sanitization-Encoding.md#v55-deserialization-prevention",
+            "section": "V5 Validation, Sanitization and Encoding",
+            "version": "4"
+          },
+          "references": [
+            "https://semgrep.dev/blog/2022/xml-security-in-java",
+            "https://semgrep.dev/docs/cheat-sheets/java-xxe/",
+            "https://blog.sonarsource.com/secure-xml-processor",
+            "https://xerces.apache.org/xerces2-j/features.html"
+          ],
+          "category": "security",
+          "technology": [
+            "java",
+            "xml"
+          ],
+          "cwe2022-top25": true,
+          "cwe2021-top25": true,
+          "subcategory": [
+            "vuln"
+          ],
+          "likelihood": "LOW",
+          "impact": "HIGH",
+          "confidence": "HIGH",
+          "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+          "vulnerability_class": [
+            "XML Injection"
+          ],
+          "source": "https://semgrep.dev/r/java.lang.security.audit.xxe.saxparserfactory-disallow-doctype-decl-missing.saxparserfactory-disallow-doctype-decl-missing",
+          "shortlink": "https://sg.run/Gj32",
+          "semgrep.dev": {
+            "rule": {
+              "origin": "community",
+              "r_id": 59048,
+              "rule_id": "j2Udpk",
+              "rule_name": "java.lang.security.audit.xxe.saxparserfactory-disallow-doctype-decl-missing.saxparserfactory-disallow-doctype-decl-missing",
+              "rv_id": 1263061,
+              "url": "https://semgrep.dev/playground/r/YDTZeko/java.lang.security.audit.xxe.saxparserfactory-disallow-doctype-decl-missing.saxparserfactory-disallow-doctype-decl-missing",
+              "version_id": "YDTZeko"
+            },
+            "src": "new-rule"
+          },
+          "dev.semgrep.actions": [
+            "monitor"
+          ],
+          "semgrep.policy": {
+            "id": 271716,
+            "name": "Rule Board - Audit column",
+            "slug": "rule-board-audit"
+          },
+          "semgrep.url": "https://semgrep.dev/r/java.lang.security.audit.xxe.saxparserfactory-disallow-doctype-decl-missing.saxparserfactory-disallow-doctype-decl-missing",
+          "semgrep.ruleset": "comment",
+          "semgrep.ruleset_id": 9381
+        },
+        "severity": "ERROR",
+        "fingerprint": "7810ecc40bd19b072a62c4633822b06553985966f4746ae7dcfe09f180c3ac06b98e1d496c093bbfaf0fbbb2f7f8f7581acd7f2436470bf64f9584dcc4e2a033_0",
+        "lines": "            SAXParser parser = getSAXParserFactory().newSAXParser();",
+        "is_ignored": false,
+        "validation_state": "NO_VALIDATOR",
+        "dataflow_trace": {
+          "taint_source": [
+            "CliCall",
+            [
+              [
+                {
+                  "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+                  "start": {
+                    "line": 204,
+                    "col": 32,
+                    "offset": 8115
+                  },
+                  "end": {
+                    "line": 204,
+                    "col": 51,
+                    "offset": 8134
+                  }
+                },
+                "getSAXParserFactory"
+              ],
+              [
+                {
+                  "location": {
+                    "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+                    "start": {
+                      "line": 225,
+                      "col": 26,
+                      "offset": 9015
+                    },
+                    "end": {
+                      "line": 225,
+                      "col": 33,
+                      "offset": 9022
+                    }
+                  },
+                  "content": "factory"
+                }
+              ],
+              [
+                "CliLoc",
+                [
+                  {
+                    "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+                    "start": {
+                      "line": 225,
+                      "col": 9,
+                      "offset": 8998
+                    },
+                    "end": {
+                      "line": 225,
+                      "col": 67,
+                      "offset": 9056
+                    }
+                  },
+                  "SAXParserFactory factory = SAXParserFactory.newInstance();"
+                ]
+              ]
+            ]
+          ],
+          "intermediate_vars": [],
+          "taint_sink": [
+            "CliLoc",
+            [
+              {
+                "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+                "start": {
+                  "line": 204,
+                  "col": 13,
+                  "offset": 8096
+                },
+                "end": {
+                  "line": 204,
+                  "col": 69,
+                  "offset": 8152
+                }
+              },
+              "SAXParser parser = getSAXParserFactory().newSAXParser();"
+            ]
+          ]
+        },
+        "engine_kind": [
+          "PRO_REQUIRED",
+          {
+            "interproc_taint": true,
+            "interfile_taint": false,
+            "proprietary_language": false
+          }
+        ]
+      }
+    },
+    {
+      "check_id": "java.lang.security.audit.xxe.documentbuilderfactory-disallow-doctype-decl-missing.documentbuilderfactory-disallow-doctype-decl-missing",
+      "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+      "start": {
+        "line": 287,
+        "col": 13,
+        "offset": 11852
+      },
+      "end": {
+        "line": 287,
+        "col": 91,
+        "offset": 11930
+      },
+      "extra": {
+        "metavars": {
+          "$FACTORY": {
+            "start": {
+              "line": 254,
+              "col": 32,
+              "offset": 10348
+            },
+            "end": {
+              "line": 254,
+              "col": 39,
+              "offset": 10355
+            },
+            "abstract_content": "factory"
+          }
+        },
+        "message": "DOCTYPE declarations are enabled for this DocumentBuilderFactory. This is vulnerable to XML external entity attacks. Disable this by setting the feature \"http://apache.org/xml/features/disallow-doctype-decl\" to true. Alternatively, allow DOCTYPE declarations and only prohibit external entities declarations. This can be done by setting the features \"http://xml.org/sax/features/external-general-entities\" and \"http://xml.org/sax/features/external-parameter-entities\" to false.",
+        "fix": "factory.setFeature(\"http://apache.org/xml/features/disallow-doctype-decl\", true);\n            factory.newDocumentBuilder();",
+        "metadata": {
+          "cwe": [
+            "CWE-611: Improper Restriction of XML External Entity Reference"
+          ],
+          "owasp": [
+            "A04:2017 - XML External Entities (XXE)",
+            "A05:2021 - Security Misconfiguration",
+            "A02:2025 - Security Misconfiguration"
+          ],
+          "asvs": {
+            "control_id": "5.5.2 Insecue XML Deserialization",
+            "control_url": "https://github.com/OWASP/ASVS/blob/master/4.0/en/0x13-V5-Validation-Sanitization-Encoding.md#v55-deserialization-prevention",
+            "section": "V5 Validation, Sanitization and Encoding",
+            "version": "4"
+          },
+          "references": [
+            "https://semgrep.dev/blog/2022/xml-security-in-java",
+            "https://semgrep.dev/docs/cheat-sheets/java-xxe/",
+            "https://blog.sonarsource.com/secure-xml-processor",
+            "https://xerces.apache.org/xerces2-j/features.html"
+          ],
+          "category": "security",
+          "technology": [
+            "java",
+            "xml"
+          ],
+          "cwe2022-top25": true,
+          "cwe2021-top25": true,
+          "subcategory": [
+            "vuln"
+          ],
+          "likelihood": "LOW",
+          "impact": "HIGH",
+          "confidence": "HIGH",
+          "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+          "vulnerability_class": [
+            "XML Injection"
+          ],
+          "source": "https://semgrep.dev/r/java.lang.security.audit.xxe.documentbuilderfactory-disallow-doctype-decl-missing.documentbuilderfactory-disallow-doctype-decl-missing",
+          "shortlink": "https://sg.run/PYBz",
+          "semgrep.dev": {
+            "rule": {
+              "origin": "community",
+              "r_id": 18245,
+              "rule_id": "10UPQB",
+              "rule_name": "java.lang.security.audit.xxe.documentbuilderfactory-disallow-doctype-decl-missing.documentbuilderfactory-disallow-doctype-decl-missing",
+              "rv_id": 1263058,
+              "url": "https://semgrep.dev/playground/r/K3TKk80/java.lang.security.audit.xxe.documentbuilderfactory-disallow-doctype-decl-missing.documentbuilderfactory-disallow-doctype-decl-missing",
+              "version_id": "K3TKk80"
+            },
+            "src": "new-rule"
+          },
+          "dev.semgrep.actions": [
+            "monitor"
+          ],
+          "semgrep.policy": {
+            "id": 271716,
+            "name": "Rule Board - Audit column",
+            "slug": "rule-board-audit"
+          },
+          "semgrep.url": "https://semgrep.dev/r/java.lang.security.audit.xxe.documentbuilderfactory-disallow-doctype-decl-missing.documentbuilderfactory-disallow-doctype-decl-missing",
+          "semgrep.ruleset": "default",
+          "semgrep.ruleset_id": 3471
+        },
+        "severity": "ERROR",
+        "fingerprint": "f240e858552d70f829a1efd477b1a43826e7c2afd5b63c56108e4a67b0d2b579dc265a554de179b80a93fe9621568129ca7a83ff50ae3a727d73081c9d294370_0",
+        "lines": "            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();",
+        "is_ignored": false,
+        "validation_state": "NO_VALIDATOR",
+        "dataflow_trace": {
+          "taint_source": [
+            "CliCall",
+            [
+              [
+                {
+                  "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+                  "start": {
+                    "line": 286,
+                    "col": 61,
+                    "offset": 11811
+                  },
+                  "end": {
+                    "line": 286,
+                    "col": 86,
+                    "offset": 11836
+                  }
+                },
+                "getDocumentBuilderFactory"
+              ],
+              [
+                {
+                  "location": {
+                    "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+                    "start": {
+                      "line": 254,
+                      "col": 32,
+                      "offset": 10348
+                    },
+                    "end": {
+                      "line": 254,
+                      "col": 39,
+                      "offset": 10355
+                    }
+                  },
+                  "content": "factory"
+                }
+              ],
+              [
+                "CliLoc",
+                [
+                  {
+                    "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+                    "start": {
+                      "line": 254,
+                      "col": 9,
+                      "offset": 10325
+                    },
+                    "end": {
+                      "line": 254,
+                      "col": 79,
+                      "offset": 10395
+                    }
+                  },
+                  "DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();"
+                ]
+              ]
+            ]
+          ],
+          "intermediate_vars": [
+            {
+              "location": {
+                "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+                "start": {
+                  "line": 286,
+                  "col": 36,
+                  "offset": 11786
+                },
+                "end": {
+                  "line": 286,
+                  "col": 58,
+                  "offset": 11808
+                }
+              },
+              "content": "documentBuilderFactory"
+            }
+          ],
+          "taint_sink": [
+            "CliLoc",
+            [
+              {
+                "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+                "start": {
+                  "line": 287,
+                  "col": 13,
+                  "offset": 11852
+                },
+                "end": {
+                  "line": 287,
+                  "col": 91,
+                  "offset": 11930
+                }
+              },
+              "DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();"
+            ]
+          ]
+        },
+        "engine_kind": [
+          "PRO_REQUIRED",
+          {
+            "interproc_taint": true,
+            "interfile_taint": false,
+            "proprietary_language": false
+          }
+        ]
+      }
+    },
+    {
+      "check_id": "java.lang.security.xmlinputfactory-possible-xxe.xmlinputfactory-possible-xxe",
+      "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+      "start": {
+        "line": 307,
+        "col": 35,
+        "offset": 12721
+      },
+      "end": {
+        "line": 307,
+        "col": 63,
+        "offset": 12749
+      },
+      "extra": {
+        "metavars": {},
+        "message": "XML external entities are not explicitly disabled for this XMLInputFactory. This could be vulnerable to XML external entity vulnerabilities. Explicitly disable external entities by setting \"javax.xml.stream.isSupportingExternalEntities\" to false.",
+        "metadata": {
+          "cwe": [
+            "CWE-611: Improper Restriction of XML External Entity Reference"
+          ],
+          "owasp": [
+            "A04:2017 - XML External Entities (XXE)",
+            "A05:2021 - Security Misconfiguration",
+            "A02:2025 - Security Misconfiguration"
+          ],
+          "asvs": {
+            "control_id": "5.5.2 Insecue XML Deserialization",
+            "control_url": "https://github.com/OWASP/ASVS/blob/master/4.0/en/0x13-V5-Validation-Sanitization-Encoding.md#v55-deserialization-prevention",
+            "section": "V5 Validation, Sanitization and Encoding",
+            "version": "4"
+          },
+          "references": [
+            "https://semgrep.dev/blog/2022/xml-security-in-java",
+            "https://semgrep.dev/docs/cheat-sheets/java-xxe/",
+            "https://www.blackhat.com/docs/us-15/materials/us-15-Wang-FileCry-The-New-Age-Of-XXE-java-wp.pdf",
+            "https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html#xmlinputfactory-a-stax-parser"
+          ],
+          "category": "security",
+          "technology": [
+            "java"
+          ],
+          "cwe2022-top25": true,
+          "cwe2021-top25": true,
+          "subcategory": [
+            "vuln"
+          ],
+          "likelihood": "LOW",
+          "impact": "HIGH",
+          "confidence": "MEDIUM",
+          "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+          "vulnerability_class": [
+            "XML Injection"
+          ],
+          "source": "https://semgrep.dev/r/java.lang.security.xmlinputfactory-possible-xxe.xmlinputfactory-possible-xxe",
+          "shortlink": "https://sg.run/XBwA",
+          "semgrep.dev": {
+            "rule": {
+              "origin": "community",
+              "r_id": 9164,
+              "rule_id": "OrU35O",
+              "rule_name": "java.lang.security.xmlinputfactory-possible-xxe.xmlinputfactory-possible-xxe",
+              "rv_id": 1263069,
+              "url": "https://semgrep.dev/playground/r/1QTypQZ/java.lang.security.xmlinputfactory-possible-xxe.xmlinputfactory-possible-xxe",
+              "version_id": "1QTypQZ"
+            },
+            "src": "new-rule"
+          },
+          "dev.semgrep.actions": [
+            "monitor"
+          ],
+          "semgrep.policy": {
+            "id": 271716,
+            "name": "Rule Board - Audit column",
+            "slug": "rule-board-audit"
+          },
+          "semgrep.url": "https://semgrep.dev/r/java.lang.security.xmlinputfactory-possible-xxe.xmlinputfactory-possible-xxe",
+          "semgrep.ruleset": "default",
+          "semgrep.ruleset_id": 3471
+        },
+        "severity": "WARNING",
+        "fingerprint": "fe1b907f6fc8c2eabacbc27dc7bd5958bf17e9e5ea904cef28fd2ba8bf01e5e0bdcf83c3364737c629a6fc0a2d4dcdfb12d9a8ee54c10648dd5406e297d4df76_0",
+        "lines": "        XMLInputFactory factory = XMLInputFactory.newFactory();",
+        "is_ignored": false,
+        "validation_state": "NO_VALIDATOR",
+        "engine_kind": "PRO"
+      }
+    },
+    {
+      "check_id": "java.lang.security.audit.xxe.transformerfactory-dtds-not-disabled.transformerfactory-dtds-not-disabled",
+      "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+      "start": {
+        "line": 396,
+        "col": 13,
+        "offset": 16291
+      },
+      "end": {
+        "line": 396,
+        "col": 55,
+        "offset": 16333
+      },
+      "extra": {
+        "metavars": {
+          "$FACTORY": {
+            "start": {
+              "line": 413,
+              "col": 32,
+              "offset": 16879
+            },
+            "end": {
+              "line": 413,
+              "col": 50,
+              "offset": 16897
+            },
+            "abstract_content": "transformerFactory"
+          }
+        },
+        "message": "DOCTYPE declarations are enabled for this TransformerFactory. This is vulnerable to XML external entity attacks. Disable this by setting the attributes \"accessExternalDTD\" and \"accessExternalStylesheet\" to \"\".",
+        "fix": "transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, \"\"); transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, \"\");\n            transformerFactory.newTransformer(...);",
+        "metadata": {
+          "cwe": [
+            "CWE-611: Improper Restriction of XML External Entity Reference"
+          ],
+          "owasp": [
+            "A04:2017 - XML External Entities (XXE)",
+            "A05:2021 - Security Misconfiguration",
+            "A02:2025 - Security Misconfiguration"
+          ],
+          "asvs": {
+            "control_id": "5.5.2 Insecue XML Deserialization",
+            "control_url": "https://github.com/OWASP/ASVS/blob/master/4.0/en/0x13-V5-Validation-Sanitization-Encoding.md#v55-deserialization-prevention",
+            "section": "V5 Validation, Sanitization and Encoding",
+            "version": "4"
+          },
+          "references": [
+            "https://semgrep.dev/blog/2022/xml-security-in-java",
+            "https://semgrep.dev/docs/cheat-sheets/java-xxe/",
+            "https://blog.sonarsource.com/secure-xml-processor",
+            "https://xerces.apache.org/xerces2-j/features.html"
+          ],
+          "category": "security",
+          "technology": [
+            "java",
+            "xml"
+          ],
+          "cwe2022-top25": true,
+          "cwe2021-top25": true,
+          "subcategory": [
+            "vuln"
+          ],
+          "likelihood": "LOW",
+          "impact": "HIGH",
+          "confidence": "HIGH",
+          "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+          "vulnerability_class": [
+            "XML Injection"
+          ],
+          "source": "https://semgrep.dev/r/java.lang.security.audit.xxe.transformerfactory-dtds-not-disabled.transformerfactory-dtds-not-disabled",
+          "shortlink": "https://sg.run/1wyQ",
+          "semgrep.dev": {
+            "rule": {
+              "origin": "community",
+              "r_id": 59622,
+              "rule_id": "v8UeQ1",
+              "rule_name": "java.lang.security.audit.xxe.transformerfactory-dtds-not-disabled.transformerfactory-dtds-not-disabled",
+              "rv_id": 1263062,
+              "url": "https://semgrep.dev/playground/r/6xT29GK/java.lang.security.audit.xxe.transformerfactory-dtds-not-disabled.transformerfactory-dtds-not-disabled",
+              "version_id": "6xT29GK"
+            },
+            "src": "new-rule"
+          },
+          "dev.semgrep.actions": [
+            "monitor"
+          ],
+          "semgrep.policy": {
+            "id": 271716,
+            "name": "Rule Board - Audit column",
+            "slug": "rule-board-audit"
+          },
+          "semgrep.url": "https://semgrep.dev/r/java.lang.security.audit.xxe.transformerfactory-dtds-not-disabled.transformerfactory-dtds-not-disabled",
+          "semgrep.ruleset": "comment",
+          "semgrep.ruleset_id": 9381
+        },
+        "severity": "ERROR",
+        "fingerprint": "6502dc5ce42341c5871905cfe76c8f9b9c26c07c5c1076fd9f8f6f4ec898e6669b3bdaa805d857d1f4b2c3bf70bd30d4e7e6c7eab558088f227796a28d081277_0",
+        "lines": "            return transformerFactory.newTransformer();",
+        "is_ignored": false,
+        "validation_state": "NO_VALIDATOR",
+        "dataflow_trace": {
+          "taint_source": [
+            "CliCall",
+            [
+              [
+                {
+                  "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+                  "start": {
+                    "line": 394,
+                    "col": 49,
+                    "offset": 16240
+                  },
+                  "end": {
+                    "line": 394,
+                    "col": 70,
+                    "offset": 16261
+                  }
+                },
+                "getTransformerFactory"
+              ],
+              [
+                {
+                  "location": {
+                    "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+                    "start": {
+                      "line": 413,
+                      "col": 32,
+                      "offset": 16879
+                    },
+                    "end": {
+                      "line": 413,
+                      "col": 50,
+                      "offset": 16897
+                    }
+                  },
+                  "content": "transformerFactory"
+                }
+              ],
+              [
+                "CliLoc",
+                [
+                  {
+                    "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+                    "start": {
+                      "line": 413,
+                      "col": 13,
+                      "offset": 16860
+                    },
+                    "end": {
+                      "line": 413,
+                      "col": 86,
+                      "offset": 16933
+                    }
+                  },
+                  "TransformerFactory transformerFactory = TransformerFactory.newInstance();"
+                ]
+              ]
+            ]
+          ],
+          "intermediate_vars": [
+            {
+              "location": {
+                "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+                "start": {
+                  "line": 394,
+                  "col": 28,
+                  "offset": 16219
+                },
+                "end": {
+                  "line": 394,
+                  "col": 46,
+                  "offset": 16237
+                }
+              },
+              "content": "transformerFactory"
+            }
+          ],
+          "taint_sink": [
+            "CliLoc",
+            [
+              {
+                "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+                "start": {
+                  "line": 396,
+                  "col": 13,
+                  "offset": 16291
+                },
+                "end": {
+                  "line": 396,
+                  "col": 55,
+                  "offset": 16333
+                }
+              },
+              "return transformerFactory.newTransformer()"
+            ]
+          ]
+        },
+        "engine_kind": [
+          "PRO_REQUIRED",
+          {
+            "interproc_taint": true,
+            "interfile_taint": false,
+            "proprietary_language": false
+          }
+        ]
+      }
+    },
+    {
+      "check_id": "java.lang.security.audit.xxe.saxparserfactory-disallow-doctype-decl-missing.saxparserfactory-disallow-doctype-decl-missing",
+      "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+      "start": {
+        "line": 799,
+        "col": 21,
+        "offset": 30305
+      },
+      "end": {
+        "line": 799,
+        "col": 108,
+        "offset": 30392
+      },
+      "extra": {
+        "metavars": {
+          "$FACTORY": {
+            "start": {
+              "line": 225,
+              "col": 26,
+              "offset": 9015
+            },
+            "end": {
+              "line": 225,
+              "col": 33,
+              "offset": 9022
+            },
+            "abstract_content": "factory"
+          }
+        },
+        "message": "DOCTYPE declarations are enabled for this SAXParserFactory. This is vulnerable to XML external entity attacks. Disable this by setting the feature `http://apache.org/xml/features/disallow-doctype-decl` to true. Alternatively, allow DOCTYPE declarations and only prohibit external entities declarations. This can be done by setting the features `http://xml.org/sax/features/external-general-entities` and `http://xml.org/sax/features/external-parameter-entities` to false. NOTE - The previous links are not meant to be clicked. They are the literal config key values that are supposed to be used to disable these features. For more information, see https://semgrep.dev/docs/cheat-sheets/java-xxe/#3a-documentbuilderfactory.",
+        "fix": "factory.setFeature(\"http://apache.org/xml/features/disallow-doctype-decl\", true);\n                    factory.newSAXParser();",
+        "metadata": {
+          "cwe": [
+            "CWE-611: Improper Restriction of XML External Entity Reference"
+          ],
+          "owasp": [
+            "A04:2017 - XML External Entities (XXE)",
+            "A05:2021 - Security Misconfiguration",
+            "A02:2025 - Security Misconfiguration"
+          ],
+          "asvs": {
+            "control_id": "5.5.2 Insecue XML Deserialization",
+            "control_url": "https://github.com/OWASP/ASVS/blob/master/4.0/en/0x13-V5-Validation-Sanitization-Encoding.md#v55-deserialization-prevention",
+            "section": "V5 Validation, Sanitization and Encoding",
+            "version": "4"
+          },
+          "references": [
+            "https://semgrep.dev/blog/2022/xml-security-in-java",
+            "https://semgrep.dev/docs/cheat-sheets/java-xxe/",
+            "https://blog.sonarsource.com/secure-xml-processor",
+            "https://xerces.apache.org/xerces2-j/features.html"
+          ],
+          "category": "security",
+          "technology": [
+            "java",
+            "xml"
+          ],
+          "cwe2022-top25": true,
+          "cwe2021-top25": true,
+          "subcategory": [
+            "vuln"
+          ],
+          "likelihood": "LOW",
+          "impact": "HIGH",
+          "confidence": "HIGH",
+          "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+          "vulnerability_class": [
+            "XML Injection"
+          ],
+          "source": "https://semgrep.dev/r/java.lang.security.audit.xxe.saxparserfactory-disallow-doctype-decl-missing.saxparserfactory-disallow-doctype-decl-missing",
+          "shortlink": "https://sg.run/Gj32",
+          "semgrep.dev": {
+            "rule": {
+              "origin": "community",
+              "r_id": 59048,
+              "rule_id": "j2Udpk",
+              "rule_name": "java.lang.security.audit.xxe.saxparserfactory-disallow-doctype-decl-missing.saxparserfactory-disallow-doctype-decl-missing",
+              "rv_id": 1263061,
+              "url": "https://semgrep.dev/playground/r/YDTZeko/java.lang.security.audit.xxe.saxparserfactory-disallow-doctype-decl-missing.saxparserfactory-disallow-doctype-decl-missing",
+              "version_id": "YDTZeko"
+            },
+            "src": "new-rule"
+          },
+          "dev.semgrep.actions": [
+            "monitor"
+          ],
+          "semgrep.policy": {
+            "id": 271716,
+            "name": "Rule Board - Audit column",
+            "slug": "rule-board-audit"
+          },
+          "semgrep.url": "https://semgrep.dev/r/java.lang.security.audit.xxe.saxparserfactory-disallow-doctype-decl-missing.saxparserfactory-disallow-doctype-decl-missing",
+          "semgrep.ruleset": "comment",
+          "semgrep.ruleset_id": 9381
+        },
+        "severity": "ERROR",
+        "fingerprint": "7810ecc40bd19b072a62c4633822b06553985966f4746ae7dcfe09f180c3ac06b98e1d496c093bbfaf0fbbb2f7f8f7581acd7f2436470bf64f9584dcc4e2a033_1",
+        "lines": "                    parser = buildPoolParser(parser.getGeneration(), getSAXParserFactory().newSAXParser());",
+        "is_ignored": false,
+        "validation_state": "NO_VALIDATOR",
+        "dataflow_trace": {
+          "taint_source": [
+            "CliCall",
+            [
+              [
+                {
+                  "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+                  "start": {
+                    "line": 799,
+                    "col": 70,
+                    "offset": 30354
+                  },
+                  "end": {
+                    "line": 799,
+                    "col": 89,
+                    "offset": 30373
+                  }
+                },
+                "getSAXParserFactory"
+              ],
+              [
+                {
+                  "location": {
+                    "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+                    "start": {
+                      "line": 225,
+                      "col": 26,
+                      "offset": 9015
+                    },
+                    "end": {
+                      "line": 225,
+                      "col": 33,
+                      "offset": 9022
+                    }
+                  },
+                  "content": "factory"
+                }
+              ],
+              [
+                "CliLoc",
+                [
+                  {
+                    "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+                    "start": {
+                      "line": 225,
+                      "col": 9,
+                      "offset": 8998
+                    },
+                    "end": {
+                      "line": 225,
+                      "col": 67,
+                      "offset": 9056
+                    }
+                  },
+                  "SAXParserFactory factory = SAXParserFactory.newInstance();"
+                ]
+              ]
+            ]
+          ],
+          "intermediate_vars": [
+            {
+              "location": {
+                "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+                "start": {
+                  "line": 799,
+                  "col": 30,
+                  "offset": 30314
+                },
+                "end": {
+                  "line": 799,
+                  "col": 45,
+                  "offset": 30329
+                }
+              },
+              "content": "buildPoolParser"
+            },
+            {
+              "location": {
+                "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+                "start": {
+                  "line": 1040,
+                  "col": 76,
+                  "offset": 40872
+                },
+                "end": {
+                  "line": 1040,
+                  "col": 82,
+                  "offset": 40878
+                }
+              },
+              "content": "parser"
+            },
+            {
+              "location": {
+                "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+                "start": {
+                  "line": 1092,
+                  "col": 20,
+                  "offset": 43206
+                },
+                "end": {
+                  "line": 1092,
+                  "col": 23,
+                  "offset": 43209
+                }
+              },
+              "content": "new"
+            }
+          ],
+          "taint_sink": [
+            "CliLoc",
+            [
+              {
+                "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+                "start": {
+                  "line": 799,
+                  "col": 21,
+                  "offset": 30305
+                },
+                "end": {
+                  "line": 799,
+                  "col": 108,
+                  "offset": 30392
+                }
+              },
+              "parser = buildPoolParser(parser.getGeneration(), getSAXParserFactory().newSAXParser());"
+            ]
+          ]
+        },
+        "engine_kind": [
+          "PRO_REQUIRED",
+          {
+            "interproc_taint": true,
+            "interfile_taint": false,
+            "proprietary_language": false
+          }
+        ]
+      }
+    },
+    {
+      "check_id": "java.lang.security.audit.unsafe-reflection.unsafe-reflection",
+      "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+      "start": {
+        "line": 828,
+        "col": 25,
+        "offset": 31671
+      },
+      "end": {
+        "line": 828,
+        "col": 64,
+        "offset": 31710
+      },
+      "extra": {
+        "metavars": {
+          "$CLASS": {
+            "start": {
+              "line": 828,
+              "col": 39,
+              "offset": 31685
+            },
+            "end": {
+              "line": 828,
+              "col": 63,
+              "offset": 31709
+            },
+            "abstract_content": "securityManagerClassName"
+          }
+        },
+        "message": "If an attacker can supply values that the application then uses to determine which class to instantiate or which method to invoke, the potential exists for the attacker to create control flow paths through the application that were not intended by the application developers. This attack vector may allow the attacker to bypass authentication or access control checks or otherwise cause the application to behave in an unexpected manner.",
+        "metadata": {
+          "cwe": [
+            "CWE-470: Use of Externally-Controlled Input to Select Classes or Code ('Unsafe Reflection')"
+          ],
+          "owasp": [
+            "A03:2021 - Injection",
+            "A05:2025 - Injection"
+          ],
+          "source-rule-url": "https://owasp.org/www-community/vulnerabilities/Unsafe_use_of_Reflection",
+          "category": "security",
+          "technology": [
+            "java"
+          ],
+          "references": [
+            "https://owasp.org/Top10/A03_2021-Injection"
+          ],
+          "subcategory": [
+            "audit"
+          ],
+          "likelihood": "LOW",
+          "impact": "LOW",
+          "confidence": "LOW",
+          "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+          "vulnerability_class": [
+            "Improper Authorization"
+          ],
+          "source": "https://semgrep.dev/r/java.lang.security.audit.unsafe-reflection.unsafe-reflection",
+          "shortlink": "https://sg.run/R8X8",
+          "semgrep.dev": {
+            "rule": {
+              "origin": "community",
+              "r_id": 9993,
+              "rule_id": "DbUW1W",
+              "rule_name": "java.lang.security.audit.unsafe-reflection.unsafe-reflection",
+              "rv_id": 1263047,
+              "url": "https://semgrep.dev/playground/r/44TEj5L/java.lang.security.audit.unsafe-reflection.unsafe-reflection",
+              "version_id": "44TEj5L"
+            },
+            "src": "new-rule"
+          },
+          "dev.semgrep.actions": [
+            "monitor"
+          ],
+          "semgrep.policy": {
+            "id": 271716,
+            "name": "Rule Board - Audit column",
+            "slug": "rule-board-audit"
+          },
+          "semgrep.url": "https://semgrep.dev/r/java.lang.security.audit.unsafe-reflection.unsafe-reflection",
+          "semgrep.ruleset": "default",
+          "semgrep.ruleset_id": 3471
+        },
+        "severity": "WARNING",
+        "fingerprint": "a60c2ac79f99ad674739a627c47f6adc73e6c88c2a8be79ae2ed7ef3650c321b279a45181454f1e0034221509a1e92d708ed195f7990e87c795552c7ea3cd4b7_0",
+        "lines": "                        Class.forName(securityManagerClassName).getDeclaredConstructor().newInstance();",
+        "is_ignored": false,
+        "validation_state": "NO_VALIDATOR",
+        "engine_kind": "PRO"
+      }
+    },
+    {
+      "check_id": "java.lang.security.audit.unsafe-reflection.unsafe-reflection",
+      "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+      "start": {
+        "line": 872,
+        "col": 25,
+        "offset": 33942
+      },
+      "end": {
+        "line": 872,
+        "col": 64,
+        "offset": 33981
+      },
+      "extra": {
+        "metavars": {
+          "$CLASS": {
+            "start": {
+              "line": 872,
+              "col": 39,
+              "offset": 33956
+            },
+            "end": {
+              "line": 872,
+              "col": 63,
+              "offset": 33980
+            },
+            "abstract_content": "securityManagerClassName"
+          }
+        },
+        "message": "If an attacker can supply values that the application then uses to determine which class to instantiate or which method to invoke, the potential exists for the attacker to create control flow paths through the application that were not intended by the application developers. This attack vector may allow the attacker to bypass authentication or access control checks or otherwise cause the application to behave in an unexpected manner.",
+        "metadata": {
+          "cwe": [
+            "CWE-470: Use of Externally-Controlled Input to Select Classes or Code ('Unsafe Reflection')"
+          ],
+          "owasp": [
+            "A03:2021 - Injection",
+            "A05:2025 - Injection"
+          ],
+          "source-rule-url": "https://owasp.org/www-community/vulnerabilities/Unsafe_use_of_Reflection",
+          "category": "security",
+          "technology": [
+            "java"
+          ],
+          "references": [
+            "https://owasp.org/Top10/A03_2021-Injection"
+          ],
+          "subcategory": [
+            "audit"
+          ],
+          "likelihood": "LOW",
+          "impact": "LOW",
+          "confidence": "LOW",
+          "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+          "vulnerability_class": [
+            "Improper Authorization"
+          ],
+          "source": "https://semgrep.dev/r/java.lang.security.audit.unsafe-reflection.unsafe-reflection",
+          "shortlink": "https://sg.run/R8X8",
+          "semgrep.dev": {
+            "rule": {
+              "origin": "community",
+              "r_id": 9993,
+              "rule_id": "DbUW1W",
+              "rule_name": "java.lang.security.audit.unsafe-reflection.unsafe-reflection",
+              "rv_id": 1263047,
+              "url": "https://semgrep.dev/playground/r/44TEj5L/java.lang.security.audit.unsafe-reflection.unsafe-reflection",
+              "version_id": "44TEj5L"
+            },
+            "src": "new-rule"
+          },
+          "dev.semgrep.actions": [
+            "monitor"
+          ],
+          "semgrep.policy": {
+            "id": 271716,
+            "name": "Rule Board - Audit column",
+            "slug": "rule-board-audit"
+          },
+          "semgrep.url": "https://semgrep.dev/r/java.lang.security.audit.unsafe-reflection.unsafe-reflection",
+          "semgrep.ruleset": "default",
+          "semgrep.ruleset_id": 3471
+        },
+        "severity": "WARNING",
+        "fingerprint": "a60c2ac79f99ad674739a627c47f6adc73e6c88c2a8be79ae2ed7ef3650c321b279a45181454f1e0034221509a1e92d708ed195f7990e87c795552c7ea3cd4b7_1",
+        "lines": "                        Class.forName(securityManagerClassName).getDeclaredConstructor().newInstance();",
+        "is_ignored": false,
+        "validation_state": "NO_VALIDATOR",
+        "engine_kind": "PRO"
+      }
+    },
+    {
+      "check_id": "java.lang.security.audit.xxe.saxparserfactory-disallow-doctype-decl-missing.saxparserfactory-disallow-doctype-decl-missing",
+      "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+      "start": {
+        "line": 976,
+        "col": 25,
+        "offset": 38516
+      },
+      "end": {
+        "line": 976,
+        "col": 110,
+        "offset": 38601
+      },
+      "extra": {
+        "metavars": {
+          "$FACTORY": {
+            "start": {
+              "line": 225,
+              "col": 26,
+              "offset": 9015
+            },
+            "end": {
+              "line": 225,
+              "col": 33,
+              "offset": 9022
+            },
+            "abstract_content": "factory"
+          }
+        },
+        "message": "DOCTYPE declarations are enabled for this SAXParserFactory. This is vulnerable to XML external entity attacks. Disable this by setting the feature `http://apache.org/xml/features/disallow-doctype-decl` to true. Alternatively, allow DOCTYPE declarations and only prohibit external entities declarations. This can be done by setting the features `http://xml.org/sax/features/external-general-entities` and `http://xml.org/sax/features/external-parameter-entities` to false. NOTE - The previous links are not meant to be clicked. They are the literal config key values that are supposed to be used to disable these features. For more information, see https://semgrep.dev/docs/cheat-sheets/java-xxe/#3a-documentbuilderfactory.",
+        "fix": "factory.setFeature(\"http://apache.org/xml/features/disallow-doctype-decl\", true);\n                        factory.newSAXParser();",
+        "metadata": {
+          "cwe": [
+            "CWE-611: Improper Restriction of XML External Entity Reference"
+          ],
+          "owasp": [
+            "A04:2017 - XML External Entities (XXE)",
+            "A05:2021 - Security Misconfiguration",
+            "A02:2025 - Security Misconfiguration"
+          ],
+          "asvs": {
+            "control_id": "5.5.2 Insecue XML Deserialization",
+            "control_url": "https://github.com/OWASP/ASVS/blob/master/4.0/en/0x13-V5-Validation-Sanitization-Encoding.md#v55-deserialization-prevention",
+            "section": "V5 Validation, Sanitization and Encoding",
+            "version": "4"
+          },
+          "references": [
+            "https://semgrep.dev/blog/2022/xml-security-in-java",
+            "https://semgrep.dev/docs/cheat-sheets/java-xxe/",
+            "https://blog.sonarsource.com/secure-xml-processor",
+            "https://xerces.apache.org/xerces2-j/features.html"
+          ],
+          "category": "security",
+          "technology": [
+            "java",
+            "xml"
+          ],
+          "cwe2022-top25": true,
+          "cwe2021-top25": true,
+          "subcategory": [
+            "vuln"
+          ],
+          "likelihood": "LOW",
+          "impact": "HIGH",
+          "confidence": "HIGH",
+          "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+          "vulnerability_class": [
+            "XML Injection"
+          ],
+          "source": "https://semgrep.dev/r/java.lang.security.audit.xxe.saxparserfactory-disallow-doctype-decl-missing.saxparserfactory-disallow-doctype-decl-missing",
+          "shortlink": "https://sg.run/Gj32",
+          "semgrep.dev": {
+            "rule": {
+              "origin": "community",
+              "r_id": 59048,
+              "rule_id": "j2Udpk",
+              "rule_name": "java.lang.security.audit.xxe.saxparserfactory-disallow-doctype-decl-missing.saxparserfactory-disallow-doctype-decl-missing",
+              "rv_id": 1263061,
+              "url": "https://semgrep.dev/playground/r/YDTZeko/java.lang.security.audit.xxe.saxparserfactory-disallow-doctype-decl-missing.saxparserfactory-disallow-doctype-decl-missing",
+              "version_id": "YDTZeko"
+            },
+            "src": "new-rule"
+          },
+          "dev.semgrep.actions": [
+            "monitor"
+          ],
+          "semgrep.policy": {
+            "id": 271716,
+            "name": "Rule Board - Audit column",
+            "slug": "rule-board-audit"
+          },
+          "semgrep.url": "https://semgrep.dev/r/java.lang.security.audit.xxe.saxparserfactory-disallow-doctype-decl-missing.saxparserfactory-disallow-doctype-decl-missing",
+          "semgrep.ruleset": "comment",
+          "semgrep.ruleset_id": 9381
+        },
+        "severity": "ERROR",
+        "fingerprint": "7810ecc40bd19b072a62c4633822b06553985966f4746ae7dcfe09f180c3ac06b98e1d496c093bbfaf0fbbb2f7f8f7581acd7f2436470bf64f9584dcc4e2a033_2",
+        "lines": "                        SAX_PARSERS.offer(buildPoolParser(generation, getSAXParserFactory().newSAXParser()));",
+        "is_ignored": false,
+        "validation_state": "NO_VALIDATOR",
+        "dataflow_trace": {
+          "taint_source": [
+            "CliCall",
+            [
+              [
+                {
+                  "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+                  "start": {
+                    "line": 976,
+                    "col": 71,
+                    "offset": 38562
+                  },
+                  "end": {
+                    "line": 976,
+                    "col": 90,
+                    "offset": 38581
+                  }
+                },
+                "getSAXParserFactory"
+              ],
+              [
+                {
+                  "location": {
+                    "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+                    "start": {
+                      "line": 225,
+                      "col": 26,
+                      "offset": 9015
+                    },
+                    "end": {
+                      "line": 225,
+                      "col": 33,
+                      "offset": 9022
+                    }
+                  },
+                  "content": "factory"
+                }
+              ],
+              [
+                "CliLoc",
+                [
+                  {
+                    "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+                    "start": {
+                      "line": 225,
+                      "col": 9,
+                      "offset": 8998
+                    },
+                    "end": {
+                      "line": 225,
+                      "col": 67,
+                      "offset": 9056
+                    }
+                  },
+                  "SAXParserFactory factory = SAXParserFactory.newInstance();"
+                ]
+              ]
+            ]
+          ],
+          "intermediate_vars": [
+            {
+              "location": {
+                "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+                "start": {
+                  "line": 976,
+                  "col": 43,
+                  "offset": 38534
+                },
+                "end": {
+                  "line": 976,
+                  "col": 58,
+                  "offset": 38549
+                }
+              },
+              "content": "buildPoolParser"
+            },
+            {
+              "location": {
+                "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+                "start": {
+                  "line": 1040,
+                  "col": 76,
+                  "offset": 40872
+                },
+                "end": {
+                  "line": 1040,
+                  "col": 82,
+                  "offset": 40878
+                }
+              },
+              "content": "parser"
+            },
+            {
+              "location": {
+                "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+                "start": {
+                  "line": 1092,
+                  "col": 20,
+                  "offset": 43206
+                },
+                "end": {
+                  "line": 1092,
+                  "col": 23,
+                  "offset": 43209
+                }
+              },
+              "content": "new"
+            }
+          ],
+          "taint_sink": [
+            "CliLoc",
+            [
+              {
+                "path": "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+                "start": {
+                  "line": 976,
+                  "col": 25,
+                  "offset": 38516
+                },
+                "end": {
+                  "line": 976,
+                  "col": 110,
+                  "offset": 38601
+                }
+              },
+              "SAX_PARSERS.offer(buildPoolParser(generation, getSAXParserFactory().newSAXParser()));"
+            ]
+          ]
+        },
+        "engine_kind": [
+          "PRO_REQUIRED",
+          {
+            "interproc_taint": true,
+            "interfile_taint": false,
+            "proprietary_language": false
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "paths": {
+    "scanned": [
+      "all_pipeline_logs/tika/agent_tika.log",
+      "all_pipeline_logs/tika/prompts_tika.log",
+      "all_pipeline_logs/tika/tika.log",
+      "all_third_party_call_pairs_all_third_party_calls.json",
+      "coverage.json",
+      "coverage_check_results_tika.txt",
+      "coverage_check_results_tika_only_test.txt",
+      "package-map.json",
+      "pom.xml",
+      "src/main/appended-resources/META-INF/LICENSE",
+      "src/main/assembly/test-jar-with-dependencies.xml",
+      "src/main/java/org/apache/tika/Tika.java",
+      "src/main/java/org/apache/tika/concurrent/ConfigurableThreadPoolExecutor.java",
+      "src/main/java/org/apache/tika/concurrent/SimpleThreadPoolExecutor.java",
+      "src/main/java/org/apache/tika/config/ConfigDeserializer.java",
+      "src/main/java/org/apache/tika/config/ConfigValidator.java",
+      "src/main/java/org/apache/tika/config/Initializable.java",
+      "src/main/java/org/apache/tika/config/JsonConfig.java",
+      "src/main/java/org/apache/tika/config/ParseContextConfig.java",
+      "src/main/java/org/apache/tika/config/SelfConfiguring.java",
+      "src/main/java/org/apache/tika/config/ServiceLoader.java",
+      "src/main/java/org/apache/tika/config/TikaActivator.java",
+      "src/main/java/org/apache/tika/config/TikaTaskTimeout.java",
+      "src/main/java/org/apache/tika/config/package-info.java",
+      "src/main/java/org/apache/tika/detect/AutoDetectReader.java",
+      "src/main/java/org/apache/tika/detect/CompositeDetector.java",
+      "src/main/java/org/apache/tika/detect/CompositeEncodingDetector.java",
+      "src/main/java/org/apache/tika/detect/DefaultDetector.java",
+      "src/main/java/org/apache/tika/detect/DefaultEncodingDetector.java",
+      "src/main/java/org/apache/tika/detect/DefaultProbDetector.java",
+      "src/main/java/org/apache/tika/detect/DetectHelper.java",
+      "src/main/java/org/apache/tika/detect/Detector.java",
+      "src/main/java/org/apache/tika/detect/EmptyDetector.java",
+      "src/main/java/org/apache/tika/detect/EncodingDetector.java",
+      "src/main/java/org/apache/tika/detect/FileCommandDetector.java",
+      "src/main/java/org/apache/tika/detect/MagicDetector.java",
+      "src/main/java/org/apache/tika/detect/NNExampleModelDetector.java",
+      "src/main/java/org/apache/tika/detect/NNTrainedModel.java",
+      "src/main/java/org/apache/tika/detect/NNTrainedModelBuilder.java",
+      "src/main/java/org/apache/tika/detect/NameDetector.java",
+      "src/main/java/org/apache/tika/detect/OverrideDetector.java",
+      "src/main/java/org/apache/tika/detect/OverrideEncodingDetector.java",
+      "src/main/java/org/apache/tika/detect/TextDetector.java",
+      "src/main/java/org/apache/tika/detect/TextStatistics.java",
+      "src/main/java/org/apache/tika/detect/TrainedModel.java",
+      "src/main/java/org/apache/tika/detect/TrainedModelDetector.java",
+      "src/main/java/org/apache/tika/detect/TypeDetector.java",
+      "src/main/java/org/apache/tika/detect/XmlRootExtractor.java",
+      "src/main/java/org/apache/tika/detect/ZeroSizeFileDetector.java",
+      "src/main/java/org/apache/tika/detect/package-info.java",
+      "src/main/java/org/apache/tika/digest/CompositeDigester.java",
+      "src/main/java/org/apache/tika/digest/DigestDef.java",
+      "src/main/java/org/apache/tika/digest/DigestHelper.java",
+      "src/main/java/org/apache/tika/digest/Digester.java",
+      "src/main/java/org/apache/tika/digest/DigesterFactory.java",
+      "src/main/java/org/apache/tika/digest/Encoder.java",
+      "src/main/java/org/apache/tika/digest/InputStreamDigester.java",
+      "src/main/java/org/apache/tika/digest/SkipContainerDocumentDigest.java",
+      "src/main/java/org/apache/tika/embedder/Embedder.java",
+      "src/main/java/org/apache/tika/embedder/ExternalEmbedder.java",
+      "src/main/java/org/apache/tika/exception/AccessPermissionException.java",
+      "src/main/java/org/apache/tika/exception/CorruptedFileException.java",
+      "src/main/java/org/apache/tika/exception/EncryptedDocumentException.java",
+      "src/main/java/org/apache/tika/exception/FileTooLongException.java",
+      "src/main/java/org/apache/tika/exception/RuntimeSAXException.java",
+      "src/main/java/org/apache/tika/exception/TikaConfigException.java",
+      "src/main/java/org/apache/tika/exception/TikaException.java",
+      "src/main/java/org/apache/tika/exception/TikaMemoryLimitException.java",
+      "src/main/java/org/apache/tika/exception/TikaTimeoutException.java",
+      "src/main/java/org/apache/tika/exception/UnsupportedFormatException.java",
+      "src/main/java/org/apache/tika/exception/WriteLimitReachedException.java",
+      "src/main/java/org/apache/tika/exception/ZeroByteFileException.java",
+      "src/main/java/org/apache/tika/exception/package-info.java",
+      "src/main/java/org/apache/tika/extractor/BasicEmbeddedBytesSelector.java",
+      "src/main/java/org/apache/tika/extractor/ContainerExtractor.java",
+      "src/main/java/org/apache/tika/extractor/DefaultEmbeddedStreamTranslator.java",
+      "src/main/java/org/apache/tika/extractor/DocumentSelector.java",
+      "src/main/java/org/apache/tika/extractor/EmbeddedBytesSelector.java",
+      "src/main/java/org/apache/tika/extractor/EmbeddedDocumentByteStoreExtractorFactory.java",
+      "src/main/java/org/apache/tika/extractor/EmbeddedDocumentBytesHandler.java",
+      "src/main/java/org/apache/tika/extractor/EmbeddedDocumentExtractor.java",
+      "src/main/java/org/apache/tika/extractor/EmbeddedDocumentExtractorFactory.java",
+      "src/main/java/org/apache/tika/extractor/EmbeddedDocumentUtil.java",
+      "src/main/java/org/apache/tika/extractor/EmbeddedResourceHandler.java",
+      "src/main/java/org/apache/tika/extractor/EmbeddedStreamTranslator.java",
+      "src/main/java/org/apache/tika/extractor/ParentContentHandler.java",
+      "src/main/java/org/apache/tika/extractor/ParserContainerExtractor.java",
+      "src/main/java/org/apache/tika/extractor/ParsingEmbeddedDocumentExtractor.java",
+      "src/main/java/org/apache/tika/extractor/ParsingEmbeddedDocumentExtractorFactory.java",
+      "src/main/java/org/apache/tika/extractor/RUnpackExtractor.java",
+      "src/main/java/org/apache/tika/extractor/RUnpackExtractorFactory.java",
+      "src/main/java/org/apache/tika/extractor/SkipEmbeddedDocumentSelector.java",
+      "src/main/java/org/apache/tika/extractor/package-info.java",
+      "src/main/java/org/apache/tika/io/BoundedInputStream.java",
+      "src/main/java/org/apache/tika/io/ByteArraySource.java",
+      "src/main/java/org/apache/tika/io/CachingInputStream.java",
+      "src/main/java/org/apache/tika/io/CachingSource.java",
+      "src/main/java/org/apache/tika/io/EndianUtils.java",
+      "src/main/java/org/apache/tika/io/FileSource.java",
+      "src/main/java/org/apache/tika/io/FilenameUtils.java",
+      "src/main/java/org/apache/tika/io/LookaheadInputStream.java",
+      "src/main/java/org/apache/tika/io/SpoolingStrategy.java",
+      "src/main/java/org/apache/tika/io/StreamCache.java",
+      "src/main/java/org/apache/tika/io/TailStream.java",
+      "src/main/java/org/apache/tika/io/TemporaryResources.java",
+      "src/main/java/org/apache/tika/io/TikaInputSource.java",
+      "src/main/java/org/apache/tika/io/TikaInputStream.java",
+      "src/main/java/org/apache/tika/io/package-info.java",
+      "src/main/java/org/apache/tika/language/detect/LanguageConfidence.java",
+      "src/main/java/org/apache/tika/language/detect/LanguageDetector.java",
+      "src/main/java/org/apache/tika/language/detect/LanguageHandler.java",
+      "src/main/java/org/apache/tika/language/detect/LanguageNames.java",
+      "src/main/java/org/apache/tika/language/detect/LanguageResult.java",
+      "src/main/java/org/apache/tika/language/detect/LanguageWriter.java",
+      "src/main/java/org/apache/tika/language/translate/DefaultTranslator.java",
+      "src/main/java/org/apache/tika/language/translate/EmptyTranslator.java",
+      "src/main/java/org/apache/tika/language/translate/Translator.java",
+      "src/main/java/org/apache/tika/metadata/AccessPermissions.java",
+      "src/main/java/org/apache/tika/metadata/ClimateForcast.java",
+      "src/main/java/org/apache/tika/metadata/CreativeCommons.java",
+      "src/main/java/org/apache/tika/metadata/Database.java",
+      "src/main/java/org/apache/tika/metadata/DublinCore.java",
+      "src/main/java/org/apache/tika/metadata/Epub.java",
+      "src/main/java/org/apache/tika/metadata/ExternalProcess.java",
+      "src/main/java/org/apache/tika/metadata/FileSystem.java",
+      "src/main/java/org/apache/tika/metadata/Font.java",
+      "src/main/java/org/apache/tika/metadata/Geographic.java",
+      "src/main/java/org/apache/tika/metadata/HTML.java",
+      "src/main/java/org/apache/tika/metadata/HttpHeaders.java",
+      "src/main/java/org/apache/tika/metadata/IPTC.java",
+      "src/main/java/org/apache/tika/metadata/MAPI.java",
+      "src/main/java/org/apache/tika/metadata/MachineMetadata.java",
+      "src/main/java/org/apache/tika/metadata/Message.java",
+      "src/main/java/org/apache/tika/metadata/Metadata.java",
+      "src/main/java/org/apache/tika/metadata/Office.java",
+      "src/main/java/org/apache/tika/metadata/OfficeOpenXMLCore.java",
+      "src/main/java/org/apache/tika/metadata/OfficeOpenXMLExtended.java",
+      "src/main/java/org/apache/tika/metadata/PDF.java",
+      "src/main/java/org/apache/tika/metadata/PST.java",
+      "src/main/java/org/apache/tika/metadata/PagedText.java",
+      "src/main/java/org/apache/tika/metadata/Photoshop.java",
+      "src/main/java/org/apache/tika/metadata/Property.java",
+      "src/main/java/org/apache/tika/metadata/PropertyTypeException.java",
+      "src/main/java/org/apache/tika/metadata/QuattroPro.java",
+      "src/main/java/org/apache/tika/metadata/RTFMetadata.java",
+      "src/main/java/org/apache/tika/metadata/Rendering.java",
+      "src/main/java/org/apache/tika/metadata/TIFF.java",
+      "src/main/java/org/apache/tika/metadata/TikaCoreProperties.java",
+      "src/main/java/org/apache/tika/metadata/TikaMimeKeys.java",
+      "src/main/java/org/apache/tika/metadata/TikaPagedText.java",
+      "src/main/java/org/apache/tika/metadata/WARC.java",
+      "src/main/java/org/apache/tika/metadata/WordPerfect.java",
+      "src/main/java/org/apache/tika/metadata/XMP.java",
+      "src/main/java/org/apache/tika/metadata/XMPDC.java",
+      "src/main/java/org/apache/tika/metadata/XMPDM.java",
+      "src/main/java/org/apache/tika/metadata/XMPIdq.java",
+      "src/main/java/org/apache/tika/metadata/XMPMM.java",
+      "src/main/java/org/apache/tika/metadata/XMPPDF.java",
+      "src/main/java/org/apache/tika/metadata/XMPRights.java",
+      "src/main/java/org/apache/tika/metadata/filter/CaptureGroupMetadataFilter.java",
+      "src/main/java/org/apache/tika/metadata/filter/ClearByAttachmentTypeMetadataFilter.java",
+      "src/main/java/org/apache/tika/metadata/filter/CompositeMetadataFilter.java",
+      "src/main/java/org/apache/tika/metadata/filter/DateNormalizingMetadataFilter.java",
+      "src/main/java/org/apache/tika/metadata/filter/DefaultMetadataFilter.java",
+      "src/main/java/org/apache/tika/metadata/filter/ExcludeFieldMetadataFilter.java",
+      "src/main/java/org/apache/tika/metadata/filter/FieldNameMappingFilter.java",
+      "src/main/java/org/apache/tika/metadata/filter/GeoPointMetadataFilter.java",
+      "src/main/java/org/apache/tika/metadata/filter/IncludeFieldMetadataFilter.java",
+      "src/main/java/org/apache/tika/metadata/filter/MetadataFilter.java",
+      "src/main/java/org/apache/tika/metadata/filter/MetadataFilterBase.java",
+      "src/main/java/org/apache/tika/metadata/filter/NoOpFilter.java",
+      "src/main/java/org/apache/tika/metadata/filter/RemoveByMimeMetadataFilter.java",
+      "src/main/java/org/apache/tika/metadata/package-info.java",
+      "src/main/java/org/apache/tika/metadata/writefilter/MetadataWriteFilter.java",
+      "src/main/java/org/apache/tika/metadata/writefilter/MetadataWriteFilterFactory.java",
+      "src/main/java/org/apache/tika/metadata/writefilter/StandardWriteFilter.java",
+      "src/main/java/org/apache/tika/metadata/writefilter/StandardWriteFilterFactory.java",
+      "src/main/java/org/apache/tika/mime/AndClause.java",
+      "src/main/java/org/apache/tika/mime/Clause.java",
+      "src/main/java/org/apache/tika/mime/HexCoDec.java",
+      "src/main/java/org/apache/tika/mime/Magic.java",
+      "src/main/java/org/apache/tika/mime/MagicMatch.java",
+      "src/main/java/org/apache/tika/mime/MediaType.java",
+      "src/main/java/org/apache/tika/mime/MediaTypeRegistry.java",
+      "src/main/java/org/apache/tika/mime/MimeType.java",
+      "src/main/java/org/apache/tika/mime/MimeTypeException.java",
+      "src/main/java/org/apache/tika/mime/MimeTypes.java",
+      "src/main/java/org/apache/tika/mime/MimeTypesFactory.java",
+      "src/main/java/org/apache/tika/mime/MimeTypesReader.java",
+      "src/main/java/org/apache/tika/mime/MimeTypesReaderMetKeys.java",
+      "src/main/java/org/apache/tika/mime/MinShouldMatchClause.java",
+      "src/main/java/org/apache/tika/mime/OrClause.java",
+      "src/main/java/org/apache/tika/mime/Patterns.java",
+      "src/main/java/org/apache/tika/mime/ProbabilisticMimeDetectionSelector.java",
+      "src/main/java/org/apache/tika/mime/package-info.java",
+      "src/main/java/org/apache/tika/package-info.java",
+      "src/main/java/org/apache/tika/parser/AbstractEncodingDetectorParser.java",
+      "src/main/java/org/apache/tika/parser/AbstractExternalProcessParser.java",
+      "src/main/java/org/apache/tika/parser/AbstractParser.java",
+      "src/main/java/org/apache/tika/parser/AutoDetectParser.java",
+      "src/main/java/org/apache/tika/parser/AutoDetectParserConfig.java",
+      "src/main/java/org/apache/tika/parser/CompositeParser.java",
+      "src/main/java/org/apache/tika/parser/CryptoParser.java",
+      "src/main/java/org/apache/tika/parser/DefaultParser.java",
+      "src/main/java/org/apache/tika/parser/DelegatingParser.java",
+      "src/main/java/org/apache/tika/parser/EmptyParser.java",
+      "src/main/java/org/apache/tika/parser/ErrorParser.java",
+      "src/main/java/org/apache/tika/parser/NetworkParser.java",
+      "src/main/java/org/apache/tika/parser/ParseContext.java",
+      "src/main/java/org/apache/tika/parser/ParseRecord.java",
+      "src/main/java/org/apache/tika/parser/Parser.java",
+      "src/main/java/org/apache/tika/parser/ParserDecorator.java",
+      "src/main/java/org/apache/tika/parser/ParserPostProcessor.java",
+      "src/main/java/org/apache/tika/parser/ParsingReader.java",
+      "src/main/java/org/apache/tika/parser/PasswordProvider.java",
+      "src/main/java/org/apache/tika/parser/RecursiveParserWrapper.java",
+      "src/main/java/org/apache/tika/parser/RegexCaptureParser.java",
+      "src/main/java/org/apache/tika/parser/RegexCaptureParserConfig.java",
+      "src/main/java/org/apache/tika/parser/RenderingParser.java",
+      "src/main/java/org/apache/tika/parser/SimplePasswordProvider.java",
+      "src/main/java/org/apache/tika/parser/StatefulParser.java",
+      "src/main/java/org/apache/tika/parser/external/CompositeExternalParser.java",
+      "src/main/java/org/apache/tika/parser/external/ExternalParser.java",
+      "src/main/java/org/apache/tika/parser/external/ExternalParsersConfigReader.java",
+      "src/main/java/org/apache/tika/parser/external/ExternalParsersConfigReaderMetKeys.java",
+      "src/main/java/org/apache/tika/parser/external/ExternalParsersFactory.java",
+      "src/main/java/org/apache/tika/parser/external/package-info.java",
+      "src/main/java/org/apache/tika/parser/external2/ExternalParser.java",
+      "src/main/java/org/apache/tika/parser/external2/ExternalParserConfig.java",
+      "src/main/java/org/apache/tika/parser/multiple/AbstractMultipleParser.java",
+      "src/main/java/org/apache/tika/parser/multiple/FallbackParser.java",
+      "src/main/java/org/apache/tika/parser/multiple/SupplementingParser.java",
+      "src/main/java/org/apache/tika/parser/package-info.java",
+      "src/main/java/org/apache/tika/renderer/CompositeRenderer.java",
+      "src/main/java/org/apache/tika/renderer/PageBasedRenderResults.java",
+      "src/main/java/org/apache/tika/renderer/PageRangeRequest.java",
+      "src/main/java/org/apache/tika/renderer/RenderRequest.java",
+      "src/main/java/org/apache/tika/renderer/RenderResult.java",
+      "src/main/java/org/apache/tika/renderer/RenderResults.java",
+      "src/main/java/org/apache/tika/renderer/Renderer.java",
+      "src/main/java/org/apache/tika/renderer/RenderingState.java",
+      "src/main/java/org/apache/tika/renderer/RenderingTracker.java",
+      "src/main/java/org/apache/tika/sax/AbstractRecursiveParserWrapperHandler.java",
+      "src/main/java/org/apache/tika/sax/BasicContentHandlerFactory.java",
+      "src/main/java/org/apache/tika/sax/BodyContentHandler.java",
+      "src/main/java/org/apache/tika/sax/CleanPhoneText.java",
+      "src/main/java/org/apache/tika/sax/ContentHandlerDecorator.java",
+      "src/main/java/org/apache/tika/sax/ContentHandlerDecoratorFactory.java",
+      "src/main/java/org/apache/tika/sax/ContentHandlerFactory.java",
+      "src/main/java/org/apache/tika/sax/DIFContentHandler.java",
+      "src/main/java/org/apache/tika/sax/ElementMappingContentHandler.java",
+      "src/main/java/org/apache/tika/sax/EmbeddedContentHandler.java",
+      "src/main/java/org/apache/tika/sax/EndDocumentShieldingContentHandler.java",
+      "src/main/java/org/apache/tika/sax/ExpandedTitleContentHandler.java",
+      "src/main/java/org/apache/tika/sax/Link.java",
+      "src/main/java/org/apache/tika/sax/LinkBuilder.java",
+      "src/main/java/org/apache/tika/sax/LinkContentHandler.java",
+      "src/main/java/org/apache/tika/sax/OfflineContentHandler.java",
+      "src/main/java/org/apache/tika/sax/PhoneExtractingContentHandler.java",
+      "src/main/java/org/apache/tika/sax/RecursiveParserWrapperHandler.java",
+      "src/main/java/org/apache/tika/sax/RichTextContentHandler.java",
+      "src/main/java/org/apache/tika/sax/SafeContentHandler.java",
+      "src/main/java/org/apache/tika/sax/SecureContentHandler.java",
+      "src/main/java/org/apache/tika/sax/StandardOrganizations.java",
+      "src/main/java/org/apache/tika/sax/StandardReference.java",
+      "src/main/java/org/apache/tika/sax/StandardsExtractingContentHandler.java",
+      "src/main/java/org/apache/tika/sax/StandardsText.java",
+      "src/main/java/org/apache/tika/sax/StoppingEarlyException.java",
+      "src/main/java/org/apache/tika/sax/StreamingContentHandlerFactory.java",
+      "src/main/java/org/apache/tika/sax/TaggedContentHandler.java",
+      "src/main/java/org/apache/tika/sax/TaggedSAXException.java",
+      "src/main/java/org/apache/tika/sax/TeeContentHandler.java",
+      "src/main/java/org/apache/tika/sax/TextAndAttributeContentHandler.java",
+      "src/main/java/org/apache/tika/sax/TextContentHandler.java",
+      "src/main/java/org/apache/tika/sax/ToHTMLContentHandler.java",
+      "src/main/java/org/apache/tika/sax/ToTextContentHandler.java",
+      "src/main/java/org/apache/tika/sax/ToXMLContentHandler.java",
+      "src/main/java/org/apache/tika/sax/WriteLimiter.java",
+      "src/main/java/org/apache/tika/sax/WriteOutContentHandler.java",
+      "src/main/java/org/apache/tika/sax/XHTMLContentHandler.java",
+      "src/main/java/org/apache/tika/sax/XMPContentHandler.java",
+      "src/main/java/org/apache/tika/sax/package-info.java",
+      "src/main/java/org/apache/tika/sax/xpath/AttributeMatcher.java",
+      "src/main/java/org/apache/tika/sax/xpath/ChildMatcher.java",
+      "src/main/java/org/apache/tika/sax/xpath/CompositeMatcher.java",
+      "src/main/java/org/apache/tika/sax/xpath/ElementMatcher.java",
+      "src/main/java/org/apache/tika/sax/xpath/Matcher.java",
+      "src/main/java/org/apache/tika/sax/xpath/MatchingContentHandler.java",
+      "src/main/java/org/apache/tika/sax/xpath/NamedAttributeMatcher.java",
+      "src/main/java/org/apache/tika/sax/xpath/NamedElementMatcher.java",
+      "src/main/java/org/apache/tika/sax/xpath/NodeMatcher.java",
+      "src/main/java/org/apache/tika/sax/xpath/SubtreeMatcher.java",
+      "src/main/java/org/apache/tika/sax/xpath/TextMatcher.java",
+      "src/main/java/org/apache/tika/sax/xpath/XPathParser.java",
+      "src/main/java/org/apache/tika/sax/xpath/package-info.java",
+      "src/main/java/org/apache/tika/utils/CharsetUtils.java",
+      "src/main/java/org/apache/tika/utils/CompareUtils.java",
+      "src/main/java/org/apache/tika/utils/ConcurrentUtils.java",
+      "src/main/java/org/apache/tika/utils/DateUtils.java",
+      "src/main/java/org/apache/tika/utils/DurationFormatUtils.java",
+      "src/main/java/org/apache/tika/utils/ExceptionUtils.java",
+      "src/main/java/org/apache/tika/utils/FileProcessResult.java",
+      "src/main/java/org/apache/tika/utils/ParserUtils.java",
+      "src/main/java/org/apache/tika/utils/ProcessUtils.java",
+      "src/main/java/org/apache/tika/utils/RegexUtils.java",
+      "src/main/java/org/apache/tika/utils/ServiceLoaderUtils.java",
+      "src/main/java/org/apache/tika/utils/StreamGobbler.java",
+      "src/main/java/org/apache/tika/utils/StringUtils.java",
+      "src/main/java/org/apache/tika/utils/SystemUtils.java",
+      "src/main/java/org/apache/tika/utils/XMLReaderUtils.java",
+      "src/main/java/org/apache/tika/utils/package-info.java",
+      "src/main/resources/META-INF/services/org.apache.tika.metadata.filter.MetadataFilter",
+      "src/main/resources/org/apache/tika/detect/tika-example.nnmodel",
+      "src/main/resources/org/apache/tika/mime/tika-mimetypes.xml",
+      "src/main/resources/org/apache/tika/parser/external/tika-external-parsers.xml",
+      "src/main/resources/pipes-fork-server-default-log4j2.xml",
+      "third_party_apis_full_methods.json"
+    ]
+  },
+  "time": {
+    "rules": [],
+    "rules_parse_time": 12.238425970077515,
+    "profiling_times": {
+      "config_time": 32.98542308807373,
+      "core_time": 41.895291805267334,
+      "ignores_time": 0.15992999076843262,
+      "total_time": 75.06851100921631
+    },
+    "parsing_time": {
+      "total_time": 0.0,
+      "per_file_time": {
+        "mean": 0.0,
+        "std_dev": 0.0
+      },
+      "very_slow_stats": {
+        "time_ratio": 0.0,
+        "count_ratio": 0.0
+      },
+      "very_slow_files": []
+    },
+    "scanning_time": {
+      "total_time": 0.0,
+      "per_file_time": {
+        "mean": 0.0,
+        "std_dev": 0.0
+      },
+      "very_slow_stats": {
+        "time_ratio": 0.0,
+        "count_ratio": 0.0
+      },
+      "very_slow_files": []
+    },
+    "matching_time": {
+      "total_time": 0.0,
+      "per_file_and_rule_time": {
+        "mean": 0.0,
+        "std_dev": 0.0
+      },
+      "very_slow_stats": {
+        "time_ratio": 0.0,
+        "count_ratio": 0.0
+      },
+      "very_slow_rules_on_files": []
+    },
+    "tainting_time": {
+      "total_time": 0.0,
+      "per_def_and_rule_time": {
+        "mean": 0.0,
+        "std_dev": 0.0
+      },
+      "very_slow_stats": {
+        "time_ratio": 0.0,
+        "count_ratio": 0.0
+      },
+      "very_slow_rules_on_defs": []
+    },
+    "fixpoint_timeouts": [],
+    "prefiltering": {
+      "project_level_time": 0.0,
+      "file_level_time": 0.0,
+      "rules_with_project_prefilters_ratio": 0.0,
+      "rules_with_file_prefilters_ratio": 0.0,
+      "rules_selected_ratio": 0.0,
+      "rules_matched_ratio": 0.0
+    },
+    "targets": [],
+    "total_bytes": 0,
+    "max_memory_bytes": 10724648256
+  },
+  "engine_requested": "PRO",
+  "interfile_languages_used": [],
+  "skipped_rules": [],
+  "subprojects": [
+    {
+      "dependency_sources": [
+        "pom.xml"
+      ],
+      "resolved": true,
+      "resolved_stats": {
+        "resolution_method": "DynamicResolution",
+        "dependency_count": 38,
+        "ecosystem": "maven"
+      }
+    }
+  ],
+  "profiling_results": []
+}
