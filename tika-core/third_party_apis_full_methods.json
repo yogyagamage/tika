@@ -1,0 +1,1041 @@
+{
+  "fullMethodsPaths": [
+    {
+      "entryPoint": "org.apache.tika.config.TikaActivator.start(org.osgi.framework.BundleContext)",
+      "thirdPartyMethod": "org.osgi.util.tracker.ServiceTracker.open()",
+      "directCaller": "org.apache.tika.config.TikaActivator.start(org.osgi.framework.BundleContext)",
+      "path": [
+        "org.apache.tika.config.TikaActivator.start(org.osgi.framework.BundleContext)",
+        "org.osgi.util.tracker.ServiceTracker.open()"
+      ],
+      "methodSources": [
+        "// -----------------------------------------------------< BundleActivator >\npublic void start(final BundleContext context) throws Exception // PATH: Test should invoke the next ServiceTracker.open(...) [step in execution path]\n{\n    bundleContext = context;\n    detectorTracker = new ServiceTracker(context, Detector.class.getName(), this);\n    parserTracker = new ServiceTracker(context, Parser.class.getName(), this);\n    detectorTracker.open();\n    parserTracker.open();\n}"
+      ],
+      "constructors": [
+        "TikaActivator() {\n}"
+      ],
+      "fieldDeclarations": [
+        "private ServiceTracker detectorTracker;",
+        "private ServiceTracker parserTracker;",
+        "private BundleContext bundleContext;"
+      ],
+      "setters": [
+        "public void removedService(ServiceReference reference, Object service) {\n    ServiceLoader.removeService(reference);\n    bundleContext.ungetService(reference);\n}",
+        "// -----------------------------------------------------< BundleActivator >\npublic void start(final BundleContext context) throws Exception {\n    bundleContext = context;\n    detectorTracker = new ServiceTracker(context, Detector.class.getName(), this);\n    parserTracker = new ServiceTracker(context, Parser.class.getName(), this);\n    detectorTracker.open();\n    parserTracker.open();\n}",
+        "public void stop(BundleContext context) throws Exception {\n    parserTracker.close();\n    detectorTracker.close();\n}"
+      ],
+      "imports": [
+        "org.apache.tika.detect.Detector",
+        "org.apache.tika.parser.Parser",
+        "org.osgi.framework.BundleContext",
+        "org.osgi.framework.Constants",
+        "org.osgi.framework.ServiceReference",
+        "org.osgi.util.tracker.ServiceTracker"
+      ],
+      "testTemplate": "package org.apache.tika.config;\n\npublic class TikaActivatorstart_ServiceTrackeropenFikaTest {\n\n    @Test\n    public void testStart() {\n    }\n}",
+      "conditionCount": 0,
+      "callCount": 2,
+      "covered": true
+    },
+    {
+      "entryPoint": "org.apache.tika.config.TikaActivator.start(org.osgi.framework.BundleContext)",
+      "thirdPartyMethod": "org.osgi.util.tracker.ServiceTracker.<init>(org.osgi.framework.BundleContext, java.lang.String, org.osgi.util.tracker.ServiceTrackerCustomizer)",
+      "directCaller": "org.apache.tika.config.TikaActivator.start(org.osgi.framework.BundleContext)",
+      "path": [
+        "org.apache.tika.config.TikaActivator.start(org.osgi.framework.BundleContext)",
+        "org.osgi.util.tracker.ServiceTracker.<init>(org.osgi.framework.BundleContext, java.lang.String, org.osgi.util.tracker.ServiceTrackerCustomizer)"
+      ],
+      "methodSources": [
+        "// -----------------------------------------------------< BundleActivator >\npublic void start(final BundleContext context) throws Exception // PATH: Test should invoke the next new ServiceTracker(...) [step in execution path]\n{\n    bundleContext = context;\n    detectorTracker = new ServiceTracker(context, Detector.class.getName(), this);\n    parserTracker = new ServiceTracker(context, Parser.class.getName(), this);\n    detectorTracker.open();\n    parserTracker.open();\n}"
+      ],
+      "constructors": [
+        "TikaActivator() {\n}"
+      ],
+      "fieldDeclarations": [
+        "private ServiceTracker detectorTracker;",
+        "private ServiceTracker parserTracker;",
+        "private BundleContext bundleContext;"
+      ],
+      "setters": [
+        "public void removedService(ServiceReference reference, Object service) {\n    ServiceLoader.removeService(reference);\n    bundleContext.ungetService(reference);\n}",
+        "// -----------------------------------------------------< BundleActivator >\npublic void start(final BundleContext context) throws Exception {\n    bundleContext = context;\n    detectorTracker = new ServiceTracker(context, Detector.class.getName(), this);\n    parserTracker = new ServiceTracker(context, Parser.class.getName(), this);\n    detectorTracker.open();\n    parserTracker.open();\n}",
+        "public void stop(BundleContext context) throws Exception {\n    parserTracker.close();\n    detectorTracker.close();\n}"
+      ],
+      "imports": [
+        "org.apache.tika.detect.Detector",
+        "org.apache.tika.parser.Parser",
+        "org.osgi.framework.BundleContext",
+        "org.osgi.framework.Constants",
+        "org.osgi.framework.ServiceReference",
+        "org.osgi.util.tracker.ServiceTracker"
+      ],
+      "testTemplate": "package org.apache.tika.config;\n\npublic class TikaActivatorstart_ServiceTrackermethodFikaTest {\n\n    @Test\n    public void testStart() {\n    }\n}",
+      "conditionCount": 0,
+      "callCount": 2,
+      "covered": true
+    },
+    {
+      "entryPoint": "org.apache.tika.config.TikaActivator.removedService(org.osgi.framework.ServiceReference, java.lang.Object)",
+      "thirdPartyMethod": "org.osgi.framework.BundleContext.ungetService(org.osgi.framework.ServiceReference)",
+      "directCaller": "org.apache.tika.config.TikaActivator.removedService(org.osgi.framework.ServiceReference, java.lang.Object)",
+      "path": [
+        "org.apache.tika.config.TikaActivator.removedService(org.osgi.framework.ServiceReference, java.lang.Object)",
+        "org.osgi.framework.BundleContext.ungetService(org.osgi.framework.ServiceReference)"
+      ],
+      "methodSources": [
+        "public void removedService(ServiceReference reference, Object service) // PATH: Test should invoke the next BundleContext.ungetService(...) [step in execution path]\n{\n    ServiceLoader.removeService(reference);\n    bundleContext.ungetService(reference);\n}"
+      ],
+      "constructors": [
+        "TikaActivator() {\n}"
+      ],
+      "fieldDeclarations": [
+        "private ServiceTracker detectorTracker;",
+        "private ServiceTracker parserTracker;",
+        "private BundleContext bundleContext;"
+      ],
+      "setters": [
+        "public void removedService(ServiceReference reference, Object service) {\n    ServiceLoader.removeService(reference);\n    bundleContext.ungetService(reference);\n}",
+        "// -----------------------------------------------------< BundleActivator >\npublic void start(final BundleContext context) throws Exception {\n    bundleContext = context;\n    detectorTracker = new ServiceTracker(context, Detector.class.getName(), this);\n    parserTracker = new ServiceTracker(context, Parser.class.getName(), this);\n    detectorTracker.open();\n    parserTracker.open();\n}",
+        "public void stop(BundleContext context) throws Exception {\n    parserTracker.close();\n    detectorTracker.close();\n}"
+      ],
+      "imports": [
+        "org.apache.tika.detect.Detector",
+        "org.apache.tika.parser.Parser",
+        "org.osgi.framework.BundleContext",
+        "org.osgi.framework.Constants",
+        "org.osgi.framework.ServiceReference",
+        "org.osgi.util.tracker.ServiceTracker"
+      ],
+      "testTemplate": "package org.apache.tika.config;\n\npublic class TikaActivatorremovedService_BundleContextungetServiceFikaTest {\n\n    @Test\n    public void testRemovedService() {\n    }\n}",
+      "conditionCount": 0,
+      "callCount": 1,
+      "covered": true
+    },
+    {
+      "entryPoint": "org.apache.tika.config.TikaActivator.stop(org.osgi.framework.BundleContext)",
+      "thirdPartyMethod": "org.osgi.util.tracker.ServiceTracker.close()",
+      "directCaller": "org.apache.tika.config.TikaActivator.stop(org.osgi.framework.BundleContext)",
+      "path": [
+        "org.apache.tika.config.TikaActivator.stop(org.osgi.framework.BundleContext)",
+        "org.osgi.util.tracker.ServiceTracker.close()"
+      ],
+      "methodSources": [
+        "public void stop(BundleContext context) throws Exception // PATH: Test should invoke the next ServiceTracker.close(...) [step in execution path]\n{\n    parserTracker.close();\n    detectorTracker.close();\n}"
+      ],
+      "constructors": [
+        "TikaActivator() {\n}"
+      ],
+      "fieldDeclarations": [
+        "private ServiceTracker detectorTracker;",
+        "private ServiceTracker parserTracker;",
+        "private BundleContext bundleContext;"
+      ],
+      "setters": [
+        "public void removedService(ServiceReference reference, Object service) {\n    ServiceLoader.removeService(reference);\n    bundleContext.ungetService(reference);\n}",
+        "// -----------------------------------------------------< BundleActivator >\npublic void start(final BundleContext context) throws Exception {\n    bundleContext = context;\n    detectorTracker = new ServiceTracker(context, Detector.class.getName(), this);\n    parserTracker = new ServiceTracker(context, Parser.class.getName(), this);\n    detectorTracker.open();\n    parserTracker.open();\n}",
+        "public void stop(BundleContext context) throws Exception {\n    parserTracker.close();\n    detectorTracker.close();\n}"
+      ],
+      "imports": [
+        "org.apache.tika.detect.Detector",
+        "org.apache.tika.parser.Parser",
+        "org.osgi.framework.BundleContext",
+        "org.osgi.framework.Constants",
+        "org.osgi.framework.ServiceReference",
+        "org.osgi.util.tracker.ServiceTracker"
+      ],
+      "testTemplate": "package org.apache.tika.config;\n\npublic class TikaActivatorstop_ServiceTrackercloseFikaTest {\n\n    @Test\n    public void testStop() {\n    }\n}",
+      "conditionCount": 0,
+      "callCount": 2,
+      "covered": false
+    },
+    {
+      "entryPoint": "org.apache.tika.io.BoundedInputStream.transferTo(java.io.OutputStream)",
+      "thirdPartyMethod": "org.apache.commons.io.IOUtils.copy(java.io.InputStream, java.io.OutputStream)",
+      "directCaller": "org.apache.tika.io.BoundedInputStream.transferTo(java.io.OutputStream)",
+      "path": [
+        "org.apache.tika.io.BoundedInputStream.transferTo(java.io.OutputStream)",
+        "org.apache.commons.io.IOUtils.copy(java.io.InputStream, java.io.OutputStream)"
+      ],
+      "methodSources": [
+        "@Override\npublic long transferTo(OutputStream out) throws IOException {\n    // PATH: Test should invoke the next IOUtils.copy(...) [step in execution path]\n    return IOUtils.copy(this, out);\n}"
+      ],
+      "constructors": [
+        "public BoundedInputStream(long max, InputStream in) {\n    this.max = max;\n    this.in = in;\n}"
+      ],
+      "fieldDeclarations": [
+        "private static final int EOF = -1;",
+        "private final long max;",
+        "private final InputStream in;",
+        "private long pos;"
+      ],
+      "setters": [
+        "@Override\npublic void mark(int readLimit) {\n    in.mark(readLimit);\n}",
+        "@Override\npublic void reset() throws IOException {\n    in.reset();\n    pos = 0;\n}"
+      ],
+      "imports": [
+        "org.apache.commons.io.IOUtils"
+      ],
+      "testTemplate": "package org.apache.tika.io;\n\npublic class BoundedInputStreamtransferTo_IOUtilscopyFikaTest {\n\n    @Test\n    public void testTransferTo() {\n    }\n}",
+      "conditionCount": 0,
+      "callCount": 1,
+      "covered": false
+    },
+    {
+      "entryPoint": "org.apache.tika.io.FileSource.skip(long)",
+      "thirdPartyMethod": "org.apache.commons.io.IOUtils.skip(java.io.InputStream, long)",
+      "directCaller": "org.apache.tika.io.FileSource.skip(long)",
+      "path": [
+        "org.apache.tika.io.FileSource.skip(long)",
+        "org.apache.commons.io.IOUtils.skip(java.io.InputStream, long)"
+      ],
+      "methodSources": [
+        "@Override\npublic long skip(long n) throws IOException {\n    // PATH: Test should invoke the next IOUtils.skip(...) [step in execution path]\n    long skipped = IOUtils.skip(currentStream, n);\n    position += skipped;\n    return skipped;\n}"
+      ],
+      "constructors": [
+        "FileSource(Path path) throws IOException {\n    this.path = path;\n    this.length = Files.size(path);\n    this.currentStream = new BufferedInputStream(Files.newInputStream(path));\n    this.position = 0;\n}"
+      ],
+      "fieldDeclarations": [
+        "private final Path path;",
+        "private final long length;",
+        "private InputStream currentStream;",
+        "private long position;",
+        "// Mark/reset support using seekTo\nprivate long markPosition = -1;"
+      ],
+      "setters": [
+        "@Override\npublic void close() throws IOException {\n    if (currentStream != null) {\n        currentStream.close();\n    }\n}",
+        "@Override\npublic synchronized void mark(int readlimit) {\n    markPosition = position;\n}",
+        "@Override\npublic void seekTo(long newPosition) throws IOException {\n    if (newPosition < 0) {\n        throw new IOException(\"Cannot seek to negative position: \" + newPosition);\n    }\n    if (newPosition > length) {\n        throw new IOException(((\"Cannot seek past end of file. Position: \" + newPosition) + \", length: \") + length);\n    }\n    // Close current stream and reopen at the beginning\n    currentStream.close();\n    currentStream = new BufferedInputStream(Files.newInputStream(path));\n    // Skip to the new position\n    if (newPosition > 0) {\n        IOUtils.skipFully(currentStream, newPosition);\n    }\n    this.position = newPosition;\n}"
+      ],
+      "imports": [
+        "org.apache.commons.io.IOUtils"
+      ],
+      "testTemplate": "package org.apache.tika.io;\n\npublic class FileSourceskip_IOUtilsskipFikaTest {\n\n    @Test\n    public void testSkip() {\n    }\n}",
+      "conditionCount": 0,
+      "callCount": 1,
+      "covered": true
+    },
+    {
+      "entryPoint": "org.apache.tika.parser.NetworkParser.ParsingTask.run()",
+      "thirdPartyMethod": "org.apache.commons.io.IOUtils.copy(java.io.InputStream, java.io.OutputStream)",
+      "directCaller": "org.apache.tika.parser.NetworkParser.ParsingTask.run()",
+      "path": [
+        "org.apache.tika.parser.NetworkParser.ParsingTask.run()",
+        "org.apache.commons.io.IOUtils.copy(java.io.InputStream, java.io.OutputStream)"
+      ],
+      "methodSources": [
+        "// ----------------------------------------------------------<Runnable>\npublic void run() {\n    try {\n        try // PATH: Test should invoke the next IOUtils.copy(...) [step in execution path]\n        {\n            IOUtils.copy(input, output);\n        } finally {\n            output.close();\n        }\n    } catch (Exception e) {\n        exception = e;\n    }\n}"
+      ],
+      "constructors": [
+        "public ParsingTask(TikaInputStream input, OutputStream output) {\n    this.input = input;\n    this.output = output;\n}"
+      ],
+      "fieldDeclarations": [
+        "private final TikaInputStream input;",
+        "private final OutputStream output;",
+        "private volatile Exception exception = null;"
+      ],
+      "setters": [
+        "public void parse(InputStream stream, ContentHandler handler, Metadata metadata, ParseContext context) throws IOException, SAXException, TikaException {\n    Thread thread = new Thread(this, \"Tika network parser\");\n    thread.start();\n    TaggedContentHandler tagged = new TaggedContentHandler(handler);\n    try {\n        XMLReaderUtils.parseSAX(stream, new TeeContentHandler(tagged, new MetaHandler(metadata)), context);\n    } catch (SAXException e) {\n        tagged.throwIfCauseOf(e);\n        throw new TikaException(\"Invalid network parser output\", e);\n    } catch (IOException e) {\n        throw new TikaException(\"Unable to read network parser output\", e);\n    } finally {\n        try {\n            thread.join(1000);\n        } catch (InterruptedException e) {\n            throw new TikaException(\"Network parser interrupted\", e);\n        }\n        if (exception != null) {\n            input.throwIfCauseOf(exception);\n            throw new TikaException(\"Unexpected network parser error\", exception);\n        }\n    }\n}",
+        "// ----------------------------------------------------------<Runnable>\npublic void run() {\n    try {\n        try {\n            IOUtils.copy(input, output);\n        } finally {\n            output.close();\n        }\n    } catch (Exception e) {\n        exception = e;\n    }\n}"
+      ],
+      "imports": [
+        "org.apache.commons.io.IOUtils",
+        "org.apache.commons.io.input.TaggedInputStream",
+        "org.apache.tika.exception.TikaException",
+        "org.apache.tika.io.TikaInputStream",
+        "org.apache.tika.metadata.Metadata",
+        "org.apache.tika.parser.NetworkParser.MetaHandler",
+        "org.apache.tika.parser.NetworkParser.ParsingTask",
+        "org.apache.tika.sax.TaggedContentHandler",
+        "org.apache.tika.sax.TeeContentHandler",
+        "org.apache.tika.utils.XMLReaderUtils",
+        "org.xml.sax.ContentHandler",
+        "org.xml.sax.SAXException"
+      ],
+      "testTemplate": "package org.apache.tika.parser;\n\npublic class ParsingTaskrun_IOUtilscopyFikaTest {\n\n    @Test\n    public void testRun() {\n    }\n}",
+      "conditionCount": 0,
+      "callCount": 1,
+      "covered": false
+    },
+    {
+      "entryPoint": "org.apache.tika.config.TikaActivator.addingService(org.osgi.framework.ServiceReference)",
+      "thirdPartyMethod": "org.osgi.framework.BundleContext.getService(org.osgi.framework.ServiceReference)",
+      "directCaller": "org.apache.tika.config.TikaActivator.addingService(org.osgi.framework.ServiceReference)",
+      "path": [
+        "org.apache.tika.config.TikaActivator.addingService(org.osgi.framework.ServiceReference)",
+        "org.osgi.framework.BundleContext.getService(org.osgi.framework.ServiceReference)"
+      ],
+      "methodSources": [
+        "public Object addingService(ServiceReference reference) {\n    int rank = 0;\n    Object property = reference.getProperty(Constants.SERVICE_RANKING);\n    if (property instanceof Integer) {\n        rank = ((Integer) (property));\n    }\n    // PATH: Test should invoke the next BundleContext.getService(...) [step in execution path]\n    Object service = bundleContext.getService(reference);\n    ServiceLoader.addService(reference, service, rank);\n    return service;\n}"
+      ],
+      "constructors": [
+        "TikaActivator() {\n}"
+      ],
+      "fieldDeclarations": [
+        "private ServiceTracker detectorTracker;",
+        "private ServiceTracker parserTracker;",
+        "private BundleContext bundleContext;"
+      ],
+      "setters": [
+        "public void removedService(ServiceReference reference, Object service) {\n    ServiceLoader.removeService(reference);\n    bundleContext.ungetService(reference);\n}",
+        "// -----------------------------------------------------< BundleActivator >\npublic void start(final BundleContext context) throws Exception {\n    bundleContext = context;\n    detectorTracker = new ServiceTracker(context, Detector.class.getName(), this);\n    parserTracker = new ServiceTracker(context, Parser.class.getName(), this);\n    detectorTracker.open();\n    parserTracker.open();\n}",
+        "public void stop(BundleContext context) throws Exception {\n    parserTracker.close();\n    detectorTracker.close();\n}"
+      ],
+      "imports": [
+        "org.apache.tika.detect.Detector",
+        "org.apache.tika.parser.Parser",
+        "org.osgi.framework.BundleContext",
+        "org.osgi.framework.Constants",
+        "org.osgi.framework.ServiceReference",
+        "org.osgi.util.tracker.ServiceTracker"
+      ],
+      "testTemplate": "package org.apache.tika.config;\n\npublic class TikaActivatoraddingService_BundleContextgetServiceFikaTest {\n\n    @Test\n    public void testAddingService() {\n    }\n}",
+      "conditionCount": 1,
+      "callCount": 1,
+      "covered": true
+    },
+    {
+      "entryPoint": "org.apache.tika.config.TikaActivator.addingService(org.osgi.framework.ServiceReference)",
+      "thirdPartyMethod": "org.osgi.framework.ServiceReference.getProperty(java.lang.String)",
+      "directCaller": "org.apache.tika.config.TikaActivator.addingService(org.osgi.framework.ServiceReference)",
+      "path": [
+        "org.apache.tika.config.TikaActivator.addingService(org.osgi.framework.ServiceReference)",
+        "org.osgi.framework.ServiceReference.getProperty(java.lang.String)"
+      ],
+      "methodSources": [
+        "public Object addingService(ServiceReference reference) {\n    int rank = 0;\n    // PATH: Test should invoke the next ServiceReference.getProperty(...) [step in execution path]\n    Object property = reference.getProperty(Constants.SERVICE_RANKING);\n    if (property instanceof Integer) {\n        rank = ((Integer) (property));\n    }\n    Object service = bundleContext.getService(reference);\n    ServiceLoader.addService(reference, service, rank);\n    return service;\n}"
+      ],
+      "constructors": [
+        "TikaActivator() {\n}"
+      ],
+      "fieldDeclarations": [
+        "private ServiceTracker detectorTracker;",
+        "private ServiceTracker parserTracker;",
+        "private BundleContext bundleContext;"
+      ],
+      "setters": [
+        "public void removedService(ServiceReference reference, Object service) {\n    ServiceLoader.removeService(reference);\n    bundleContext.ungetService(reference);\n}",
+        "// -----------------------------------------------------< BundleActivator >\npublic void start(final BundleContext context) throws Exception {\n    bundleContext = context;\n    detectorTracker = new ServiceTracker(context, Detector.class.getName(), this);\n    parserTracker = new ServiceTracker(context, Parser.class.getName(), this);\n    detectorTracker.open();\n    parserTracker.open();\n}",
+        "public void stop(BundleContext context) throws Exception {\n    parserTracker.close();\n    detectorTracker.close();\n}"
+      ],
+      "imports": [
+        "org.apache.tika.detect.Detector",
+        "org.apache.tika.parser.Parser",
+        "org.osgi.framework.BundleContext",
+        "org.osgi.framework.Constants",
+        "org.osgi.framework.ServiceReference",
+        "org.osgi.util.tracker.ServiceTracker"
+      ],
+      "testTemplate": "package org.apache.tika.config;\n\npublic class TikaActivatoraddingService_ServiceReferencegetPropertyFikaTest {\n\n    @Test\n    public void testAddingService() {\n    }\n}",
+      "conditionCount": 1,
+      "callCount": 1,
+      "covered": true
+    },
+    {
+      "entryPoint": "org.apache.tika.parser.NetworkParser.parse(org.apache.tika.io.TikaInputStream, org.xml.sax.ContentHandler, org.apache.tika.metadata.Metadata, org.apache.tika.parser.ParseContext)",
+      "thirdPartyMethod": "org.apache.commons.io.input.CloseShieldInputStream.wrap(java.io.InputStream)",
+      "directCaller": "org.apache.tika.parser.NetworkParser.parse(org.apache.tika.io.TikaInputStream, org.xml.sax.ContentHandler, org.apache.tika.metadata.Metadata, org.apache.tika.parser.ParseContext)",
+      "path": [
+        "org.apache.tika.parser.NetworkParser.parse(org.apache.tika.io.TikaInputStream, org.xml.sax.ContentHandler, org.apache.tika.metadata.Metadata, org.apache.tika.parser.ParseContext)",
+        "org.apache.commons.io.input.CloseShieldInputStream.wrap(java.io.InputStream)"
+      ],
+      "methodSources": [
+        "public void parse(TikaInputStream tis, ContentHandler handler, Metadata metadata, ParseContext context) throws IOException, SAXException, TikaException {\n    if (\"telnet\".equals(uri.getScheme())) {\n        try (Socket socket = new Socket(uri.getHost(), uri.getPort())) {\n            new ParsingTask(tis, new FilterOutputStream(socket.getOutputStream()) {\n                @Override\n                public void close() throws IOException {\n                    socket.shutdownOutput();\n                }\n            }).parse(socket.getInputStream(), handler, metadata, context);\n        }\n    } else {\n        URL url = uri.toURL();\n        URLConnection connection = url.openConnection();\n        connection.setDoOutput(true);\n        connection.connect();\n        try (InputStream input = connection.getInputStream()) {\n            // PATH: Test should invoke the next CloseShieldInputStream.wrap(...) [step in execution path]\n            new ParsingTask(tis, connection.getOutputStream()).parse(CloseShieldInputStream.wrap(input), handler, metadata, context);\n        }\n    }\n}"
+      ],
+      "constructors": [
+        "public NetworkParser(URI uri, Set<MediaType> supportedTypes) {\n    this.uri = uri;\n    this.supportedTypes = supportedTypes;\n}",
+        "public NetworkParser(URI uri) {\n    this(uri, Collections.singleton(MediaType.OCTET_STREAM));\n}",
+        "1($anonymous0) {\n}",
+        "public ParsingTask(TikaInputStream input, OutputStream output) {\n    this.input = input;\n    this.output = output;\n}",
+        "public MetaHandler(Metadata metadata) {\n    this.metadata = metadata;\n}"
+      ],
+      "fieldDeclarations": [
+        "private final URI uri;",
+        "private final Set<MediaType> supportedTypes;"
+      ],
+      "setters": [
+        "public void parse(TikaInputStream tis, ContentHandler handler, Metadata metadata, ParseContext context) throws IOException, SAXException, TikaException {\n    if (\"telnet\".equals(uri.getScheme())) {\n        try (Socket socket = new Socket(uri.getHost(), uri.getPort())) {\n            new ParsingTask(tis, new FilterOutputStream(socket.getOutputStream()) {\n                @Override\n                public void close() throws IOException {\n                    socket.shutdownOutput();\n                }\n            }).parse(socket.getInputStream(), handler, metadata, context);\n        }\n    } else {\n        URL url = uri.toURL();\n        URLConnection connection = url.openConnection();\n        connection.setDoOutput(true);\n        connection.connect();\n        try (InputStream input = connection.getInputStream()) {\n            new ParsingTask(tis, connection.getOutputStream()).parse(CloseShieldInputStream.wrap(input), handler, metadata, context);\n        }\n    }\n}"
+      ],
+      "imports": [
+        "org.apache.commons.io.input.CloseShieldInputStream",
+        "org.apache.tika.exception.TikaException",
+        "org.apache.tika.io.TikaInputStream",
+        "org.apache.tika.metadata.Metadata",
+        "org.apache.tika.mime.MediaType",
+        "org.apache.tika.parser.NetworkParser.MetaHandler",
+        "org.apache.tika.parser.NetworkParser.ParsingTask",
+        "org.xml.sax.ContentHandler",
+        "org.xml.sax.SAXException",
+        "org.xml.sax.helpers.DefaultHandler"
+      ],
+      "testTemplate": "package org.apache.tika.parser;\n\npublic class NetworkParserparse_CloseShieldInputStreamwrapFikaTest {\n\n    @Test\n    public void testParse() {\n    }\n}",
+      "conditionCount": 1,
+      "callCount": 1,
+      "covered": false
+    },
+    {
+      "entryPoint": "org.apache.tika.io.CachingSource.skip(long)",
+      "thirdPartyMethod": "org.apache.commons.io.IOUtils.skip(java.io.InputStream, long)",
+      "directCaller": "org.apache.tika.io.CachingSource.skip(long)",
+      "path": [
+        "org.apache.tika.io.CachingSource.skip(long)",
+        "org.apache.commons.io.IOUtils.skip(java.io.InputStream, long)"
+      ],
+      "methodSources": [
+        "@Override\npublic long skip(long n) throws IOException {\n    if (fileStream != null) {\n        // PATH: Test should invoke the next IOUtils.skip(...) [step in execution path]\n        long skipped = IOUtils.skip(fileStream, n);\n        filePosition += skipped;\n        return skipped;\n    }\n    if (cachingStream != null) {\n        return cachingStream.skip(n);\n    }\n    long skipped = IOUtils.skip(passthroughStream, n);\n    passthroughPosition += skipped;\n    return skipped;\n}"
+      ],
+      "constructors": [
+        "CachingSource(InputStream source, TemporaryResources tmp, long length, Metadata metadata) {\n    this.tmp = tmp;\n    this.length = length;\n    this.metadata = metadata;\n    // Start in passthrough mode\n    this.passthroughStream = (source instanceof BufferedInputStream) ? ((BufferedInputStream) (source)) : new BufferedInputStream(source);\n    this.passthroughPosition = 0;\n}"
+      ],
+      "fieldDeclarations": [
+        "private final TemporaryResources tmp;",
+        "private final Metadata metadata;",
+        "private long length;",
+        "// Passthrough mode: just a BufferedInputStream\nprivate BufferedInputStream passthroughStream;",
+        "private long passthroughPosition;",
+        "// Caching mode: CachingInputStream for full rewind support\nprivate CachingInputStream cachingStream;",
+        "// After spilling to file, we switch to file-backed mode\nprivate Path spilledPath;",
+        "private InputStream fileStream;",
+        "private long filePosition;// Track position in file mode\n",
+        "// Track mark position across all modes\nprivate long markPosition = -1;"
+      ],
+      "setters": [
+        "@Override\npublic void close() throws IOException {\n    if (fileStream != null) {\n        fileStream.close();\n    }\n    if (cachingStream != null) {\n        cachingStream.close();\n    }\n    if (passthroughStream != null) {\n        passthroughStream.close();\n    }\n}",
+        "@Override\npublic void enableRewind() {\n    // Already in caching or file mode - no-op\n    if ((cachingStream != null) || (fileStream != null)) {\n        return;\n    }\n    if (passthroughPosition != 0) {\n        throw new IllegalStateException((\"Cannot enable rewind: position is \" + passthroughPosition) + \", must be 0. Call enableRewind() before reading.\");\n    }\n    // Switch to caching mode\n    StreamCache cache = new StreamCache(tmp);\n    cachingStream = new CachingInputStream(passthroughStream, cache);\n    passthroughStream = null;\n}",
+        "@Override\npublic synchronized void mark(int readlimit) {\n    if (fileStream != null) {\n        // File mode - track position for seekTo-based reset\n        markPosition = filePosition;\n        return;\n    }\n    if (cachingStream != null) {\n        // Caching mode - track position for seekTo-based reset\n        markPosition = cachingStream.getPosition();\n        return;\n    }\n    // Passthrough mode - delegate to BufferedInputStream\n    passthroughStream.mark(readlimit);\n    markPosition = passthroughPosition;\n}",
+        "@Override\npublic synchronized void reset() throws IOException {\n    if (markPosition < 0) {\n        throw new IOException(\"Mark not set\");\n    }\n    if (fileStream != null) {\n        // File mode - use seekTo\n        seekTo(markPosition);\n        return;\n    }\n    if (cachingStream != null) {\n        // Caching mode - use seekTo\n        cachingStream.seekTo(markPosition);\n        return;\n    }\n    // Passthrough mode - delegate to BufferedInputStream\n    passthroughStream.reset();\n    passthroughPosition = markPosition;\n}",
+        "@Override\npublic void seekTo(long position) throws IOException {\n    if (fileStream != null) {\n        // After spilling, we need to reopen the file and skip\n        fileStream.close();\n        fileStream = new BufferedInputStream(Files.newInputStream(spilledPath));\n        if (position > 0) {\n            IOUtils.skipFully(fileStream, position);\n        }\n        filePosition = position;\n        return;\n    }\n    if (cachingStream != null) {\n        cachingStream.seekTo(position);\n        return;\n    }\n    // Passthrough mode - can only \"seek\" to current position\n    if (position != passthroughPosition) {\n        throw new IOException((((\"Cannot seek in passthrough mode. Call enableRewind() first. \" + \"Current position: \") + passthroughPosition) + \", requested: \") + position);\n    }\n}"
+      ],
+      "imports": [
+        "org.apache.commons.io.IOUtils",
+        "org.apache.tika.metadata.Metadata",
+        "org.apache.tika.utils.StringUtils"
+      ],
+      "testTemplate": "package org.apache.tika.io;\n\npublic class CachingSourceskip_IOUtilsskipFikaTest {\n\n    @Test\n    public void testSkip() {\n    }\n}",
+      "conditionCount": 2,
+      "callCount": 2,
+      "covered": false
+    },
+    {
+      "entryPoint": "org.apache.tika.embedder.ExternalEmbedder.embed(org.apache.tika.metadata.Metadata, java.io.InputStream, java.io.OutputStream, org.apache.tika.parser.ParseContext)",
+      "thirdPartyMethod": "org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream.Builder.get()",
+      "directCaller": "org.apache.tika.embedder.ExternalEmbedder.embed(org.apache.tika.metadata.Metadata, java.io.InputStream, java.io.OutputStream, org.apache.tika.parser.ParseContext)",
+      "path": [
+        "org.apache.tika.embedder.ExternalEmbedder.embed(org.apache.tika.metadata.Metadata, java.io.InputStream, java.io.OutputStream, org.apache.tika.parser.ParseContext)",
+        "org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream.Builder.get()"
+      ],
+      "methodSources": [
+        "/**\n * Executes the configured external command and passes the given document\n * stream as a simple XHTML document to the given SAX content handler.\n * Metadata is only extracted if {@link #setMetadataCommandArguments(Map)}\n * has been called to set arguments.\n */\n@Override\npublic void embed(final Metadata metadata, final InputStream inputStream, final OutputStream outputStream, final ParseContext context) throws IOException, TikaException {\n    boolean inputToStdIn = true;\n    boolean outputFromStdOut = true;\n    boolean hasMetadataCommandArguments = (metadataCommandArguments != null) && (!metadataCommandArguments.isEmpty());\n    boolean serializeMetadataCommandArgumentsToken = false;\n    boolean replacedMetadataCommandArgumentsToken = false;\n    TikaInputStream tikaInputStream = TikaInputStream.get(inputStream);\n    File tempOutputFile = null;\n    List<String> commandMetadataSegments = null;\n    if (hasMetadataCommandArguments) {\n        commandMetadataSegments = getCommandMetadataSegments(metadata);\n    }\n    // Build our command\n    String[] origCmd = command;\n    List<String> cmd = new ArrayList<>();\n    for (String commandSegment : origCmd) {\n        if (commandSegment.contains(ExternalParser.INPUT_FILE_TOKEN)) {\n            commandSegment = commandSegment.replace(ExternalParser.INPUT_FILE_TOKEN, tikaInputStream.getFile().toString());\n            inputToStdIn = false;\n        }\n        if (commandSegment.contains(ExternalParser.OUTPUT_FILE_TOKEN)) {\n            tempOutputFile = tmp.createTemporaryFile();\n            commandSegment = commandSegment.replace(ExternalParser.OUTPUT_FILE_TOKEN, tempOutputFile.toString());\n            outputFromStdOut = false;\n        }\n        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {\n            serializeMetadataCommandArgumentsToken = true;\n        }\n        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_TOKEN)) {\n            if (hasMetadataCommandArguments) {\n                cmd.addAll(commandMetadataSegments);\n            }\n            replacedMetadataCommandArgumentsToken = true;\n        } else {\n            cmd.add(commandSegment);\n        }\n    }\n    if (hasMetadataCommandArguments) {\n        if (serializeMetadataCommandArgumentsToken) {\n            // Find all metadata tokens and replace with encapsulated metadata\n            int i = 0;\n            for (String commandSegment : cmd) {\n                if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {\n                    commandSegment = commandSegment.replace(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN, serializeMetadata(commandMetadataSegments));\n                    cmd.set(i, commandSegment);\n                }\n                i++;\n            }\n        } else if ((!replacedMetadataCommandArgumentsToken) && (!serializeMetadataCommandArgumentsToken)) {\n            // Tack metadata onto the end of the cmd as arguments\n            cmd.addAll(commandMetadataSegments);\n        }\n    }\n    // Execute\n    Process process;\n    if (cmd.toArray().length == 1) {\n        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new)[0]);\n    } else {\n        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new));\n    }\n    // PATH: Test should invoke the next UnsynchronizedByteArrayOutputStream$Builder.get(...) [step in execution path]\n    UnsynchronizedByteArrayOutputStream stdErrOutputStream = UnsynchronizedByteArrayOutputStream.builder().get();\n    try {\n        sendStdErrToOutputStream(process, stdErrOutputStream);\n        if (inputToStdIn) {\n            sendInputStreamToStdIn(inputStream, process);\n        } else {\n            // We're not writing to std in this case so close\n            process.getOutputStream().close();\n        }\n        if (outputFromStdOut) {\n            sendStdOutToOutputStream(process, outputStream);\n        } else {\n            tmp.dispose();\n            try {\n                process.waitFor();\n            } catch (InterruptedException ignore) {\n            }\n            // The command is finished, read the output file into the given output stream\n            InputStream tempOutputFileInputStream = TikaInputStream.get(tempOutputFile.toPath());\n            IOUtils.copy(tempOutputFileInputStream, outputStream);\n        }\n    } finally {\n        if (outputFromStdOut) {\n            try {\n                process.waitFor();\n            } catch (InterruptedException ignore) {\n            }\n        } else {\n            try {\n                // Clean up temp output files\n                tempOutputFile.delete();\n            } catch (Exception e) {\n                // swallow\n            }\n        }\n        if (!inputToStdIn) {\n            // Close input file (and delete if created by up\n            // TemporaryResources.createTemporaryFile)\n            IOUtils.closeQuietly(tikaInputStream);\n        }\n        IOUtils.closeQuietly(outputStream);\n        IOUtils.closeQuietly(stdErrOutputStream);\n        if (process.exitValue() != 0) {\n            throw new TikaException((((\"There was an error executing the command line\" + \"\\nExecutable Command:\\n\\n\") + cmd) + \"\\nExecutable Error:\\n\\n\") + stdErrOutputStream.toString(UTF_8.name()));\n        }\n    }\n}"
+      ],
+      "constructors": [
+        "ExternalEmbedder() {\n}"
+      ],
+      "fieldDeclarations": [
+        "/**\n * Token to be replaced with a String array of metadata assignment command\n * arguments\n */\npublic static final String METADATA_COMMAND_ARGUMENTS_TOKEN = \"${METADATA}\";",
+        "/**\n * Token to be replaced with a String array of metadata assignment command\n * arguments\n */\npublic static final String METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN = \"${METADATA_SERIALIZED}\";",
+        "private static final long serialVersionUID = -2828829275642475697L;",
+        "private final TemporaryResources tmp = new TemporaryResources();",
+        "/**\n * Media types supported by the external program.\n */\nprivate Set<MediaType> supportedEmbedTypes = Collections.emptySet();",
+        "/**\n * Mapping of Tika metadata to command line parameters.\n */\nprivate Map<Property, String[]> metadataCommandArguments = null;",
+        "/**\n * The external command to invoke.\n *\n * @see Runtime#exec(String[])\n */\nprivate String[] command = new String[]{ \"sed\", \"-e\", \"$a\\\\\\n\" + METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN, ExternalParser.INPUT_FILE_TOKEN };",
+        "private String commandAssignmentOperator = \"=\";",
+        "private String commandAssignmentDelimeter = \", \";",
+        "private String commandAppendOperator = \"=\";",
+        "private boolean quoteAssignmentValues = false;"
+      ],
+      "setters": [
+        "/**\n * Executes the configured external command and passes the given document\n * stream as a simple XHTML document to the given SAX content handler.\n * Metadata is only extracted if {@link #setMetadataCommandArguments(Map)}\n * has been called to set arguments.\n */\n@Override\npublic void embed(final Metadata metadata, final InputStream inputStream, final OutputStream outputStream, final ParseContext context) throws IOException, TikaException {\n    boolean inputToStdIn = true;\n    boolean outputFromStdOut = true;\n    boolean hasMetadataCommandArguments = (metadataCommandArguments != null) && (!metadataCommandArguments.isEmpty());\n    boolean serializeMetadataCommandArgumentsToken = false;\n    boolean replacedMetadataCommandArgumentsToken = false;\n    TikaInputStream tikaInputStream = TikaInputStream.get(inputStream);\n    File tempOutputFile = null;\n    List<String> commandMetadataSegments = null;\n    if (hasMetadataCommandArguments) {\n        commandMetadataSegments = getCommandMetadataSegments(metadata);\n    }\n    // Build our command\n    String[] origCmd = command;\n    List<String> cmd = new ArrayList<>();\n    for (String commandSegment : origCmd) {\n        if (commandSegment.contains(ExternalParser.INPUT_FILE_TOKEN)) {\n            commandSegment = commandSegment.replace(ExternalParser.INPUT_FILE_TOKEN, tikaInputStream.getFile().toString());\n            inputToStdIn = false;\n        }\n        if (commandSegment.contains(ExternalParser.OUTPUT_FILE_TOKEN)) {\n            tempOutputFile = tmp.createTemporaryFile();\n            commandSegment = commandSegment.replace(ExternalParser.OUTPUT_FILE_TOKEN, tempOutputFile.toString());\n            outputFromStdOut = false;\n        }\n        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {\n            serializeMetadataCommandArgumentsToken = true;\n        }\n        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_TOKEN)) {\n            if (hasMetadataCommandArguments) {\n                cmd.addAll(commandMetadataSegments);\n            }\n            replacedMetadataCommandArgumentsToken = true;\n        } else {\n            cmd.add(commandSegment);\n        }\n    }\n    if (hasMetadataCommandArguments) {\n        if (serializeMetadataCommandArgumentsToken) {\n            // Find all metadata tokens and replace with encapsulated metadata\n            int i = 0;\n            for (String commandSegment : cmd) {\n                if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {\n                    commandSegment = commandSegment.replace(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN, serializeMetadata(commandMetadataSegments));\n                    cmd.set(i, commandSegment);\n                }\n                i++;\n            }\n        } else if ((!replacedMetadataCommandArgumentsToken) && (!serializeMetadataCommandArgumentsToken)) {\n            // Tack metadata onto the end of the cmd as arguments\n            cmd.addAll(commandMetadataSegments);\n        }\n    }\n    // Execute\n    Process process;\n    if (cmd.toArray().length == 1) {\n        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new)[0]);\n    } else {\n        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new));\n    }\n    UnsynchronizedByteArrayOutputStream stdErrOutputStream = UnsynchronizedByteArrayOutputStream.builder().get();\n    try {\n        sendStdErrToOutputStream(process, stdErrOutputStream);\n        if (inputToStdIn) {\n            sendInputStreamToStdIn(inputStream, process);\n        } else {\n            // We're not writing to std in this case so close\n            process.getOutputStream().close();\n        }\n        if (outputFromStdOut) {\n            sendStdOutToOutputStream(process, outputStream);\n        } else {\n            tmp.dispose();\n            try {\n                process.waitFor();\n            } catch (InterruptedException ignore) {\n            }\n            // The command is finished, read the output file into the given output stream\n            InputStream tempOutputFileInputStream = TikaInputStream.get(tempOutputFile.toPath());\n            IOUtils.copy(tempOutputFileInputStream, outputStream);\n        }\n    } finally {\n        if (outputFromStdOut) {\n            try {\n                process.waitFor();\n            } catch (InterruptedException ignore) {\n            }\n        } else {\n            try {\n                // Clean up temp output files\n                tempOutputFile.delete();\n            } catch (Exception e) {\n                // swallow\n            }\n        }\n        if (!inputToStdIn) {\n            // Close input file (and delete if created by up\n            // TemporaryResources.createTemporaryFile)\n            IOUtils.closeQuietly(tikaInputStream);\n        }\n        IOUtils.closeQuietly(outputStream);\n        IOUtils.closeQuietly(stdErrOutputStream);\n        if (process.exitValue() != 0) {\n            throw new TikaException((((\"There was an error executing the command line\" + \"\\nExecutable Command:\\n\\n\") + cmd) + \"\\nExecutable Error:\\n\\n\") + stdErrOutputStream.toString(UTF_8.name()));\n        }\n    }\n}",
+        "/**\n * Sets the command to be run. This can include either of\n * {@link ExternalParser#INPUT_FILE_TOKEN} or\n * {@link ExternalParser#OUTPUT_FILE_TOKEN} if the command\n * needs filenames.\n *\n * @see Runtime#exec(String[])\n */\npublic void setCommand(String... command) {\n    this.command = command;\n}",
+        "/**\n * Sets the operator to append rather than replace a value for the command\n * line tool, i.e. \"+=\".\n *\n * @param commandAppendOperator\n */\npublic void setCommandAppendOperator(String commandAppendOperator) {\n    this.commandAppendOperator = commandAppendOperator;\n}",
+        "/**\n * Sets the delimiter for multiple assignments for the command line tool,\n * i.e. \", \".\n *\n * @param commandAssignmentDelimeter\n */\npublic void setCommandAssignmentDelimeter(String commandAssignmentDelimeter) {\n    this.commandAssignmentDelimeter = commandAssignmentDelimeter;\n}",
+        "/**\n * Sets the assignment operator for the command line tool, i.e. \"=\".\n *\n * @param commandAssignmentOperator\n */\npublic void setCommandAssignmentOperator(String commandAssignmentOperator) {\n    this.commandAssignmentOperator = commandAssignmentOperator;\n}",
+        "/**\n * Sets the map of Metadata keys to command line parameters. Set this to\n * null to disable Metadata embedding.\n *\n * @param arguments\n */\npublic void setMetadataCommandArguments(Map<Property, String[]> arguments) {\n    this.metadataCommandArguments = arguments;\n}",
+        "/**\n * Sets whether or not to quote assignment values, i.e. tag='value'.\n *\n * @param quoteAssignmentValues\n */\npublic void setQuoteAssignmentValues(boolean quoteAssignmentValues) {\n    this.quoteAssignmentValues = quoteAssignmentValues;\n}",
+        "public void setSupportedEmbedTypes(Set<MediaType> supportedEmbedTypes) {\n    this.supportedEmbedTypes = Collections.unmodifiableSet(new HashSet<>(supportedEmbedTypes));\n}"
+      ],
+      "imports": [
+        "org.apache.commons.io.IOUtils",
+        "org.apache.commons.io.output.AbstractByteArrayOutputStream",
+        "org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream",
+        "org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream.Builder",
+        "org.apache.tika.exception.TikaException",
+        "org.apache.tika.io.TemporaryResources",
+        "org.apache.tika.io.TikaInputStream",
+        "org.apache.tika.metadata.Metadata",
+        "org.apache.tika.metadata.Property",
+        "org.apache.tika.mime.MediaType",
+        "org.apache.tika.parser.ParseContext",
+        "org.apache.tika.parser.external.ExternalParser"
+      ],
+      "testTemplate": "package org.apache.tika.embedder;\n\npublic class ExternalEmbedderembed_BuildergetFikaTest {\n\n    @Test\n    public void testEmbed() {\n    }\n}",
+      "conditionCount": 18,
+      "callCount": 1,
+      "covered": true
+    },
+    {
+      "entryPoint": "org.apache.tika.embedder.ExternalEmbedder.embed(org.apache.tika.metadata.Metadata, java.io.InputStream, java.io.OutputStream, org.apache.tika.parser.ParseContext)",
+      "thirdPartyMethod": "org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream.builder()",
+      "directCaller": "org.apache.tika.embedder.ExternalEmbedder.embed(org.apache.tika.metadata.Metadata, java.io.InputStream, java.io.OutputStream, org.apache.tika.parser.ParseContext)",
+      "path": [
+        "org.apache.tika.embedder.ExternalEmbedder.embed(org.apache.tika.metadata.Metadata, java.io.InputStream, java.io.OutputStream, org.apache.tika.parser.ParseContext)",
+        "org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream.builder()"
+      ],
+      "methodSources": [
+        "/**\n * Executes the configured external command and passes the given document\n * stream as a simple XHTML document to the given SAX content handler.\n * Metadata is only extracted if {@link #setMetadataCommandArguments(Map)}\n * has been called to set arguments.\n */\n@Override\npublic void embed(final Metadata metadata, final InputStream inputStream, final OutputStream outputStream, final ParseContext context) throws IOException, TikaException {\n    boolean inputToStdIn = true;\n    boolean outputFromStdOut = true;\n    boolean hasMetadataCommandArguments = (metadataCommandArguments != null) && (!metadataCommandArguments.isEmpty());\n    boolean serializeMetadataCommandArgumentsToken = false;\n    boolean replacedMetadataCommandArgumentsToken = false;\n    TikaInputStream tikaInputStream = TikaInputStream.get(inputStream);\n    File tempOutputFile = null;\n    List<String> commandMetadataSegments = null;\n    if (hasMetadataCommandArguments) {\n        commandMetadataSegments = getCommandMetadataSegments(metadata);\n    }\n    // Build our command\n    String[] origCmd = command;\n    List<String> cmd = new ArrayList<>();\n    for (String commandSegment : origCmd) {\n        if (commandSegment.contains(ExternalParser.INPUT_FILE_TOKEN)) {\n            commandSegment = commandSegment.replace(ExternalParser.INPUT_FILE_TOKEN, tikaInputStream.getFile().toString());\n            inputToStdIn = false;\n        }\n        if (commandSegment.contains(ExternalParser.OUTPUT_FILE_TOKEN)) {\n            tempOutputFile = tmp.createTemporaryFile();\n            commandSegment = commandSegment.replace(ExternalParser.OUTPUT_FILE_TOKEN, tempOutputFile.toString());\n            outputFromStdOut = false;\n        }\n        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {\n            serializeMetadataCommandArgumentsToken = true;\n        }\n        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_TOKEN)) {\n            if (hasMetadataCommandArguments) {\n                cmd.addAll(commandMetadataSegments);\n            }\n            replacedMetadataCommandArgumentsToken = true;\n        } else {\n            cmd.add(commandSegment);\n        }\n    }\n    if (hasMetadataCommandArguments) {\n        if (serializeMetadataCommandArgumentsToken) {\n            // Find all metadata tokens and replace with encapsulated metadata\n            int i = 0;\n            for (String commandSegment : cmd) {\n                if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {\n                    commandSegment = commandSegment.replace(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN, serializeMetadata(commandMetadataSegments));\n                    cmd.set(i, commandSegment);\n                }\n                i++;\n            }\n        } else if ((!replacedMetadataCommandArgumentsToken) && (!serializeMetadataCommandArgumentsToken)) {\n            // Tack metadata onto the end of the cmd as arguments\n            cmd.addAll(commandMetadataSegments);\n        }\n    }\n    // Execute\n    Process process;\n    if (cmd.toArray().length == 1) {\n        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new)[0]);\n    } else {\n        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new));\n    }\n    UnsynchronizedByteArrayOutputStream stdErrOutputStream = // PATH: Test should invoke the next UnsynchronizedByteArrayOutputStream.builder(...) [step in execution path]\n    UnsynchronizedByteArrayOutputStream.builder().get();\n    try {\n        sendStdErrToOutputStream(process, stdErrOutputStream);\n        if (inputToStdIn) {\n            sendInputStreamToStdIn(inputStream, process);\n        } else {\n            // We're not writing to std in this case so close\n            process.getOutputStream().close();\n        }\n        if (outputFromStdOut) {\n            sendStdOutToOutputStream(process, outputStream);\n        } else {\n            tmp.dispose();\n            try {\n                process.waitFor();\n            } catch (InterruptedException ignore) {\n            }\n            // The command is finished, read the output file into the given output stream\n            InputStream tempOutputFileInputStream = TikaInputStream.get(tempOutputFile.toPath());\n            IOUtils.copy(tempOutputFileInputStream, outputStream);\n        }\n    } finally {\n        if (outputFromStdOut) {\n            try {\n                process.waitFor();\n            } catch (InterruptedException ignore) {\n            }\n        } else {\n            try {\n                // Clean up temp output files\n                tempOutputFile.delete();\n            } catch (Exception e) {\n                // swallow\n            }\n        }\n        if (!inputToStdIn) {\n            // Close input file (and delete if created by up\n            // TemporaryResources.createTemporaryFile)\n            IOUtils.closeQuietly(tikaInputStream);\n        }\n        IOUtils.closeQuietly(outputStream);\n        IOUtils.closeQuietly(stdErrOutputStream);\n        if (process.exitValue() != 0) {\n            throw new TikaException((((\"There was an error executing the command line\" + \"\\nExecutable Command:\\n\\n\") + cmd) + \"\\nExecutable Error:\\n\\n\") + stdErrOutputStream.toString(UTF_8.name()));\n        }\n    }\n}"
+      ],
+      "constructors": [
+        "ExternalEmbedder() {\n}"
+      ],
+      "fieldDeclarations": [
+        "/**\n * Token to be replaced with a String array of metadata assignment command\n * arguments\n */\npublic static final String METADATA_COMMAND_ARGUMENTS_TOKEN = \"${METADATA}\";",
+        "/**\n * Token to be replaced with a String array of metadata assignment command\n * arguments\n */\npublic static final String METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN = \"${METADATA_SERIALIZED}\";",
+        "private static final long serialVersionUID = -2828829275642475697L;",
+        "private final TemporaryResources tmp = new TemporaryResources();",
+        "/**\n * Media types supported by the external program.\n */\nprivate Set<MediaType> supportedEmbedTypes = Collections.emptySet();",
+        "/**\n * Mapping of Tika metadata to command line parameters.\n */\nprivate Map<Property, String[]> metadataCommandArguments = null;",
+        "/**\n * The external command to invoke.\n *\n * @see Runtime#exec(String[])\n */\nprivate String[] command = new String[]{ \"sed\", \"-e\", \"$a\\\\\\n\" + METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN, ExternalParser.INPUT_FILE_TOKEN };",
+        "private String commandAssignmentOperator = \"=\";",
+        "private String commandAssignmentDelimeter = \", \";",
+        "private String commandAppendOperator = \"=\";",
+        "private boolean quoteAssignmentValues = false;"
+      ],
+      "setters": [
+        "/**\n * Executes the configured external command and passes the given document\n * stream as a simple XHTML document to the given SAX content handler.\n * Metadata is only extracted if {@link #setMetadataCommandArguments(Map)}\n * has been called to set arguments.\n */\n@Override\npublic void embed(final Metadata metadata, final InputStream inputStream, final OutputStream outputStream, final ParseContext context) throws IOException, TikaException {\n    boolean inputToStdIn = true;\n    boolean outputFromStdOut = true;\n    boolean hasMetadataCommandArguments = (metadataCommandArguments != null) && (!metadataCommandArguments.isEmpty());\n    boolean serializeMetadataCommandArgumentsToken = false;\n    boolean replacedMetadataCommandArgumentsToken = false;\n    TikaInputStream tikaInputStream = TikaInputStream.get(inputStream);\n    File tempOutputFile = null;\n    List<String> commandMetadataSegments = null;\n    if (hasMetadataCommandArguments) {\n        commandMetadataSegments = getCommandMetadataSegments(metadata);\n    }\n    // Build our command\n    String[] origCmd = command;\n    List<String> cmd = new ArrayList<>();\n    for (String commandSegment : origCmd) {\n        if (commandSegment.contains(ExternalParser.INPUT_FILE_TOKEN)) {\n            commandSegment = commandSegment.replace(ExternalParser.INPUT_FILE_TOKEN, tikaInputStream.getFile().toString());\n            inputToStdIn = false;\n        }\n        if (commandSegment.contains(ExternalParser.OUTPUT_FILE_TOKEN)) {\n            tempOutputFile = tmp.createTemporaryFile();\n            commandSegment = commandSegment.replace(ExternalParser.OUTPUT_FILE_TOKEN, tempOutputFile.toString());\n            outputFromStdOut = false;\n        }\n        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {\n            serializeMetadataCommandArgumentsToken = true;\n        }\n        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_TOKEN)) {\n            if (hasMetadataCommandArguments) {\n                cmd.addAll(commandMetadataSegments);\n            }\n            replacedMetadataCommandArgumentsToken = true;\n        } else {\n            cmd.add(commandSegment);\n        }\n    }\n    if (hasMetadataCommandArguments) {\n        if (serializeMetadataCommandArgumentsToken) {\n            // Find all metadata tokens and replace with encapsulated metadata\n            int i = 0;\n            for (String commandSegment : cmd) {\n                if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {\n                    commandSegment = commandSegment.replace(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN, serializeMetadata(commandMetadataSegments));\n                    cmd.set(i, commandSegment);\n                }\n                i++;\n            }\n        } else if ((!replacedMetadataCommandArgumentsToken) && (!serializeMetadataCommandArgumentsToken)) {\n            // Tack metadata onto the end of the cmd as arguments\n            cmd.addAll(commandMetadataSegments);\n        }\n    }\n    // Execute\n    Process process;\n    if (cmd.toArray().length == 1) {\n        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new)[0]);\n    } else {\n        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new));\n    }\n    UnsynchronizedByteArrayOutputStream stdErrOutputStream = UnsynchronizedByteArrayOutputStream.builder().get();\n    try {\n        sendStdErrToOutputStream(process, stdErrOutputStream);\n        if (inputToStdIn) {\n            sendInputStreamToStdIn(inputStream, process);\n        } else {\n            // We're not writing to std in this case so close\n            process.getOutputStream().close();\n        }\n        if (outputFromStdOut) {\n            sendStdOutToOutputStream(process, outputStream);\n        } else {\n            tmp.dispose();\n            try {\n                process.waitFor();\n            } catch (InterruptedException ignore) {\n            }\n            // The command is finished, read the output file into the given output stream\n            InputStream tempOutputFileInputStream = TikaInputStream.get(tempOutputFile.toPath());\n            IOUtils.copy(tempOutputFileInputStream, outputStream);\n        }\n    } finally {\n        if (outputFromStdOut) {\n            try {\n                process.waitFor();\n            } catch (InterruptedException ignore) {\n            }\n        } else {\n            try {\n                // Clean up temp output files\n                tempOutputFile.delete();\n            } catch (Exception e) {\n                // swallow\n            }\n        }\n        if (!inputToStdIn) {\n            // Close input file (and delete if created by up\n            // TemporaryResources.createTemporaryFile)\n            IOUtils.closeQuietly(tikaInputStream);\n        }\n        IOUtils.closeQuietly(outputStream);\n        IOUtils.closeQuietly(stdErrOutputStream);\n        if (process.exitValue() != 0) {\n            throw new TikaException((((\"There was an error executing the command line\" + \"\\nExecutable Command:\\n\\n\") + cmd) + \"\\nExecutable Error:\\n\\n\") + stdErrOutputStream.toString(UTF_8.name()));\n        }\n    }\n}",
+        "/**\n * Sets the command to be run. This can include either of\n * {@link ExternalParser#INPUT_FILE_TOKEN} or\n * {@link ExternalParser#OUTPUT_FILE_TOKEN} if the command\n * needs filenames.\n *\n * @see Runtime#exec(String[])\n */\npublic void setCommand(String... command) {\n    this.command = command;\n}",
+        "/**\n * Sets the operator to append rather than replace a value for the command\n * line tool, i.e. \"+=\".\n *\n * @param commandAppendOperator\n */\npublic void setCommandAppendOperator(String commandAppendOperator) {\n    this.commandAppendOperator = commandAppendOperator;\n}",
+        "/**\n * Sets the delimiter for multiple assignments for the command line tool,\n * i.e. \", \".\n *\n * @param commandAssignmentDelimeter\n */\npublic void setCommandAssignmentDelimeter(String commandAssignmentDelimeter) {\n    this.commandAssignmentDelimeter = commandAssignmentDelimeter;\n}",
+        "/**\n * Sets the assignment operator for the command line tool, i.e. \"=\".\n *\n * @param commandAssignmentOperator\n */\npublic void setCommandAssignmentOperator(String commandAssignmentOperator) {\n    this.commandAssignmentOperator = commandAssignmentOperator;\n}",
+        "/**\n * Sets the map of Metadata keys to command line parameters. Set this to\n * null to disable Metadata embedding.\n *\n * @param arguments\n */\npublic void setMetadataCommandArguments(Map<Property, String[]> arguments) {\n    this.metadataCommandArguments = arguments;\n}",
+        "/**\n * Sets whether or not to quote assignment values, i.e. tag='value'.\n *\n * @param quoteAssignmentValues\n */\npublic void setQuoteAssignmentValues(boolean quoteAssignmentValues) {\n    this.quoteAssignmentValues = quoteAssignmentValues;\n}",
+        "public void setSupportedEmbedTypes(Set<MediaType> supportedEmbedTypes) {\n    this.supportedEmbedTypes = Collections.unmodifiableSet(new HashSet<>(supportedEmbedTypes));\n}"
+      ],
+      "imports": [
+        "org.apache.commons.io.IOUtils",
+        "org.apache.commons.io.output.AbstractByteArrayOutputStream",
+        "org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream",
+        "org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream.Builder",
+        "org.apache.tika.exception.TikaException",
+        "org.apache.tika.io.TemporaryResources",
+        "org.apache.tika.io.TikaInputStream",
+        "org.apache.tika.metadata.Metadata",
+        "org.apache.tika.metadata.Property",
+        "org.apache.tika.mime.MediaType",
+        "org.apache.tika.parser.ParseContext",
+        "org.apache.tika.parser.external.ExternalParser"
+      ],
+      "testTemplate": "package org.apache.tika.embedder;\n\npublic class ExternalEmbedderembed_UnsynchronizedByteArrayOutputStreambuilderFikaTest {\n\n    @Test\n    public void testEmbed() {\n    }\n}",
+      "conditionCount": 18,
+      "callCount": 1,
+      "covered": true
+    },
+    {
+      "entryPoint": "org.apache.tika.embedder.ExternalEmbedder.embed(org.apache.tika.metadata.Metadata, java.io.InputStream, java.io.OutputStream, org.apache.tika.parser.ParseContext)",
+      "thirdPartyMethod": "org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream.toString(java.lang.String)",
+      "directCaller": "org.apache.tika.embedder.ExternalEmbedder.embed(org.apache.tika.metadata.Metadata, java.io.InputStream, java.io.OutputStream, org.apache.tika.parser.ParseContext)",
+      "path": [
+        "org.apache.tika.embedder.ExternalEmbedder.embed(org.apache.tika.metadata.Metadata, java.io.InputStream, java.io.OutputStream, org.apache.tika.parser.ParseContext)",
+        "org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream.toString(java.lang.String)"
+      ],
+      "methodSources": [
+        "/**\n * Executes the configured external command and passes the given document\n * stream as a simple XHTML document to the given SAX content handler.\n * Metadata is only extracted if {@link #setMetadataCommandArguments(Map)}\n * has been called to set arguments.\n */\n@Override\npublic void embed(final Metadata metadata, final InputStream inputStream, final OutputStream outputStream, final ParseContext context) throws IOException, TikaException {\n    boolean inputToStdIn = true;\n    boolean outputFromStdOut = true;\n    boolean hasMetadataCommandArguments = (metadataCommandArguments != null) && (!metadataCommandArguments.isEmpty());\n    boolean serializeMetadataCommandArgumentsToken = false;\n    boolean replacedMetadataCommandArgumentsToken = false;\n    TikaInputStream tikaInputStream = TikaInputStream.get(inputStream);\n    File tempOutputFile = null;\n    List<String> commandMetadataSegments = null;\n    if (hasMetadataCommandArguments) {\n        commandMetadataSegments = getCommandMetadataSegments(metadata);\n    }\n    // Build our command\n    String[] origCmd = command;\n    List<String> cmd = new ArrayList<>();\n    for (String commandSegment : origCmd) {\n        if (commandSegment.contains(ExternalParser.INPUT_FILE_TOKEN)) {\n            commandSegment = commandSegment.replace(ExternalParser.INPUT_FILE_TOKEN, tikaInputStream.getFile().toString());\n            inputToStdIn = false;\n        }\n        if (commandSegment.contains(ExternalParser.OUTPUT_FILE_TOKEN)) {\n            tempOutputFile = tmp.createTemporaryFile();\n            commandSegment = commandSegment.replace(ExternalParser.OUTPUT_FILE_TOKEN, tempOutputFile.toString());\n            outputFromStdOut = false;\n        }\n        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {\n            serializeMetadataCommandArgumentsToken = true;\n        }\n        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_TOKEN)) {\n            if (hasMetadataCommandArguments) {\n                cmd.addAll(commandMetadataSegments);\n            }\n            replacedMetadataCommandArgumentsToken = true;\n        } else {\n            cmd.add(commandSegment);\n        }\n    }\n    if (hasMetadataCommandArguments) {\n        if (serializeMetadataCommandArgumentsToken) {\n            // Find all metadata tokens and replace with encapsulated metadata\n            int i = 0;\n            for (String commandSegment : cmd) {\n                if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {\n                    commandSegment = commandSegment.replace(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN, serializeMetadata(commandMetadataSegments));\n                    cmd.set(i, commandSegment);\n                }\n                i++;\n            }\n        } else if ((!replacedMetadataCommandArgumentsToken) && (!serializeMetadataCommandArgumentsToken)) {\n            // Tack metadata onto the end of the cmd as arguments\n            cmd.addAll(commandMetadataSegments);\n        }\n    }\n    // Execute\n    Process process;\n    if (cmd.toArray().length == 1) {\n        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new)[0]);\n    } else {\n        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new));\n    }\n    UnsynchronizedByteArrayOutputStream stdErrOutputStream = UnsynchronizedByteArrayOutputStream.builder().get();\n    try {\n        sendStdErrToOutputStream(process, stdErrOutputStream);\n        if (inputToStdIn) {\n            sendInputStreamToStdIn(inputStream, process);\n        } else {\n            // We're not writing to std in this case so close\n            process.getOutputStream().close();\n        }\n        if (outputFromStdOut) {\n            sendStdOutToOutputStream(process, outputStream);\n        } else {\n            tmp.dispose();\n            try {\n                process.waitFor();\n            } catch (InterruptedException ignore) {\n            }\n            // The command is finished, read the output file into the given output stream\n            InputStream tempOutputFileInputStream = TikaInputStream.get(tempOutputFile.toPath());\n            IOUtils.copy(tempOutputFileInputStream, outputStream);\n        }\n    } finally {\n        if (outputFromStdOut) {\n            try {\n                process.waitFor();\n            } catch (InterruptedException ignore) {\n            }\n        } else {\n            try {\n                // Clean up temp output files\n                tempOutputFile.delete();\n            } catch (Exception e) {\n                // swallow\n            }\n        }\n        if (!inputToStdIn) {\n            // Close input file (and delete if created by up\n            // TemporaryResources.createTemporaryFile)\n            IOUtils.closeQuietly(tikaInputStream);\n        }\n        IOUtils.closeQuietly(outputStream);\n        IOUtils.closeQuietly(stdErrOutputStream);\n        if (process.exitValue() != 0) {\n            throw new TikaException((((\"There was an error executing the command line\" + \"\\nExecutable Command:\\n\\n\") + cmd) + \"\\nExecutable Error:\\n\\n\") + stdErrOutputStream.toString(UTF_8.name()));\n        }\n    }\n}"
+      ],
+      "constructors": [
+        "ExternalEmbedder() {\n}"
+      ],
+      "fieldDeclarations": [
+        "/**\n * Token to be replaced with a String array of metadata assignment command\n * arguments\n */\npublic static final String METADATA_COMMAND_ARGUMENTS_TOKEN = \"${METADATA}\";",
+        "/**\n * Token to be replaced with a String array of metadata assignment command\n * arguments\n */\npublic static final String METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN = \"${METADATA_SERIALIZED}\";",
+        "private static final long serialVersionUID = -2828829275642475697L;",
+        "private final TemporaryResources tmp = new TemporaryResources();",
+        "/**\n * Media types supported by the external program.\n */\nprivate Set<MediaType> supportedEmbedTypes = Collections.emptySet();",
+        "/**\n * Mapping of Tika metadata to command line parameters.\n */\nprivate Map<Property, String[]> metadataCommandArguments = null;",
+        "/**\n * The external command to invoke.\n *\n * @see Runtime#exec(String[])\n */\nprivate String[] command = new String[]{ \"sed\", \"-e\", \"$a\\\\\\n\" + METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN, ExternalParser.INPUT_FILE_TOKEN };",
+        "private String commandAssignmentOperator = \"=\";",
+        "private String commandAssignmentDelimeter = \", \";",
+        "private String commandAppendOperator = \"=\";",
+        "private boolean quoteAssignmentValues = false;"
+      ],
+      "setters": [
+        "/**\n * Executes the configured external command and passes the given document\n * stream as a simple XHTML document to the given SAX content handler.\n * Metadata is only extracted if {@link #setMetadataCommandArguments(Map)}\n * has been called to set arguments.\n */\n@Override\npublic void embed(final Metadata metadata, final InputStream inputStream, final OutputStream outputStream, final ParseContext context) throws IOException, TikaException {\n    boolean inputToStdIn = true;\n    boolean outputFromStdOut = true;\n    boolean hasMetadataCommandArguments = (metadataCommandArguments != null) && (!metadataCommandArguments.isEmpty());\n    boolean serializeMetadataCommandArgumentsToken = false;\n    boolean replacedMetadataCommandArgumentsToken = false;\n    TikaInputStream tikaInputStream = TikaInputStream.get(inputStream);\n    File tempOutputFile = null;\n    List<String> commandMetadataSegments = null;\n    if (hasMetadataCommandArguments) {\n        commandMetadataSegments = getCommandMetadataSegments(metadata);\n    }\n    // Build our command\n    String[] origCmd = command;\n    List<String> cmd = new ArrayList<>();\n    for (String commandSegment : origCmd) {\n        if (commandSegment.contains(ExternalParser.INPUT_FILE_TOKEN)) {\n            commandSegment = commandSegment.replace(ExternalParser.INPUT_FILE_TOKEN, tikaInputStream.getFile().toString());\n            inputToStdIn = false;\n        }\n        if (commandSegment.contains(ExternalParser.OUTPUT_FILE_TOKEN)) {\n            tempOutputFile = tmp.createTemporaryFile();\n            commandSegment = commandSegment.replace(ExternalParser.OUTPUT_FILE_TOKEN, tempOutputFile.toString());\n            outputFromStdOut = false;\n        }\n        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {\n            serializeMetadataCommandArgumentsToken = true;\n        }\n        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_TOKEN)) {\n            if (hasMetadataCommandArguments) {\n                cmd.addAll(commandMetadataSegments);\n            }\n            replacedMetadataCommandArgumentsToken = true;\n        } else {\n            cmd.add(commandSegment);\n        }\n    }\n    if (hasMetadataCommandArguments) {\n        if (serializeMetadataCommandArgumentsToken) {\n            // Find all metadata tokens and replace with encapsulated metadata\n            int i = 0;\n            for (String commandSegment : cmd) {\n                if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {\n                    commandSegment = commandSegment.replace(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN, serializeMetadata(commandMetadataSegments));\n                    cmd.set(i, commandSegment);\n                }\n                i++;\n            }\n        } else if ((!replacedMetadataCommandArgumentsToken) && (!serializeMetadataCommandArgumentsToken)) {\n            // Tack metadata onto the end of the cmd as arguments\n            cmd.addAll(commandMetadataSegments);\n        }\n    }\n    // Execute\n    Process process;\n    if (cmd.toArray().length == 1) {\n        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new)[0]);\n    } else {\n        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new));\n    }\n    UnsynchronizedByteArrayOutputStream stdErrOutputStream = UnsynchronizedByteArrayOutputStream.builder().get();\n    try {\n        sendStdErrToOutputStream(process, stdErrOutputStream);\n        if (inputToStdIn) {\n            sendInputStreamToStdIn(inputStream, process);\n        } else {\n            // We're not writing to std in this case so close\n            process.getOutputStream().close();\n        }\n        if (outputFromStdOut) {\n            sendStdOutToOutputStream(process, outputStream);\n        } else {\n            tmp.dispose();\n            try {\n                process.waitFor();\n            } catch (InterruptedException ignore) {\n            }\n            // The command is finished, read the output file into the given output stream\n            InputStream tempOutputFileInputStream = TikaInputStream.get(tempOutputFile.toPath());\n            IOUtils.copy(tempOutputFileInputStream, outputStream);\n        }\n    } finally {\n        if (outputFromStdOut) {\n            try {\n                process.waitFor();\n            } catch (InterruptedException ignore) {\n            }\n        } else {\n            try {\n                // Clean up temp output files\n                tempOutputFile.delete();\n            } catch (Exception e) {\n                // swallow\n            }\n        }\n        if (!inputToStdIn) {\n            // Close input file (and delete if created by up\n            // TemporaryResources.createTemporaryFile)\n            IOUtils.closeQuietly(tikaInputStream);\n        }\n        IOUtils.closeQuietly(outputStream);\n        IOUtils.closeQuietly(stdErrOutputStream);\n        if (process.exitValue() != 0) {\n            throw new TikaException((((\"There was an error executing the command line\" + \"\\nExecutable Command:\\n\\n\") + cmd) + \"\\nExecutable Error:\\n\\n\") + stdErrOutputStream.toString(UTF_8.name()));\n        }\n    }\n}",
+        "/**\n * Sets the command to be run. This can include either of\n * {@link ExternalParser#INPUT_FILE_TOKEN} or\n * {@link ExternalParser#OUTPUT_FILE_TOKEN} if the command\n * needs filenames.\n *\n * @see Runtime#exec(String[])\n */\npublic void setCommand(String... command) {\n    this.command = command;\n}",
+        "/**\n * Sets the operator to append rather than replace a value for the command\n * line tool, i.e. \"+=\".\n *\n * @param commandAppendOperator\n */\npublic void setCommandAppendOperator(String commandAppendOperator) {\n    this.commandAppendOperator = commandAppendOperator;\n}",
+        "/**\n * Sets the delimiter for multiple assignments for the command line tool,\n * i.e. \", \".\n *\n * @param commandAssignmentDelimeter\n */\npublic void setCommandAssignmentDelimeter(String commandAssignmentDelimeter) {\n    this.commandAssignmentDelimeter = commandAssignmentDelimeter;\n}",
+        "/**\n * Sets the assignment operator for the command line tool, i.e. \"=\".\n *\n * @param commandAssignmentOperator\n */\npublic void setCommandAssignmentOperator(String commandAssignmentOperator) {\n    this.commandAssignmentOperator = commandAssignmentOperator;\n}",
+        "/**\n * Sets the map of Metadata keys to command line parameters. Set this to\n * null to disable Metadata embedding.\n *\n * @param arguments\n */\npublic void setMetadataCommandArguments(Map<Property, String[]> arguments) {\n    this.metadataCommandArguments = arguments;\n}",
+        "/**\n * Sets whether or not to quote assignment values, i.e. tag='value'.\n *\n * @param quoteAssignmentValues\n */\npublic void setQuoteAssignmentValues(boolean quoteAssignmentValues) {\n    this.quoteAssignmentValues = quoteAssignmentValues;\n}",
+        "public void setSupportedEmbedTypes(Set<MediaType> supportedEmbedTypes) {\n    this.supportedEmbedTypes = Collections.unmodifiableSet(new HashSet<>(supportedEmbedTypes));\n}"
+      ],
+      "imports": [
+        "org.apache.commons.io.IOUtils",
+        "org.apache.commons.io.output.AbstractByteArrayOutputStream",
+        "org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream",
+        "org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream.Builder",
+        "org.apache.tika.exception.TikaException",
+        "org.apache.tika.io.TemporaryResources",
+        "org.apache.tika.io.TikaInputStream",
+        "org.apache.tika.metadata.Metadata",
+        "org.apache.tika.metadata.Property",
+        "org.apache.tika.mime.MediaType",
+        "org.apache.tika.parser.ParseContext",
+        "org.apache.tika.parser.external.ExternalParser"
+      ],
+      "testTemplate": "package org.apache.tika.embedder;\n\npublic class ExternalEmbedderembed_UnsynchronizedByteArrayOutputStreamtoStringFikaTest {\n\n    @Test\n    public void testEmbed() {\n    }\n}",
+      "conditionCount": 18,
+      "callCount": 1,
+      "covered": false
+    },
+    {
+      "entryPoint": "org.apache.tika.embedder.ExternalEmbedder.embed(org.apache.tika.metadata.Metadata, java.io.InputStream, java.io.OutputStream, org.apache.tika.parser.ParseContext)",
+      "thirdPartyMethod": "org.apache.commons.io.IOUtils.closeQuietly(java.io.OutputStream)",
+      "directCaller": "org.apache.tika.embedder.ExternalEmbedder.embed(org.apache.tika.metadata.Metadata, java.io.InputStream, java.io.OutputStream, org.apache.tika.parser.ParseContext)",
+      "path": [
+        "org.apache.tika.embedder.ExternalEmbedder.embed(org.apache.tika.metadata.Metadata, java.io.InputStream, java.io.OutputStream, org.apache.tika.parser.ParseContext)",
+        "org.apache.commons.io.IOUtils.closeQuietly(java.io.OutputStream)"
+      ],
+      "methodSources": [
+        "/**\n * Executes the configured external command and passes the given document\n * stream as a simple XHTML document to the given SAX content handler.\n * Metadata is only extracted if {@link #setMetadataCommandArguments(Map)}\n * has been called to set arguments.\n */\n@Override\npublic void embed(final Metadata metadata, final InputStream inputStream, final OutputStream outputStream, final ParseContext context) throws IOException, TikaException {\n    boolean inputToStdIn = true;\n    boolean outputFromStdOut = true;\n    boolean hasMetadataCommandArguments = (metadataCommandArguments != null) && (!metadataCommandArguments.isEmpty());\n    boolean serializeMetadataCommandArgumentsToken = false;\n    boolean replacedMetadataCommandArgumentsToken = false;\n    TikaInputStream tikaInputStream = TikaInputStream.get(inputStream);\n    File tempOutputFile = null;\n    List<String> commandMetadataSegments = null;\n    if (hasMetadataCommandArguments) {\n        commandMetadataSegments = getCommandMetadataSegments(metadata);\n    }\n    // Build our command\n    String[] origCmd = command;\n    List<String> cmd = new ArrayList<>();\n    for (String commandSegment : origCmd) {\n        if (commandSegment.contains(ExternalParser.INPUT_FILE_TOKEN)) {\n            commandSegment = commandSegment.replace(ExternalParser.INPUT_FILE_TOKEN, tikaInputStream.getFile().toString());\n            inputToStdIn = false;\n        }\n        if (commandSegment.contains(ExternalParser.OUTPUT_FILE_TOKEN)) {\n            tempOutputFile = tmp.createTemporaryFile();\n            commandSegment = commandSegment.replace(ExternalParser.OUTPUT_FILE_TOKEN, tempOutputFile.toString());\n            outputFromStdOut = false;\n        }\n        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {\n            serializeMetadataCommandArgumentsToken = true;\n        }\n        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_TOKEN)) {\n            if (hasMetadataCommandArguments) {\n                cmd.addAll(commandMetadataSegments);\n            }\n            replacedMetadataCommandArgumentsToken = true;\n        } else {\n            cmd.add(commandSegment);\n        }\n    }\n    if (hasMetadataCommandArguments) {\n        if (serializeMetadataCommandArgumentsToken) {\n            // Find all metadata tokens and replace with encapsulated metadata\n            int i = 0;\n            for (String commandSegment : cmd) {\n                if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {\n                    commandSegment = commandSegment.replace(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN, serializeMetadata(commandMetadataSegments));\n                    cmd.set(i, commandSegment);\n                }\n                i++;\n            }\n        } else if ((!replacedMetadataCommandArgumentsToken) && (!serializeMetadataCommandArgumentsToken)) {\n            // Tack metadata onto the end of the cmd as arguments\n            cmd.addAll(commandMetadataSegments);\n        }\n    }\n    // Execute\n    Process process;\n    if (cmd.toArray().length == 1) {\n        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new)[0]);\n    } else {\n        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new));\n    }\n    UnsynchronizedByteArrayOutputStream stdErrOutputStream = UnsynchronizedByteArrayOutputStream.builder().get();\n    try {\n        sendStdErrToOutputStream(process, stdErrOutputStream);\n        if (inputToStdIn) {\n            sendInputStreamToStdIn(inputStream, process);\n        } else {\n            // We're not writing to std in this case so close\n            process.getOutputStream().close();\n        }\n        if (outputFromStdOut) {\n            sendStdOutToOutputStream(process, outputStream);\n        } else {\n            tmp.dispose();\n            try {\n                process.waitFor();\n            } catch (InterruptedException ignore) {\n            }\n            // The command is finished, read the output file into the given output stream\n            InputStream tempOutputFileInputStream = TikaInputStream.get(tempOutputFile.toPath());\n            IOUtils.copy(tempOutputFileInputStream, outputStream);\n        }\n    } finally {\n        if (outputFromStdOut) {\n            try {\n                process.waitFor();\n            } catch (InterruptedException ignore) {\n            }\n        } else {\n            try {\n                // Clean up temp output files\n                tempOutputFile.delete();\n            } catch (Exception e) {\n                // swallow\n            }\n        }\n        if (!inputToStdIn) // PATH: Test should invoke the next IOUtils.closeQuietly(...) [step in execution path]\n        {\n            // Close input file (and delete if created by up\n            // TemporaryResources.createTemporaryFile)\n            IOUtils.closeQuietly(tikaInputStream);\n        }\n        IOUtils.closeQuietly(outputStream);\n        IOUtils.closeQuietly(stdErrOutputStream);\n        if (process.exitValue() != 0) {\n            throw new TikaException((((\"There was an error executing the command line\" + \"\\nExecutable Command:\\n\\n\") + cmd) + \"\\nExecutable Error:\\n\\n\") + stdErrOutputStream.toString(UTF_8.name()));\n        }\n    }\n}"
+      ],
+      "constructors": [
+        "ExternalEmbedder() {\n}"
+      ],
+      "fieldDeclarations": [
+        "/**\n * Token to be replaced with a String array of metadata assignment command\n * arguments\n */\npublic static final String METADATA_COMMAND_ARGUMENTS_TOKEN = \"${METADATA}\";",
+        "/**\n * Token to be replaced with a String array of metadata assignment command\n * arguments\n */\npublic static final String METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN = \"${METADATA_SERIALIZED}\";",
+        "private static final long serialVersionUID = -2828829275642475697L;",
+        "private final TemporaryResources tmp = new TemporaryResources();",
+        "/**\n * Media types supported by the external program.\n */\nprivate Set<MediaType> supportedEmbedTypes = Collections.emptySet();",
+        "/**\n * Mapping of Tika metadata to command line parameters.\n */\nprivate Map<Property, String[]> metadataCommandArguments = null;",
+        "/**\n * The external command to invoke.\n *\n * @see Runtime#exec(String[])\n */\nprivate String[] command = new String[]{ \"sed\", \"-e\", \"$a\\\\\\n\" + METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN, ExternalParser.INPUT_FILE_TOKEN };",
+        "private String commandAssignmentOperator = \"=\";",
+        "private String commandAssignmentDelimeter = \", \";",
+        "private String commandAppendOperator = \"=\";",
+        "private boolean quoteAssignmentValues = false;"
+      ],
+      "setters": [
+        "/**\n * Executes the configured external command and passes the given document\n * stream as a simple XHTML document to the given SAX content handler.\n * Metadata is only extracted if {@link #setMetadataCommandArguments(Map)}\n * has been called to set arguments.\n */\n@Override\npublic void embed(final Metadata metadata, final InputStream inputStream, final OutputStream outputStream, final ParseContext context) throws IOException, TikaException {\n    boolean inputToStdIn = true;\n    boolean outputFromStdOut = true;\n    boolean hasMetadataCommandArguments = (metadataCommandArguments != null) && (!metadataCommandArguments.isEmpty());\n    boolean serializeMetadataCommandArgumentsToken = false;\n    boolean replacedMetadataCommandArgumentsToken = false;\n    TikaInputStream tikaInputStream = TikaInputStream.get(inputStream);\n    File tempOutputFile = null;\n    List<String> commandMetadataSegments = null;\n    if (hasMetadataCommandArguments) {\n        commandMetadataSegments = getCommandMetadataSegments(metadata);\n    }\n    // Build our command\n    String[] origCmd = command;\n    List<String> cmd = new ArrayList<>();\n    for (String commandSegment : origCmd) {\n        if (commandSegment.contains(ExternalParser.INPUT_FILE_TOKEN)) {\n            commandSegment = commandSegment.replace(ExternalParser.INPUT_FILE_TOKEN, tikaInputStream.getFile().toString());\n            inputToStdIn = false;\n        }\n        if (commandSegment.contains(ExternalParser.OUTPUT_FILE_TOKEN)) {\n            tempOutputFile = tmp.createTemporaryFile();\n            commandSegment = commandSegment.replace(ExternalParser.OUTPUT_FILE_TOKEN, tempOutputFile.toString());\n            outputFromStdOut = false;\n        }\n        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {\n            serializeMetadataCommandArgumentsToken = true;\n        }\n        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_TOKEN)) {\n            if (hasMetadataCommandArguments) {\n                cmd.addAll(commandMetadataSegments);\n            }\n            replacedMetadataCommandArgumentsToken = true;\n        } else {\n            cmd.add(commandSegment);\n        }\n    }\n    if (hasMetadataCommandArguments) {\n        if (serializeMetadataCommandArgumentsToken) {\n            // Find all metadata tokens and replace with encapsulated metadata\n            int i = 0;\n            for (String commandSegment : cmd) {\n                if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {\n                    commandSegment = commandSegment.replace(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN, serializeMetadata(commandMetadataSegments));\n                    cmd.set(i, commandSegment);\n                }\n                i++;\n            }\n        } else if ((!replacedMetadataCommandArgumentsToken) && (!serializeMetadataCommandArgumentsToken)) {\n            // Tack metadata onto the end of the cmd as arguments\n            cmd.addAll(commandMetadataSegments);\n        }\n    }\n    // Execute\n    Process process;\n    if (cmd.toArray().length == 1) {\n        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new)[0]);\n    } else {\n        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new));\n    }\n    UnsynchronizedByteArrayOutputStream stdErrOutputStream = UnsynchronizedByteArrayOutputStream.builder().get();\n    try {\n        sendStdErrToOutputStream(process, stdErrOutputStream);\n        if (inputToStdIn) {\n            sendInputStreamToStdIn(inputStream, process);\n        } else {\n            // We're not writing to std in this case so close\n            process.getOutputStream().close();\n        }\n        if (outputFromStdOut) {\n            sendStdOutToOutputStream(process, outputStream);\n        } else {\n            tmp.dispose();\n            try {\n                process.waitFor();\n            } catch (InterruptedException ignore) {\n            }\n            // The command is finished, read the output file into the given output stream\n            InputStream tempOutputFileInputStream = TikaInputStream.get(tempOutputFile.toPath());\n            IOUtils.copy(tempOutputFileInputStream, outputStream);\n        }\n    } finally {\n        if (outputFromStdOut) {\n            try {\n                process.waitFor();\n            } catch (InterruptedException ignore) {\n            }\n        } else {\n            try {\n                // Clean up temp output files\n                tempOutputFile.delete();\n            } catch (Exception e) {\n                // swallow\n            }\n        }\n        if (!inputToStdIn) {\n            // Close input file (and delete if created by up\n            // TemporaryResources.createTemporaryFile)\n            IOUtils.closeQuietly(tikaInputStream);\n        }\n        IOUtils.closeQuietly(outputStream);\n        IOUtils.closeQuietly(stdErrOutputStream);\n        if (process.exitValue() != 0) {\n            throw new TikaException((((\"There was an error executing the command line\" + \"\\nExecutable Command:\\n\\n\") + cmd) + \"\\nExecutable Error:\\n\\n\") + stdErrOutputStream.toString(UTF_8.name()));\n        }\n    }\n}",
+        "/**\n * Sets the command to be run. This can include either of\n * {@link ExternalParser#INPUT_FILE_TOKEN} or\n * {@link ExternalParser#OUTPUT_FILE_TOKEN} if the command\n * needs filenames.\n *\n * @see Runtime#exec(String[])\n */\npublic void setCommand(String... command) {\n    this.command = command;\n}",
+        "/**\n * Sets the operator to append rather than replace a value for the command\n * line tool, i.e. \"+=\".\n *\n * @param commandAppendOperator\n */\npublic void setCommandAppendOperator(String commandAppendOperator) {\n    this.commandAppendOperator = commandAppendOperator;\n}",
+        "/**\n * Sets the delimiter for multiple assignments for the command line tool,\n * i.e. \", \".\n *\n * @param commandAssignmentDelimeter\n */\npublic void setCommandAssignmentDelimeter(String commandAssignmentDelimeter) {\n    this.commandAssignmentDelimeter = commandAssignmentDelimeter;\n}",
+        "/**\n * Sets the assignment operator for the command line tool, i.e. \"=\".\n *\n * @param commandAssignmentOperator\n */\npublic void setCommandAssignmentOperator(String commandAssignmentOperator) {\n    this.commandAssignmentOperator = commandAssignmentOperator;\n}",
+        "/**\n * Sets the map of Metadata keys to command line parameters. Set this to\n * null to disable Metadata embedding.\n *\n * @param arguments\n */\npublic void setMetadataCommandArguments(Map<Property, String[]> arguments) {\n    this.metadataCommandArguments = arguments;\n}",
+        "/**\n * Sets whether or not to quote assignment values, i.e. tag='value'.\n *\n * @param quoteAssignmentValues\n */\npublic void setQuoteAssignmentValues(boolean quoteAssignmentValues) {\n    this.quoteAssignmentValues = quoteAssignmentValues;\n}",
+        "public void setSupportedEmbedTypes(Set<MediaType> supportedEmbedTypes) {\n    this.supportedEmbedTypes = Collections.unmodifiableSet(new HashSet<>(supportedEmbedTypes));\n}"
+      ],
+      "imports": [
+        "org.apache.commons.io.IOUtils",
+        "org.apache.commons.io.output.AbstractByteArrayOutputStream",
+        "org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream",
+        "org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream.Builder",
+        "org.apache.tika.exception.TikaException",
+        "org.apache.tika.io.TemporaryResources",
+        "org.apache.tika.io.TikaInputStream",
+        "org.apache.tika.metadata.Metadata",
+        "org.apache.tika.metadata.Property",
+        "org.apache.tika.mime.MediaType",
+        "org.apache.tika.parser.ParseContext",
+        "org.apache.tika.parser.external.ExternalParser"
+      ],
+      "testTemplate": "package org.apache.tika.embedder;\n\npublic class ExternalEmbedderembed_IOUtilscloseQuietlyFikaTest {\n\n    @Test\n    public void testEmbed() {\n    }\n}",
+      "conditionCount": 18,
+      "callCount": 3,
+      "covered": false
+    },
+    {
+      "entryPoint": "org.apache.tika.embedder.ExternalEmbedder.embed(org.apache.tika.metadata.Metadata, java.io.InputStream, java.io.OutputStream, org.apache.tika.parser.ParseContext)",
+      "thirdPartyMethod": "org.apache.commons.io.IOUtils.copy(java.io.InputStream, java.io.OutputStream)",
+      "directCaller": "org.apache.tika.embedder.ExternalEmbedder.embed(org.apache.tika.metadata.Metadata, java.io.InputStream, java.io.OutputStream, org.apache.tika.parser.ParseContext)",
+      "path": [
+        "org.apache.tika.embedder.ExternalEmbedder.embed(org.apache.tika.metadata.Metadata, java.io.InputStream, java.io.OutputStream, org.apache.tika.parser.ParseContext)",
+        "org.apache.commons.io.IOUtils.copy(java.io.InputStream, java.io.OutputStream)"
+      ],
+      "methodSources": [
+        "/**\n * Executes the configured external command and passes the given document\n * stream as a simple XHTML document to the given SAX content handler.\n * Metadata is only extracted if {@link #setMetadataCommandArguments(Map)}\n * has been called to set arguments.\n */\n@Override\npublic void embed(final Metadata metadata, final InputStream inputStream, final OutputStream outputStream, final ParseContext context) throws IOException, TikaException {\n    boolean inputToStdIn = true;\n    boolean outputFromStdOut = true;\n    boolean hasMetadataCommandArguments = (metadataCommandArguments != null) && (!metadataCommandArguments.isEmpty());\n    boolean serializeMetadataCommandArgumentsToken = false;\n    boolean replacedMetadataCommandArgumentsToken = false;\n    TikaInputStream tikaInputStream = TikaInputStream.get(inputStream);\n    File tempOutputFile = null;\n    List<String> commandMetadataSegments = null;\n    if (hasMetadataCommandArguments) {\n        commandMetadataSegments = getCommandMetadataSegments(metadata);\n    }\n    // Build our command\n    String[] origCmd = command;\n    List<String> cmd = new ArrayList<>();\n    for (String commandSegment : origCmd) {\n        if (commandSegment.contains(ExternalParser.INPUT_FILE_TOKEN)) {\n            commandSegment = commandSegment.replace(ExternalParser.INPUT_FILE_TOKEN, tikaInputStream.getFile().toString());\n            inputToStdIn = false;\n        }\n        if (commandSegment.contains(ExternalParser.OUTPUT_FILE_TOKEN)) {\n            tempOutputFile = tmp.createTemporaryFile();\n            commandSegment = commandSegment.replace(ExternalParser.OUTPUT_FILE_TOKEN, tempOutputFile.toString());\n            outputFromStdOut = false;\n        }\n        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {\n            serializeMetadataCommandArgumentsToken = true;\n        }\n        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_TOKEN)) {\n            if (hasMetadataCommandArguments) {\n                cmd.addAll(commandMetadataSegments);\n            }\n            replacedMetadataCommandArgumentsToken = true;\n        } else {\n            cmd.add(commandSegment);\n        }\n    }\n    if (hasMetadataCommandArguments) {\n        if (serializeMetadataCommandArgumentsToken) {\n            // Find all metadata tokens and replace with encapsulated metadata\n            int i = 0;\n            for (String commandSegment : cmd) {\n                if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {\n                    commandSegment = commandSegment.replace(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN, serializeMetadata(commandMetadataSegments));\n                    cmd.set(i, commandSegment);\n                }\n                i++;\n            }\n        } else if ((!replacedMetadataCommandArgumentsToken) && (!serializeMetadataCommandArgumentsToken)) {\n            // Tack metadata onto the end of the cmd as arguments\n            cmd.addAll(commandMetadataSegments);\n        }\n    }\n    // Execute\n    Process process;\n    if (cmd.toArray().length == 1) {\n        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new)[0]);\n    } else {\n        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new));\n    }\n    UnsynchronizedByteArrayOutputStream stdErrOutputStream = UnsynchronizedByteArrayOutputStream.builder().get();\n    try {\n        sendStdErrToOutputStream(process, stdErrOutputStream);\n        if (inputToStdIn) {\n            sendInputStreamToStdIn(inputStream, process);\n        } else {\n            // We're not writing to std in this case so close\n            process.getOutputStream().close();\n        }\n        if (outputFromStdOut) {\n            sendStdOutToOutputStream(process, outputStream);\n        } else // PATH: Test should invoke the next IOUtils.copy(...) [step in execution path]\n        {\n            tmp.dispose();\n            try {\n                process.waitFor();\n            } catch (InterruptedException ignore) {\n            }\n            // The command is finished, read the output file into the given output stream\n            InputStream tempOutputFileInputStream = TikaInputStream.get(tempOutputFile.toPath());\n            IOUtils.copy(tempOutputFileInputStream, outputStream);\n        }\n    } finally {\n        if (outputFromStdOut) {\n            try {\n                process.waitFor();\n            } catch (InterruptedException ignore) {\n            }\n        } else {\n            try {\n                // Clean up temp output files\n                tempOutputFile.delete();\n            } catch (Exception e) {\n                // swallow\n            }\n        }\n        if (!inputToStdIn) {\n            // Close input file (and delete if created by up\n            // TemporaryResources.createTemporaryFile)\n            IOUtils.closeQuietly(tikaInputStream);\n        }\n        IOUtils.closeQuietly(outputStream);\n        IOUtils.closeQuietly(stdErrOutputStream);\n        if (process.exitValue() != 0) {\n            throw new TikaException((((\"There was an error executing the command line\" + \"\\nExecutable Command:\\n\\n\") + cmd) + \"\\nExecutable Error:\\n\\n\") + stdErrOutputStream.toString(UTF_8.name()));\n        }\n    }\n}"
+      ],
+      "constructors": [
+        "ExternalEmbedder() {\n}"
+      ],
+      "fieldDeclarations": [
+        "/**\n * Token to be replaced with a String array of metadata assignment command\n * arguments\n */\npublic static final String METADATA_COMMAND_ARGUMENTS_TOKEN = \"${METADATA}\";",
+        "/**\n * Token to be replaced with a String array of metadata assignment command\n * arguments\n */\npublic static final String METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN = \"${METADATA_SERIALIZED}\";",
+        "private static final long serialVersionUID = -2828829275642475697L;",
+        "private final TemporaryResources tmp = new TemporaryResources();",
+        "/**\n * Media types supported by the external program.\n */\nprivate Set<MediaType> supportedEmbedTypes = Collections.emptySet();",
+        "/**\n * Mapping of Tika metadata to command line parameters.\n */\nprivate Map<Property, String[]> metadataCommandArguments = null;",
+        "/**\n * The external command to invoke.\n *\n * @see Runtime#exec(String[])\n */\nprivate String[] command = new String[]{ \"sed\", \"-e\", \"$a\\\\\\n\" + METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN, ExternalParser.INPUT_FILE_TOKEN };",
+        "private String commandAssignmentOperator = \"=\";",
+        "private String commandAssignmentDelimeter = \", \";",
+        "private String commandAppendOperator = \"=\";",
+        "private boolean quoteAssignmentValues = false;"
+      ],
+      "setters": [
+        "/**\n * Executes the configured external command and passes the given document\n * stream as a simple XHTML document to the given SAX content handler.\n * Metadata is only extracted if {@link #setMetadataCommandArguments(Map)}\n * has been called to set arguments.\n */\n@Override\npublic void embed(final Metadata metadata, final InputStream inputStream, final OutputStream outputStream, final ParseContext context) throws IOException, TikaException {\n    boolean inputToStdIn = true;\n    boolean outputFromStdOut = true;\n    boolean hasMetadataCommandArguments = (metadataCommandArguments != null) && (!metadataCommandArguments.isEmpty());\n    boolean serializeMetadataCommandArgumentsToken = false;\n    boolean replacedMetadataCommandArgumentsToken = false;\n    TikaInputStream tikaInputStream = TikaInputStream.get(inputStream);\n    File tempOutputFile = null;\n    List<String> commandMetadataSegments = null;\n    if (hasMetadataCommandArguments) {\n        commandMetadataSegments = getCommandMetadataSegments(metadata);\n    }\n    // Build our command\n    String[] origCmd = command;\n    List<String> cmd = new ArrayList<>();\n    for (String commandSegment : origCmd) {\n        if (commandSegment.contains(ExternalParser.INPUT_FILE_TOKEN)) {\n            commandSegment = commandSegment.replace(ExternalParser.INPUT_FILE_TOKEN, tikaInputStream.getFile().toString());\n            inputToStdIn = false;\n        }\n        if (commandSegment.contains(ExternalParser.OUTPUT_FILE_TOKEN)) {\n            tempOutputFile = tmp.createTemporaryFile();\n            commandSegment = commandSegment.replace(ExternalParser.OUTPUT_FILE_TOKEN, tempOutputFile.toString());\n            outputFromStdOut = false;\n        }\n        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {\n            serializeMetadataCommandArgumentsToken = true;\n        }\n        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_TOKEN)) {\n            if (hasMetadataCommandArguments) {\n                cmd.addAll(commandMetadataSegments);\n            }\n            replacedMetadataCommandArgumentsToken = true;\n        } else {\n            cmd.add(commandSegment);\n        }\n    }\n    if (hasMetadataCommandArguments) {\n        if (serializeMetadataCommandArgumentsToken) {\n            // Find all metadata tokens and replace with encapsulated metadata\n            int i = 0;\n            for (String commandSegment : cmd) {\n                if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {\n                    commandSegment = commandSegment.replace(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN, serializeMetadata(commandMetadataSegments));\n                    cmd.set(i, commandSegment);\n                }\n                i++;\n            }\n        } else if ((!replacedMetadataCommandArgumentsToken) && (!serializeMetadataCommandArgumentsToken)) {\n            // Tack metadata onto the end of the cmd as arguments\n            cmd.addAll(commandMetadataSegments);\n        }\n    }\n    // Execute\n    Process process;\n    if (cmd.toArray().length == 1) {\n        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new)[0]);\n    } else {\n        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new));\n    }\n    UnsynchronizedByteArrayOutputStream stdErrOutputStream = UnsynchronizedByteArrayOutputStream.builder().get();\n    try {\n        sendStdErrToOutputStream(process, stdErrOutputStream);\n        if (inputToStdIn) {\n            sendInputStreamToStdIn(inputStream, process);\n        } else {\n            // We're not writing to std in this case so close\n            process.getOutputStream().close();\n        }\n        if (outputFromStdOut) {\n            sendStdOutToOutputStream(process, outputStream);\n        } else {\n            tmp.dispose();\n            try {\n                process.waitFor();\n            } catch (InterruptedException ignore) {\n            }\n            // The command is finished, read the output file into the given output stream\n            InputStream tempOutputFileInputStream = TikaInputStream.get(tempOutputFile.toPath());\n            IOUtils.copy(tempOutputFileInputStream, outputStream);\n        }\n    } finally {\n        if (outputFromStdOut) {\n            try {\n                process.waitFor();\n            } catch (InterruptedException ignore) {\n            }\n        } else {\n            try {\n                // Clean up temp output files\n                tempOutputFile.delete();\n            } catch (Exception e) {\n                // swallow\n            }\n        }\n        if (!inputToStdIn) {\n            // Close input file (and delete if created by up\n            // TemporaryResources.createTemporaryFile)\n            IOUtils.closeQuietly(tikaInputStream);\n        }\n        IOUtils.closeQuietly(outputStream);\n        IOUtils.closeQuietly(stdErrOutputStream);\n        if (process.exitValue() != 0) {\n            throw new TikaException((((\"There was an error executing the command line\" + \"\\nExecutable Command:\\n\\n\") + cmd) + \"\\nExecutable Error:\\n\\n\") + stdErrOutputStream.toString(UTF_8.name()));\n        }\n    }\n}",
+        "/**\n * Sets the command to be run. This can include either of\n * {@link ExternalParser#INPUT_FILE_TOKEN} or\n * {@link ExternalParser#OUTPUT_FILE_TOKEN} if the command\n * needs filenames.\n *\n * @see Runtime#exec(String[])\n */\npublic void setCommand(String... command) {\n    this.command = command;\n}",
+        "/**\n * Sets the operator to append rather than replace a value for the command\n * line tool, i.e. \"+=\".\n *\n * @param commandAppendOperator\n */\npublic void setCommandAppendOperator(String commandAppendOperator) {\n    this.commandAppendOperator = commandAppendOperator;\n}",
+        "/**\n * Sets the delimiter for multiple assignments for the command line tool,\n * i.e. \", \".\n *\n * @param commandAssignmentDelimeter\n */\npublic void setCommandAssignmentDelimeter(String commandAssignmentDelimeter) {\n    this.commandAssignmentDelimeter = commandAssignmentDelimeter;\n}",
+        "/**\n * Sets the assignment operator for the command line tool, i.e. \"=\".\n *\n * @param commandAssignmentOperator\n */\npublic void setCommandAssignmentOperator(String commandAssignmentOperator) {\n    this.commandAssignmentOperator = commandAssignmentOperator;\n}",
+        "/**\n * Sets the map of Metadata keys to command line parameters. Set this to\n * null to disable Metadata embedding.\n *\n * @param arguments\n */\npublic void setMetadataCommandArguments(Map<Property, String[]> arguments) {\n    this.metadataCommandArguments = arguments;\n}",
+        "/**\n * Sets whether or not to quote assignment values, i.e. tag='value'.\n *\n * @param quoteAssignmentValues\n */\npublic void setQuoteAssignmentValues(boolean quoteAssignmentValues) {\n    this.quoteAssignmentValues = quoteAssignmentValues;\n}",
+        "public void setSupportedEmbedTypes(Set<MediaType> supportedEmbedTypes) {\n    this.supportedEmbedTypes = Collections.unmodifiableSet(new HashSet<>(supportedEmbedTypes));\n}"
+      ],
+      "imports": [
+        "org.apache.commons.io.IOUtils",
+        "org.apache.commons.io.output.AbstractByteArrayOutputStream",
+        "org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream",
+        "org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream.Builder",
+        "org.apache.tika.exception.TikaException",
+        "org.apache.tika.io.TemporaryResources",
+        "org.apache.tika.io.TikaInputStream",
+        "org.apache.tika.metadata.Metadata",
+        "org.apache.tika.metadata.Property",
+        "org.apache.tika.mime.MediaType",
+        "org.apache.tika.parser.ParseContext",
+        "org.apache.tika.parser.external.ExternalParser"
+      ],
+      "testTemplate": "package org.apache.tika.embedder;\n\npublic class ExternalEmbedderembed_IOUtilscopyFikaTest {\n\n    @Test\n    public void testEmbed() {\n    }\n}",
+      "conditionCount": 18,
+      "callCount": 1,
+      "covered": false
+    },
+    {
+      "entryPoint": "org.apache.tika.embedder.ExternalEmbedder.embed(org.apache.tika.metadata.Metadata, java.io.InputStream, java.io.OutputStream, org.apache.tika.parser.ParseContext)",
+      "thirdPartyMethod": "org.apache.commons.io.IOUtils.closeQuietly(java.io.InputStream)",
+      "directCaller": "org.apache.tika.embedder.ExternalEmbedder.embed(org.apache.tika.metadata.Metadata, java.io.InputStream, java.io.OutputStream, org.apache.tika.parser.ParseContext)",
+      "path": [
+        "org.apache.tika.embedder.ExternalEmbedder.embed(org.apache.tika.metadata.Metadata, java.io.InputStream, java.io.OutputStream, org.apache.tika.parser.ParseContext)",
+        "org.apache.commons.io.IOUtils.closeQuietly(java.io.InputStream)"
+      ],
+      "methodSources": [
+        "/**\n * Executes the configured external command and passes the given document\n * stream as a simple XHTML document to the given SAX content handler.\n * Metadata is only extracted if {@link #setMetadataCommandArguments(Map)}\n * has been called to set arguments.\n */\n@Override\npublic void embed(final Metadata metadata, final InputStream inputStream, final OutputStream outputStream, final ParseContext context) throws IOException, TikaException {\n    boolean inputToStdIn = true;\n    boolean outputFromStdOut = true;\n    boolean hasMetadataCommandArguments = (metadataCommandArguments != null) && (!metadataCommandArguments.isEmpty());\n    boolean serializeMetadataCommandArgumentsToken = false;\n    boolean replacedMetadataCommandArgumentsToken = false;\n    TikaInputStream tikaInputStream = TikaInputStream.get(inputStream);\n    File tempOutputFile = null;\n    List<String> commandMetadataSegments = null;\n    if (hasMetadataCommandArguments) {\n        commandMetadataSegments = getCommandMetadataSegments(metadata);\n    }\n    // Build our command\n    String[] origCmd = command;\n    List<String> cmd = new ArrayList<>();\n    for (String commandSegment : origCmd) {\n        if (commandSegment.contains(ExternalParser.INPUT_FILE_TOKEN)) {\n            commandSegment = commandSegment.replace(ExternalParser.INPUT_FILE_TOKEN, tikaInputStream.getFile().toString());\n            inputToStdIn = false;\n        }\n        if (commandSegment.contains(ExternalParser.OUTPUT_FILE_TOKEN)) {\n            tempOutputFile = tmp.createTemporaryFile();\n            commandSegment = commandSegment.replace(ExternalParser.OUTPUT_FILE_TOKEN, tempOutputFile.toString());\n            outputFromStdOut = false;\n        }\n        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {\n            serializeMetadataCommandArgumentsToken = true;\n        }\n        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_TOKEN)) {\n            if (hasMetadataCommandArguments) {\n                cmd.addAll(commandMetadataSegments);\n            }\n            replacedMetadataCommandArgumentsToken = true;\n        } else {\n            cmd.add(commandSegment);\n        }\n    }\n    if (hasMetadataCommandArguments) {\n        if (serializeMetadataCommandArgumentsToken) {\n            // Find all metadata tokens and replace with encapsulated metadata\n            int i = 0;\n            for (String commandSegment : cmd) {\n                if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {\n                    commandSegment = commandSegment.replace(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN, serializeMetadata(commandMetadataSegments));\n                    cmd.set(i, commandSegment);\n                }\n                i++;\n            }\n        } else if ((!replacedMetadataCommandArgumentsToken) && (!serializeMetadataCommandArgumentsToken)) {\n            // Tack metadata onto the end of the cmd as arguments\n            cmd.addAll(commandMetadataSegments);\n        }\n    }\n    // Execute\n    Process process;\n    if (cmd.toArray().length == 1) {\n        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new)[0]);\n    } else {\n        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new));\n    }\n    UnsynchronizedByteArrayOutputStream stdErrOutputStream = UnsynchronizedByteArrayOutputStream.builder().get();\n    try {\n        sendStdErrToOutputStream(process, stdErrOutputStream);\n        if (inputToStdIn) {\n            sendInputStreamToStdIn(inputStream, process);\n        } else {\n            // We're not writing to std in this case so close\n            process.getOutputStream().close();\n        }\n        if (outputFromStdOut) {\n            sendStdOutToOutputStream(process, outputStream);\n        } else {\n            tmp.dispose();\n            try {\n                process.waitFor();\n            } catch (InterruptedException ignore) {\n            }\n            // The command is finished, read the output file into the given output stream\n            InputStream tempOutputFileInputStream = TikaInputStream.get(tempOutputFile.toPath());\n            IOUtils.copy(tempOutputFileInputStream, outputStream);\n        }\n    } finally {\n        if (outputFromStdOut) {\n            try {\n                process.waitFor();\n            } catch (InterruptedException ignore) {\n            }\n        } else {\n            try {\n                // Clean up temp output files\n                tempOutputFile.delete();\n            } catch (Exception e) {\n                // swallow\n            }\n        }\n        if (!inputToStdIn) // PATH: Test should invoke the next IOUtils.closeQuietly(...) [step in execution path]\n        {\n            // Close input file (and delete if created by up\n            // TemporaryResources.createTemporaryFile)\n            IOUtils.closeQuietly(tikaInputStream);\n        }\n        IOUtils.closeQuietly(outputStream);\n        IOUtils.closeQuietly(stdErrOutputStream);\n        if (process.exitValue() != 0) {\n            throw new TikaException((((\"There was an error executing the command line\" + \"\\nExecutable Command:\\n\\n\") + cmd) + \"\\nExecutable Error:\\n\\n\") + stdErrOutputStream.toString(UTF_8.name()));\n        }\n    }\n}"
+      ],
+      "constructors": [
+        "ExternalEmbedder() {\n}"
+      ],
+      "fieldDeclarations": [
+        "/**\n * Token to be replaced with a String array of metadata assignment command\n * arguments\n */\npublic static final String METADATA_COMMAND_ARGUMENTS_TOKEN = \"${METADATA}\";",
+        "/**\n * Token to be replaced with a String array of metadata assignment command\n * arguments\n */\npublic static final String METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN = \"${METADATA_SERIALIZED}\";",
+        "private static final long serialVersionUID = -2828829275642475697L;",
+        "private final TemporaryResources tmp = new TemporaryResources();",
+        "/**\n * Media types supported by the external program.\n */\nprivate Set<MediaType> supportedEmbedTypes = Collections.emptySet();",
+        "/**\n * Mapping of Tika metadata to command line parameters.\n */\nprivate Map<Property, String[]> metadataCommandArguments = null;",
+        "/**\n * The external command to invoke.\n *\n * @see Runtime#exec(String[])\n */\nprivate String[] command = new String[]{ \"sed\", \"-e\", \"$a\\\\\\n\" + METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN, ExternalParser.INPUT_FILE_TOKEN };",
+        "private String commandAssignmentOperator = \"=\";",
+        "private String commandAssignmentDelimeter = \", \";",
+        "private String commandAppendOperator = \"=\";",
+        "private boolean quoteAssignmentValues = false;"
+      ],
+      "setters": [
+        "/**\n * Executes the configured external command and passes the given document\n * stream as a simple XHTML document to the given SAX content handler.\n * Metadata is only extracted if {@link #setMetadataCommandArguments(Map)}\n * has been called to set arguments.\n */\n@Override\npublic void embed(final Metadata metadata, final InputStream inputStream, final OutputStream outputStream, final ParseContext context) throws IOException, TikaException {\n    boolean inputToStdIn = true;\n    boolean outputFromStdOut = true;\n    boolean hasMetadataCommandArguments = (metadataCommandArguments != null) && (!metadataCommandArguments.isEmpty());\n    boolean serializeMetadataCommandArgumentsToken = false;\n    boolean replacedMetadataCommandArgumentsToken = false;\n    TikaInputStream tikaInputStream = TikaInputStream.get(inputStream);\n    File tempOutputFile = null;\n    List<String> commandMetadataSegments = null;\n    if (hasMetadataCommandArguments) {\n        commandMetadataSegments = getCommandMetadataSegments(metadata);\n    }\n    // Build our command\n    String[] origCmd = command;\n    List<String> cmd = new ArrayList<>();\n    for (String commandSegment : origCmd) {\n        if (commandSegment.contains(ExternalParser.INPUT_FILE_TOKEN)) {\n            commandSegment = commandSegment.replace(ExternalParser.INPUT_FILE_TOKEN, tikaInputStream.getFile().toString());\n            inputToStdIn = false;\n        }\n        if (commandSegment.contains(ExternalParser.OUTPUT_FILE_TOKEN)) {\n            tempOutputFile = tmp.createTemporaryFile();\n            commandSegment = commandSegment.replace(ExternalParser.OUTPUT_FILE_TOKEN, tempOutputFile.toString());\n            outputFromStdOut = false;\n        }\n        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {\n            serializeMetadataCommandArgumentsToken = true;\n        }\n        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_TOKEN)) {\n            if (hasMetadataCommandArguments) {\n                cmd.addAll(commandMetadataSegments);\n            }\n            replacedMetadataCommandArgumentsToken = true;\n        } else {\n            cmd.add(commandSegment);\n        }\n    }\n    if (hasMetadataCommandArguments) {\n        if (serializeMetadataCommandArgumentsToken) {\n            // Find all metadata tokens and replace with encapsulated metadata\n            int i = 0;\n            for (String commandSegment : cmd) {\n                if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {\n                    commandSegment = commandSegment.replace(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN, serializeMetadata(commandMetadataSegments));\n                    cmd.set(i, commandSegment);\n                }\n                i++;\n            }\n        } else if ((!replacedMetadataCommandArgumentsToken) && (!serializeMetadataCommandArgumentsToken)) {\n            // Tack metadata onto the end of the cmd as arguments\n            cmd.addAll(commandMetadataSegments);\n        }\n    }\n    // Execute\n    Process process;\n    if (cmd.toArray().length == 1) {\n        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new)[0]);\n    } else {\n        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new));\n    }\n    UnsynchronizedByteArrayOutputStream stdErrOutputStream = UnsynchronizedByteArrayOutputStream.builder().get();\n    try {\n        sendStdErrToOutputStream(process, stdErrOutputStream);\n        if (inputToStdIn) {\n            sendInputStreamToStdIn(inputStream, process);\n        } else {\n            // We're not writing to std in this case so close\n            process.getOutputStream().close();\n        }\n        if (outputFromStdOut) {\n            sendStdOutToOutputStream(process, outputStream);\n        } else {\n            tmp.dispose();\n            try {\n                process.waitFor();\n            } catch (InterruptedException ignore) {\n            }\n            // The command is finished, read the output file into the given output stream\n            InputStream tempOutputFileInputStream = TikaInputStream.get(tempOutputFile.toPath());\n            IOUtils.copy(tempOutputFileInputStream, outputStream);\n        }\n    } finally {\n        if (outputFromStdOut) {\n            try {\n                process.waitFor();\n            } catch (InterruptedException ignore) {\n            }\n        } else {\n            try {\n                // Clean up temp output files\n                tempOutputFile.delete();\n            } catch (Exception e) {\n                // swallow\n            }\n        }\n        if (!inputToStdIn) {\n            // Close input file (and delete if created by up\n            // TemporaryResources.createTemporaryFile)\n            IOUtils.closeQuietly(tikaInputStream);\n        }\n        IOUtils.closeQuietly(outputStream);\n        IOUtils.closeQuietly(stdErrOutputStream);\n        if (process.exitValue() != 0) {\n            throw new TikaException((((\"There was an error executing the command line\" + \"\\nExecutable Command:\\n\\n\") + cmd) + \"\\nExecutable Error:\\n\\n\") + stdErrOutputStream.toString(UTF_8.name()));\n        }\n    }\n}",
+        "/**\n * Sets the command to be run. This can include either of\n * {@link ExternalParser#INPUT_FILE_TOKEN} or\n * {@link ExternalParser#OUTPUT_FILE_TOKEN} if the command\n * needs filenames.\n *\n * @see Runtime#exec(String[])\n */\npublic void setCommand(String... command) {\n    this.command = command;\n}",
+        "/**\n * Sets the operator to append rather than replace a value for the command\n * line tool, i.e. \"+=\".\n *\n * @param commandAppendOperator\n */\npublic void setCommandAppendOperator(String commandAppendOperator) {\n    this.commandAppendOperator = commandAppendOperator;\n}",
+        "/**\n * Sets the delimiter for multiple assignments for the command line tool,\n * i.e. \", \".\n *\n * @param commandAssignmentDelimeter\n */\npublic void setCommandAssignmentDelimeter(String commandAssignmentDelimeter) {\n    this.commandAssignmentDelimeter = commandAssignmentDelimeter;\n}",
+        "/**\n * Sets the assignment operator for the command line tool, i.e. \"=\".\n *\n * @param commandAssignmentOperator\n */\npublic void setCommandAssignmentOperator(String commandAssignmentOperator) {\n    this.commandAssignmentOperator = commandAssignmentOperator;\n}",
+        "/**\n * Sets the map of Metadata keys to command line parameters. Set this to\n * null to disable Metadata embedding.\n *\n * @param arguments\n */\npublic void setMetadataCommandArguments(Map<Property, String[]> arguments) {\n    this.metadataCommandArguments = arguments;\n}",
+        "/**\n * Sets whether or not to quote assignment values, i.e. tag='value'.\n *\n * @param quoteAssignmentValues\n */\npublic void setQuoteAssignmentValues(boolean quoteAssignmentValues) {\n    this.quoteAssignmentValues = quoteAssignmentValues;\n}",
+        "public void setSupportedEmbedTypes(Set<MediaType> supportedEmbedTypes) {\n    this.supportedEmbedTypes = Collections.unmodifiableSet(new HashSet<>(supportedEmbedTypes));\n}"
+      ],
+      "imports": [
+        "org.apache.commons.io.IOUtils",
+        "org.apache.commons.io.output.AbstractByteArrayOutputStream",
+        "org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream",
+        "org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream.Builder",
+        "org.apache.tika.exception.TikaException",
+        "org.apache.tika.io.TemporaryResources",
+        "org.apache.tika.io.TikaInputStream",
+        "org.apache.tika.metadata.Metadata",
+        "org.apache.tika.metadata.Property",
+        "org.apache.tika.mime.MediaType",
+        "org.apache.tika.parser.ParseContext",
+        "org.apache.tika.parser.external.ExternalParser"
+      ],
+      "testTemplate": "package org.apache.tika.embedder;\n\npublic class ExternalEmbedderembed_IOUtilscloseQuietlyFikaTest {\n\n    @Test\n    public void testEmbed() {\n    }\n}",
+      "conditionCount": 18,
+      "callCount": 3,
+      "covered": true
+    },
+    {
+      "entryPoint": "org.apache.tika.io.FilenameUtils.getSanitizedEmbeddedFilePath(org.apache.tika.metadata.Metadata, java.lang.String, int)",
+      "thirdPartyMethod": "org.apache.commons.io.FilenameUtils.getPrefixLength(java.lang.String)",
+      "directCaller": "org.apache.tika.io.FilenameUtils.getPrefixLength(java.lang.String)",
+      "path": [
+        "org.apache.tika.io.FilenameUtils.getSanitizedEmbeddedFilePath(org.apache.tika.metadata.Metadata, java.lang.String, int)",
+        "org.apache.tika.io.FilenameUtils.getPrefixLength(java.lang.String)",
+        "org.apache.commons.io.FilenameUtils.getPrefixLength(java.lang.String)"
+      ],
+      "methodSources": [
+        "/**\n * This tries to sanitize dangerous user generated embedded file paths.\n * If trusting these paths for writing files, users should run checks to make\n * sure that the generated file path does not zipslip out of the target directory.\n *\n * @param metadata\n * @param defaultExtension\n * @param maxLength\n * @return  */\npublic static String getSanitizedEmbeddedFilePath(Metadata metadata, String defaultExtension, int maxLength) {\n    String path = getEmbeddedPath(metadata);\n    // fName could be a full path or null\n    if (StringUtils.isBlank(path)) {\n        return null;\n    }\n    path = path.replaceAll(\"\\u0000\", \" \");\n    // PATH: Test should invoke the next FilenameUtils.getPrefixLength(...) [step in execution path]\n    int prefixLength = getPrefixLength(path);\n    if (prefixLength > 0) {\n        path = path.substring(prefixLength);\n    }\n    path = path.replaceAll(\"\\\\\\\\\", \"/\");\n    path = removeProtocol(path);\n    path = path.replaceAll(\":+\", \"/\");\n    path = path.replaceAll(\"/+\", \"/\");\n    path = normalize(path);\n    path = path.replaceAll(\"\\\\.{2,}\", \".\");\n    path = path.replaceAll(\"\\\\./\", \"/\");\n    if (path.isBlank()) {\n        return null;\n    }\n    path = path.replaceAll(\"\\\\A/+\", \"\");\n    path = path.replaceAll(\"/+\\\\Z\", \"\");\n    String fName = getName(path);\n    if (StringUtils.isBlank(fName)) {\n        return null;\n    }\n    String relPath = \"\";\n    if (path.length() > fName.length()) {\n        relPath = path.substring(0, (path.length() - fName.length()) - 1);\n    }\n    String extension = FilenameUtils.getSuffixFromPath(fName);\n    if (extension.equals(path)) {\n        return extension;\n    }\n    String namePart = null;\n    if (StringUtils.isBlank(extension)) {\n        namePart = path;\n        extension = calculateExtension(metadata, defaultExtension);\n    } else {\n        namePart = fName.substring(0, fName.length() - extension.length());\n    }\n    if (StringUtils.isBlank(namePart)) {\n        return null;\n    }\n    // remove all initial .\n    namePart = namePart.replaceAll(\"\\\\A\\\\.+\", \"_\");\n    // defense in depth. We shouldn't need this\n    namePart = namePart.replaceAll(\"\\\\.{2,}\", \".\");\n    namePart = namePart.replaceAll(\"[/\\\\\\\\]+\", \"_\");\n    if (StringUtils.isBlank(namePart)) {\n        return null;\n    }\n    String retPath = (StringUtils.isBlank(relPath)) ? namePart + extension : ((relPath + \"/\") + namePart) + extension;\n    // if path is > max length, return only the name part\n    if (retPath.length() > maxLength) {\n        if (namePart.length() > maxLength) {\n            return (namePart.substring(0, (maxLength - extension.length()) - 3) + \"...\") + extension;\n        }\n        return namePart + extension;\n    }\n    return retPath;\n}",
+        "private static int getPrefixLength(String path) {\n    // PATH: Test should invoke the next FilenameUtils.getPrefixLength(...) [step in execution path]\n    int prefixLength = FilenameUtils.getPrefixLength(path);\n    if (prefixLength > 0) {\n        return prefixLength;\n    }\n    if ((((path.length() == 2) && (path.charAt(0) >= 'A')) && (path.charAt(0) <= 'Z')) && (path.charAt(1) == ':')) {\n        return 2;\n    }\n    return 0;\n}"
+      ],
+      "constructors": [
+        "FilenameUtils() {\n}"
+      ],
+      "fieldDeclarations": [
+        "private static final MimeTypes MIME_TYPES = MimeTypes.getDefaultMimeTypes();",
+        "private static final Pattern PROTOCOL_PATTERN = Pattern.compile(\"[A-Za-z0-9]{1,10}://+\");",
+        "/**\n * Reserved characters\n */\npublic static final char[] RESERVED_FILENAME_CHARACTERS = new char[]{ 0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xa, 0xb, 0xc, 0xd, 0xe, 0xf, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f, '?', ':', '*', '<', '>', '|', '\"', '\\'' };",
+        "private static final HashSet<Character> RESERVED = new HashSet<>(38);",
+        "private static final Pattern ASCII_NUMERIC = Pattern.compile(\"\\\\A\\\\.(?i)[a-z0-9]{1,5}\\\\Z\");"
+      ],
+      "setters": [],
+      "imports": [
+        "org.apache.commons.io.FilenameUtils",
+        "org.apache.tika.metadata.Metadata",
+        "org.apache.tika.mime.MimeType",
+        "org.apache.tika.mime.MimeTypeException",
+        "org.apache.tika.mime.MimeTypes",
+        "org.apache.tika.utils.StringUtils"
+      ],
+      "testTemplate": "package org.apache.tika.io;\n\npublic class FilenameUtilsgetPrefixLength_FilenameUtilsgetPrefixLengthFikaTest {\n\n    @Test\n    public void testGetSanitizedEmbeddedFilePath() {\n    }\n}",
+      "conditionCount": 14,
+      "callCount": 1,
+      "covered": false
+    },
+    {
+      "entryPoint": "org.apache.tika.embedder.ExternalEmbedder.embed(org.apache.tika.metadata.Metadata, java.io.InputStream, java.io.OutputStream, org.apache.tika.parser.ParseContext)",
+      "thirdPartyMethod": "org.apache.commons.io.IOUtils.copy(java.io.InputStream, java.io.OutputStream)",
+      "directCaller": "org.apache.tika.embedder.ExternalEmbedder.sendStdOutToOutputStream(java.lang.Process, java.io.OutputStream)",
+      "path": [
+        "org.apache.tika.embedder.ExternalEmbedder.embed(org.apache.tika.metadata.Metadata, java.io.InputStream, java.io.OutputStream, org.apache.tika.parser.ParseContext)",
+        "org.apache.tika.embedder.ExternalEmbedder.sendStdOutToOutputStream(java.lang.Process, java.io.OutputStream)",
+        "org.apache.commons.io.IOUtils.copy(java.io.InputStream, java.io.OutputStream)"
+      ],
+      "methodSources": [
+        "/**\n * Executes the configured external command and passes the given document\n * stream as a simple XHTML document to the given SAX content handler.\n * Metadata is only extracted if {@link #setMetadataCommandArguments(Map)}\n * has been called to set arguments.\n */\n@Override\npublic void embed(final Metadata metadata, final InputStream inputStream, final OutputStream outputStream, final ParseContext context) throws IOException, TikaException {\n    boolean inputToStdIn = true;\n    boolean outputFromStdOut = true;\n    boolean hasMetadataCommandArguments = (metadataCommandArguments != null) && (!metadataCommandArguments.isEmpty());\n    boolean serializeMetadataCommandArgumentsToken = false;\n    boolean replacedMetadataCommandArgumentsToken = false;\n    TikaInputStream tikaInputStream = TikaInputStream.get(inputStream);\n    File tempOutputFile = null;\n    List<String> commandMetadataSegments = null;\n    if (hasMetadataCommandArguments) {\n        commandMetadataSegments = getCommandMetadataSegments(metadata);\n    }\n    // Build our command\n    String[] origCmd = command;\n    List<String> cmd = new ArrayList<>();\n    for (String commandSegment : origCmd) {\n        if (commandSegment.contains(ExternalParser.INPUT_FILE_TOKEN)) {\n            commandSegment = commandSegment.replace(ExternalParser.INPUT_FILE_TOKEN, tikaInputStream.getFile().toString());\n            inputToStdIn = false;\n        }\n        if (commandSegment.contains(ExternalParser.OUTPUT_FILE_TOKEN)) {\n            tempOutputFile = tmp.createTemporaryFile();\n            commandSegment = commandSegment.replace(ExternalParser.OUTPUT_FILE_TOKEN, tempOutputFile.toString());\n            outputFromStdOut = false;\n        }\n        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {\n            serializeMetadataCommandArgumentsToken = true;\n        }\n        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_TOKEN)) {\n            if (hasMetadataCommandArguments) {\n                cmd.addAll(commandMetadataSegments);\n            }\n            replacedMetadataCommandArgumentsToken = true;\n        } else {\n            cmd.add(commandSegment);\n        }\n    }\n    if (hasMetadataCommandArguments) {\n        if (serializeMetadataCommandArgumentsToken) {\n            // Find all metadata tokens and replace with encapsulated metadata\n            int i = 0;\n            for (String commandSegment : cmd) {\n                if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {\n                    commandSegment = commandSegment.replace(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN, serializeMetadata(commandMetadataSegments));\n                    cmd.set(i, commandSegment);\n                }\n                i++;\n            }\n        } else if ((!replacedMetadataCommandArgumentsToken) && (!serializeMetadataCommandArgumentsToken)) {\n            // Tack metadata onto the end of the cmd as arguments\n            cmd.addAll(commandMetadataSegments);\n        }\n    }\n    // Execute\n    Process process;\n    if (cmd.toArray().length == 1) {\n        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new)[0]);\n    } else {\n        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new));\n    }\n    UnsynchronizedByteArrayOutputStream stdErrOutputStream = UnsynchronizedByteArrayOutputStream.builder().get();\n    try {\n        sendStdErrToOutputStream(process, stdErrOutputStream);\n        if (inputToStdIn) {\n            sendInputStreamToStdIn(inputStream, process);\n        } else {\n            // We're not writing to std in this case so close\n            process.getOutputStream().close();\n        }\n        if (outputFromStdOut) // PATH: Test should invoke the next ExternalEmbedder.sendStdOutToOutputStream(...) [step in execution path]\n        {\n            sendStdOutToOutputStream(process, outputStream);\n        } else {\n            tmp.dispose();\n            try {\n                process.waitFor();\n            } catch (InterruptedException ignore) {\n            }\n            // The command is finished, read the output file into the given output stream\n            InputStream tempOutputFileInputStream = TikaInputStream.get(tempOutputFile.toPath());\n            IOUtils.copy(tempOutputFileInputStream, outputStream);\n        }\n    } finally {\n        if (outputFromStdOut) {\n            try {\n                process.waitFor();\n            } catch (InterruptedException ignore) {\n            }\n        } else {\n            try {\n                // Clean up temp output files\n                tempOutputFile.delete();\n            } catch (Exception e) {\n                // swallow\n            }\n        }\n        if (!inputToStdIn) {\n            // Close input file (and delete if created by up\n            // TemporaryResources.createTemporaryFile)\n            IOUtils.closeQuietly(tikaInputStream);\n        }\n        IOUtils.closeQuietly(outputStream);\n        IOUtils.closeQuietly(stdErrOutputStream);\n        if (process.exitValue() != 0) {\n            throw new TikaException((((\"There was an error executing the command line\" + \"\\nExecutable Command:\\n\\n\") + cmd) + \"\\nExecutable Error:\\n\\n\") + stdErrOutputStream.toString(UTF_8.name()));\n        }\n    }\n}",
+        "/**\n * Sends the standard output of the given\n * process to the given output stream. Potential exceptions are\n * ignored.\n * <p>\n * Note that the given output stream is <em>not</em> closed by this method.\n *\n * @param process\n * \t\tthe process\n * @param outputStream\n * \t\tthe putput stream to send to standard input of the process\n */\nprivate void sendStdOutToOutputStream(final Process process, final OutputStream outputStream) {\n    try // PATH: Test should invoke the next IOUtils.copy(...) [step in execution path]\n    {\n        IOUtils.copy(process.getInputStream(), outputStream);\n    } catch (IOException e) {\n        System.out.println(\"ERROR: \" + e.getMessage());\n    }\n}"
+      ],
+      "constructors": [
+        "ExternalEmbedder() {\n}"
+      ],
+      "fieldDeclarations": [
+        "/**\n * Token to be replaced with a String array of metadata assignment command\n * arguments\n */\npublic static final String METADATA_COMMAND_ARGUMENTS_TOKEN = \"${METADATA}\";",
+        "/**\n * Token to be replaced with a String array of metadata assignment command\n * arguments\n */\npublic static final String METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN = \"${METADATA_SERIALIZED}\";",
+        "private static final long serialVersionUID = -2828829275642475697L;",
+        "private final TemporaryResources tmp = new TemporaryResources();",
+        "/**\n * Media types supported by the external program.\n */\nprivate Set<MediaType> supportedEmbedTypes = Collections.emptySet();",
+        "/**\n * Mapping of Tika metadata to command line parameters.\n */\nprivate Map<Property, String[]> metadataCommandArguments = null;",
+        "/**\n * The external command to invoke.\n *\n * @see Runtime#exec(String[])\n */\nprivate String[] command = new String[]{ \"sed\", \"-e\", \"$a\\\\\\n\" + METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN, ExternalParser.INPUT_FILE_TOKEN };",
+        "private String commandAssignmentOperator = \"=\";",
+        "private String commandAssignmentDelimeter = \", \";",
+        "private String commandAppendOperator = \"=\";",
+        "private boolean quoteAssignmentValues = false;"
+      ],
+      "setters": [
+        "/**\n * Executes the configured external command and passes the given document\n * stream as a simple XHTML document to the given SAX content handler.\n * Metadata is only extracted if {@link #setMetadataCommandArguments(Map)}\n * has been called to set arguments.\n */\n@Override\npublic void embed(final Metadata metadata, final InputStream inputStream, final OutputStream outputStream, final ParseContext context) throws IOException, TikaException {\n    boolean inputToStdIn = true;\n    boolean outputFromStdOut = true;\n    boolean hasMetadataCommandArguments = (metadataCommandArguments != null) && (!metadataCommandArguments.isEmpty());\n    boolean serializeMetadataCommandArgumentsToken = false;\n    boolean replacedMetadataCommandArgumentsToken = false;\n    TikaInputStream tikaInputStream = TikaInputStream.get(inputStream);\n    File tempOutputFile = null;\n    List<String> commandMetadataSegments = null;\n    if (hasMetadataCommandArguments) {\n        commandMetadataSegments = getCommandMetadataSegments(metadata);\n    }\n    // Build our command\n    String[] origCmd = command;\n    List<String> cmd = new ArrayList<>();\n    for (String commandSegment : origCmd) {\n        if (commandSegment.contains(ExternalParser.INPUT_FILE_TOKEN)) {\n            commandSegment = commandSegment.replace(ExternalParser.INPUT_FILE_TOKEN, tikaInputStream.getFile().toString());\n            inputToStdIn = false;\n        }\n        if (commandSegment.contains(ExternalParser.OUTPUT_FILE_TOKEN)) {\n            tempOutputFile = tmp.createTemporaryFile();\n            commandSegment = commandSegment.replace(ExternalParser.OUTPUT_FILE_TOKEN, tempOutputFile.toString());\n            outputFromStdOut = false;\n        }\n        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {\n            serializeMetadataCommandArgumentsToken = true;\n        }\n        if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_TOKEN)) {\n            if (hasMetadataCommandArguments) {\n                cmd.addAll(commandMetadataSegments);\n            }\n            replacedMetadataCommandArgumentsToken = true;\n        } else {\n            cmd.add(commandSegment);\n        }\n    }\n    if (hasMetadataCommandArguments) {\n        if (serializeMetadataCommandArgumentsToken) {\n            // Find all metadata tokens and replace with encapsulated metadata\n            int i = 0;\n            for (String commandSegment : cmd) {\n                if (commandSegment.contains(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN)) {\n                    commandSegment = commandSegment.replace(METADATA_COMMAND_ARGUMENTS_SERIALIZED_TOKEN, serializeMetadata(commandMetadataSegments));\n                    cmd.set(i, commandSegment);\n                }\n                i++;\n            }\n        } else if ((!replacedMetadataCommandArgumentsToken) && (!serializeMetadataCommandArgumentsToken)) {\n            // Tack metadata onto the end of the cmd as arguments\n            cmd.addAll(commandMetadataSegments);\n        }\n    }\n    // Execute\n    Process process;\n    if (cmd.toArray().length == 1) {\n        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new)[0]);\n    } else {\n        process = Runtime.getRuntime().exec(cmd.toArray(String[]::new));\n    }\n    UnsynchronizedByteArrayOutputStream stdErrOutputStream = UnsynchronizedByteArrayOutputStream.builder().get();\n    try {\n        sendStdErrToOutputStream(process, stdErrOutputStream);\n        if (inputToStdIn) {\n            sendInputStreamToStdIn(inputStream, process);\n        } else {\n            // We're not writing to std in this case so close\n            process.getOutputStream().close();\n        }\n        if (outputFromStdOut) {\n            sendStdOutToOutputStream(process, outputStream);\n        } else {\n            tmp.dispose();\n            try {\n                process.waitFor();\n            } catch (InterruptedException ignore) {\n            }\n            // The command is finished, read the output file into the given output stream\n            InputStream tempOutputFileInputStream = TikaInputStream.get(tempOutputFile.toPath());\n            IOUtils.copy(tempOutputFileInputStream, outputStream);\n        }\n    } finally {\n        if (outputFromStdOut) {\n            try {\n                process.waitFor();\n            } catch (InterruptedException ignore) {\n            }\n        } else {\n            try {\n                // Clean up temp output files\n                tempOutputFile.delete();\n            } catch (Exception e) {\n                // swallow\n            }\n        }\n        if (!inputToStdIn) {\n            // Close input file (and delete if created by up\n            // TemporaryResources.createTemporaryFile)\n            IOUtils.closeQuietly(tikaInputStream);\n        }\n        IOUtils.closeQuietly(outputStream);\n        IOUtils.closeQuietly(stdErrOutputStream);\n        if (process.exitValue() != 0) {\n            throw new TikaException((((\"There was an error executing the command line\" + \"\\nExecutable Command:\\n\\n\") + cmd) + \"\\nExecutable Error:\\n\\n\") + stdErrOutputStream.toString(UTF_8.name()));\n        }\n    }\n}",
+        "/**\n * Sets the command to be run. This can include either of\n * {@link ExternalParser#INPUT_FILE_TOKEN} or\n * {@link ExternalParser#OUTPUT_FILE_TOKEN} if the command\n * needs filenames.\n *\n * @see Runtime#exec(String[])\n */\npublic void setCommand(String... command) {\n    this.command = command;\n}",
+        "/**\n * Sets the operator to append rather than replace a value for the command\n * line tool, i.e. \"+=\".\n *\n * @param commandAppendOperator\n */\npublic void setCommandAppendOperator(String commandAppendOperator) {\n    this.commandAppendOperator = commandAppendOperator;\n}",
+        "/**\n * Sets the delimiter for multiple assignments for the command line tool,\n * i.e. \", \".\n *\n * @param commandAssignmentDelimeter\n */\npublic void setCommandAssignmentDelimeter(String commandAssignmentDelimeter) {\n    this.commandAssignmentDelimeter = commandAssignmentDelimeter;\n}",
+        "/**\n * Sets the assignment operator for the command line tool, i.e. \"=\".\n *\n * @param commandAssignmentOperator\n */\npublic void setCommandAssignmentOperator(String commandAssignmentOperator) {\n    this.commandAssignmentOperator = commandAssignmentOperator;\n}",
+        "/**\n * Sets the map of Metadata keys to command line parameters. Set this to\n * null to disable Metadata embedding.\n *\n * @param arguments\n */\npublic void setMetadataCommandArguments(Map<Property, String[]> arguments) {\n    this.metadataCommandArguments = arguments;\n}",
+        "/**\n * Sets whether or not to quote assignment values, i.e. tag='value'.\n *\n * @param quoteAssignmentValues\n */\npublic void setQuoteAssignmentValues(boolean quoteAssignmentValues) {\n    this.quoteAssignmentValues = quoteAssignmentValues;\n}",
+        "public void setSupportedEmbedTypes(Set<MediaType> supportedEmbedTypes) {\n    this.supportedEmbedTypes = Collections.unmodifiableSet(new HashSet<>(supportedEmbedTypes));\n}"
+      ],
+      "imports": [
+        "org.apache.commons.io.IOUtils",
+        "org.apache.commons.io.output.AbstractByteArrayOutputStream",
+        "org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream",
+        "org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream.Builder",
+        "org.apache.tika.exception.TikaException",
+        "org.apache.tika.io.TemporaryResources",
+        "org.apache.tika.io.TikaInputStream",
+        "org.apache.tika.metadata.Metadata",
+        "org.apache.tika.metadata.Property",
+        "org.apache.tika.mime.MediaType",
+        "org.apache.tika.parser.ParseContext",
+        "org.apache.tika.parser.external.ExternalParser"
+      ],
+      "testTemplate": "package org.apache.tika.embedder;\n\npublic class ExternalEmbeddersendStdOutToOutputStream_IOUtilscopyFikaTest {\n\n    @Test\n    public void testEmbed() {\n    }\n}",
+      "conditionCount": 18,
+      "callCount": 1,
+      "covered": false
+    },
+    {
+      "entryPoint": "org.apache.tika.Tika.detect(java.io.InputStream, org.apache.tika.metadata.Metadata)",
+      "thirdPartyMethod": "org.apache.commons.io.IOUtils.skip(java.io.InputStream, long)",
+      "directCaller": "org.apache.tika.io.TikaInputStream.skip(long)",
+      "path": [
+        "org.apache.tika.Tika.detect(java.io.InputStream, org.apache.tika.metadata.Metadata)",
+        "org.apache.tika.detect.MagicDetector.detect(org.apache.tika.io.TikaInputStream, org.apache.tika.metadata.Metadata, org.apache.tika.parser.ParseContext)",
+        "org.apache.tika.io.TikaInputStream.skip(long)",
+        "org.apache.commons.io.IOUtils.skip(java.io.InputStream, long)"
+      ],
+      "methodSources": [
+        "/**\n * Detects the media type of the given document. The type detection is\n * based on the content of the given document stream and any given\n * document metadata. The document stream can be <code>null</code>,\n * in which case only the given document metadata is used for type\n * detection.\n * <p>\n * If the document stream supports the\n * {@link InputStream#markSupported() mark feature}, then the stream is\n * marked and reset to the original position before this method returns.\n * Only a limited number of bytes are read from the stream.\n * <p>\n * The given document stream is <em>not</em> closed by this method.\n * <p>\n * Unlike in the {@link #parse(InputStream, Metadata)} method, the\n * given document metadata is <em>not</em> modified by this method.\n *\n * @param stream\n * \t\tthe document stream, or <code>null</code>\n * @param metadata\n * \t\tdocument metadata\n * @return detected media type\n * @throws IOException\n * \t\tif the stream can not be read\n */\npublic String detect(InputStream stream, Metadata metadata) throws IOException {\n    if (stream == null) {\n        return // PATH: Test should invoke the next MagicDetector.detect(...) [step in execution path]\n        detector.detect(null, metadata, new ParseContext()).toString();\n    }\n    try (TikaInputStream tis = TikaInputStream.get(stream)) {\n        return detector.detect(tis, metadata, new ParseContext()).toString();\n    }\n}",
+        "/**\n *\n * @param tis\n * \t\tdocument input stream, or <code>null</code>\n * @param metadata\n * \t\tignored\n * @param parseContext\n * \t\tthe parse context\n */\npublic MediaType detect(TikaInputStream tis, Metadata metadata, ParseContext parseContext) throws IOException {\n    if (tis == null) {\n        return MediaType.OCTET_STREAM;\n    }\n    tis.mark(offsetRangeEnd + length);\n    try {\n        int offset = 0;\n        // Skip bytes at the beginning, using skip() or read()\n        while (offset < offsetRangeBegin) {\n            // PATH: Test should invoke the next TikaInputStream.skip(...) [step in execution path]\n            long n = tis.skip(offsetRangeBegin - offset);\n            if (n > 0) {\n                offset += n;\n            } else if (tis.read() != (-1)) {\n                offset += 1;\n            } else {\n                return MediaType.OCTET_STREAM;\n            }\n        } \n        // Fill in the comparison window\n        byte[] buffer = new byte[length + (offsetRangeEnd - offsetRangeBegin)];\n        int n = tis.read(buffer);\n        if (n > 0) {\n            offset += n;\n        }\n        while ((n != (-1)) && (offset < (offsetRangeEnd + length))) {\n            int bufferOffset = offset - offsetRangeBegin;\n            n = tis.read(buffer, bufferOffset, buffer.length - bufferOffset);\n            // increment offset - in case not all read (see testDetectStreamReadProblems)\n            if (n > 0) {\n                offset += n;\n            }\n        } \n        // For non-regex, verify we have enough data\n        if ((!isRegex) && (offset < (offsetRangeBegin + length))) {\n            return MediaType.OCTET_STREAM;\n        }\n        // Buffer starts at offsetRangeBegin, so search from 0 to (offsetRangeEnd - offsetRangeBegin)\n        if (matchesBuffer(buffer, 0, offsetRangeEnd - offsetRangeBegin)) {\n            return type;\n        }\n        return MediaType.OCTET_STREAM;\n    } finally {\n        tis.reset();\n    }\n}",
+        "// ========== InputStream Methods ==========\n/**\n * Skips up to {@code n} bytes. Returns the actual number of bytes skipped,\n * which may be less than requested if the end of stream is reached.\n * <p>\n * This method does NOT throw {@link java.io.EOFException} if fewer bytes\n * are available. Callers must check the return value to determine how many\n * bytes were actually skipped.\n *\n * @param n\n * \t\tthe number of bytes to skip\n * @return the actual number of bytes skipped (may be less than {@code n})\n */\n@Override\npublic long skip(long n) throws IOException {\n    // PATH: Test should invoke the next IOUtils.skip(...) [step in execution path]\n    long skipped = IOUtils.skip(in, n);\n    position += skipped;\n    return skipped;\n}"
+      ],
+      "constructors": [
+        "/**\n * Creates a Tika facade using the given detector and parser instances, but the default\n * Translator.\n *\n * @param detector\n * \t\ttype detector\n * @param parser\n * \t\tdocument parser\n * @since Apache Tika 0.8\n */\npublic Tika(Detector detector, Parser parser) {\n    this.detector = detector;\n    this.parser = parser;\n    this.translator = new DefaultTranslator();\n}",
+        "/**\n * Creates a Tika facade using the given detector, parser, and translator instances.\n *\n * @param detector\n * \t\ttype detector\n * @param parser\n * \t\tdocument parser\n * @param translator\n * \t\ttext translator\n * @since Apache Tika 1.6\n */\npublic Tika(Detector detector, Parser parser, Translator translator) {\n    this.detector = detector;\n    this.parser = parser;\n    this.translator = translator;\n}",
+        "/**\n * Creates a Tika facade using the default configuration.\n */\npublic Tika() {\n    this(new DefaultDetector(), new AutoDetectParser());\n}",
+        "/**\n * Creates a Tika facade using the given detector instance, the\n * default parser configuration, and the default Translator.\n *\n * @param detector\n * \t\ttype detector\n * @since Apache Tika 0.8\n */\npublic Tika(Detector detector) {\n    this(detector, new AutoDetectParser(detector));\n}"
+      ],
+      "fieldDeclarations": [
+        "/**\n * The detector instance used by this facade.\n */\nprivate final Detector detector;",
+        "/**\n * The parser instance used by this facade.\n */\nprivate final Parser parser;",
+        "/**\n * The Translator instance used by this facade.\n */\nprivate final Translator translator;",
+        "/**\n * Maximum length of the strings returned by the parseToString methods.\n * Used to prevent out of memory problems with huge input documents.\n * The default setting is 100k characters.\n */\nprivate int maxStringLength = 100 * 1000;"
+      ],
+      "setters": [
+        "/**\n * Sets the maximum length of strings returned by the parseToString\n * methods.\n *\n * @param maxStringLength\n * \t\tmaximum string length,\n * \t\tor -1 to disable this limit\n * @since Apache Tika 0.7\n */\npublic void setMaxStringLength(int maxStringLength) {\n    this.maxStringLength = maxStringLength;\n}"
+      ],
+      "imports": [
+        "org.apache.commons.io.IOUtils",
+        "org.apache.commons.io.input.ProxyInputStream",
+        "org.apache.tika.detect.DefaultDetector",
+        "org.apache.tika.detect.Detector",
+        "org.apache.tika.detect.MagicDetector",
+        "org.apache.tika.exception.TikaException",
+        "org.apache.tika.exception.WriteLimitReachedException",
+        "org.apache.tika.io.TikaInputStream",
+        "org.apache.tika.language.translate.DefaultTranslator",
+        "org.apache.tika.language.translate.Translator",
+        "org.apache.tika.metadata.Metadata",
+        "org.apache.tika.metadata.Property",
+        "org.apache.tika.metadata.TikaCoreProperties",
+        "org.apache.tika.mime.MediaType",
+        "org.apache.tika.parser.AutoDetectParser",
+        "org.apache.tika.parser.ParseContext",
+        "org.apache.tika.parser.Parser",
+        "org.apache.tika.sax.BodyContentHandler",
+        "org.apache.tika.sax.ContentHandlerDecorator",
+        "org.apache.tika.sax.WriteOutContentHandler",
+        "org.xml.sax.ContentHandler",
+        "org.xml.sax.SAXException"
+      ],
+      "testTemplate": "package org.apache.tika;\n\npublic class Tika_TikaInputStreamskip_IOUtilsskipFikaTest {\n\n    @Test\n    public void testDetect() {\n    }\n}",
+      "conditionCount": 10,
+      "callCount": 1,
+      "covered": false
+    },
+    {
+      "entryPoint": "org.apache.tika.parser.multiple.AbstractMultipleParser.parse(org.apache.tika.io.TikaInputStream, org.apache.tika.sax.ContentHandlerFactory, org.apache.tika.metadata.Metadata, org.apache.tika.parser.ParseContext)",
+      "thirdPartyMethod": "org.apache.commons.io.IOUtils.skipFully(java.io.InputStream, long)",
+      "directCaller": "org.apache.tika.io.FileSource.seekTo(long)",
+      "path": [
+        "org.apache.tika.parser.multiple.AbstractMultipleParser.parse(org.apache.tika.io.TikaInputStream, org.apache.tika.sax.ContentHandlerFactory, org.apache.tika.metadata.Metadata, org.apache.tika.parser.ParseContext)",
+        "org.apache.tika.parser.multiple.AbstractMultipleParser.parse(org.apache.tika.io.TikaInputStream, org.xml.sax.ContentHandler, org.apache.tika.sax.ContentHandlerFactory, org.apache.tika.metadata.Metadata, org.apache.tika.parser.ParseContext)",
+        "org.apache.tika.io.TikaInputStream.rewind()",
+        "org.apache.tika.io.FileSource.seekTo(long)",
+        "org.apache.commons.io.IOUtils.skipFully(java.io.InputStream, long)"
+      ],
+      "methodSources": [
+        "/**\n * Processes the given Stream through one or more parsers,\n * resetting things between parsers as requested by policy.\n * The actual processing is delegated to one or more {@link Parser}s.\n * You will get one ContentHandler fetched for each Parser used.\n * TODO Do we need to return all the ContentHandler instances we created?\n *\n * @deprecated The {@link ContentHandlerFactory} override is still experimental\nand the method signature is subject to change before Tika 2.0\n */\n@Deprecated\npublic void parse(TikaInputStream tis, ContentHandlerFactory handlers, Metadata metadata, ParseContext context) throws IOException, SAXException, TikaException // PATH: Test should invoke the next AbstractMultipleParser.parse(...) [step in execution path]\n{\n    parse(tis, null, handlers, metadata, context);\n}",
+        "private void parse(TikaInputStream tis, ContentHandler handler, ContentHandlerFactory handlerFactory, Metadata originalMetadata, ParseContext context) throws IOException, SAXException, TikaException {\n    // Enable rewind capability since we rewind between multiple parsers\n    tis.enableRewind();\n    // Track the metadata between parsers, so we can apply our policy\n    Metadata lastMetadata = cloneMetadata(originalMetadata);\n    Metadata metadata = lastMetadata;\n    // Start tracking resources, so we can clean up when done\n    TemporaryResources tmp = new TemporaryResources();\n    try {\n        for (Parser p : parsers) // PATH: Test should invoke the next TikaInputStream.rewind(...) [step in execution path]\n        {\n            // Get a new handler for this parser, if we can\n            // If not, the user will get text from every parser\n            // mushed together onto the one solitary handler...\n            if (handlerFactory != null) {\n                handler = handlerFactory.createHandler();\n            }\n            // Record that we used this parser\n            recordParserDetails(p, originalMetadata);\n            // Prepare an near-empty Metadata, will merge after\n            metadata = cloneMetadata(originalMetadata);\n            // Notify the implementation of what we're about to do\n            parserPrepare(p, metadata, context);\n            // Process if possible\n            Exception failure = null;\n            try {\n                p.parse(tis, handler, metadata, context);\n            } catch (Exception e) {\n                // Record the failure such that it can't get lost / overwritten\n                recordParserFailure(p, e, originalMetadata);\n                recordParserFailure(p, e, metadata);\n                failure = e;\n            }\n            // Notify the implementation how it went\n            boolean tryNext = parserCompleted(p, metadata, handler, context, failure);\n            // Handle metadata merging / clashes\n            metadata = mergeMetadata(metadata, lastMetadata, policy);\n            // Abort if requested, with the exception if there was one\n            if (!tryNext) {\n                if (failure != null) {\n                    if (failure instanceof IOException) {\n                        throw ((IOException) (failure));\n                    }\n                    if (failure instanceof SAXException) {\n                        throw ((SAXException) (failure));\n                    }\n                    if (failure instanceof TikaException) {\n                        throw ((TikaException) (failure));\n                    }\n                    throw new TikaException(\"Unexpected RuntimeException from \" + p, failure);\n                }\n                // Abort processing, don't try any more parsers\n                break;\n            }\n            // Prepare for the next parser, if present\n            lastMetadata = cloneMetadata(metadata);\n            tis.rewind();\n        }\n    } finally {\n        tmp.dispose();\n    }\n    // Finally, copy the latest metadata back onto their supplied object\n    for (String n : metadata.names()) {\n        originalMetadata.remove(n);\n        for (String val : metadata.getValues(n)) {\n            originalMetadata.add(n, val);\n        }\n    }\n}",
+        "/**\n * Rewind the stream to the beginning.\n * <p>\n * For streams created from byte arrays or files, this always works.\n * For streams created from raw InputStreams, this requires\n * {@link #enableRewind()} to have been called first.\n */\npublic void rewind() throws IOException {\n    TikaInputSource source = inputSource();\n    if (source != null) // PATH: Test should invoke the next FileSource.seekTo(...) [step in execution path]\n    {\n        source.seekTo(0);\n    } else {\n        throw new IOException(\"Cannot rewind: no TikaInputSource available\");\n    }\n    position = 0;\n    mark = -1;\n    consecutiveEOFs = 0;\n}",
+        "@Override\npublic void seekTo(long newPosition) throws IOException {\n    if (newPosition < 0) {\n        throw new IOException(\"Cannot seek to negative position: \" + newPosition);\n    }\n    if (newPosition > length) {\n        throw new IOException(((\"Cannot seek past end of file. Position: \" + newPosition) + \", length: \") + length);\n    }\n    // Close current stream and reopen at the beginning\n    currentStream.close();\n    currentStream = new BufferedInputStream(Files.newInputStream(path));\n    // Skip to the new position\n    if (newPosition > 0) // PATH: Test should invoke the next IOUtils.skipFully(...) [step in execution path]\n    {\n        IOUtils.skipFully(currentStream, newPosition);\n    }\n    this.position = newPosition;\n}"
+      ],
+      "constructors": [
+        "public AbstractMultipleParser(MediaTypeRegistry registry, MetadataPolicy policy, Parser... parsers) {\n    this(registry, policy, Arrays.asList(parsers));\n}",
+        "public AbstractMultipleParser(MediaTypeRegistry registry, MetadataPolicy policy, Collection<? extends Parser> parsers) {\n    this.policy = policy;\n    this.parsers = parsers;\n    this.registry = registry;\n    // TODO Only offer those in common to several/all parser\n    // TODO Some sort of specialisation / subtype support\n    this.offeredTypes = new HashSet<>();\n    for (Parser parser : parsers) {\n        offeredTypes.addAll(parser.getSupportedTypes(new ParseContext()));\n    }\n}",
+        "MetadataPolicy() {\n}"
+      ],
+      "fieldDeclarations": [
+        "protected static final String METADATA_POLICY_CONFIG_KEY = \"metadataPolicy\";",
+        "/**\n * Serial version UID.\n */\nprivate static final long serialVersionUID = 5383668090329836559L;",
+        "/**\n * How we should handle metadata clashes\n */\nprivate final MetadataPolicy policy;",
+        "/**\n * List of the multiple parsers to try.\n */\nprivate final Collection<? extends Parser> parsers;",
+        "/**\n * Computed list of Mime Types to offer, which is all\n * those in common between the parsers.\n * For explicit mimetypes only, use a {@link ParserDecorator}\n */\nprivate final Set<MediaType> offeredTypes;",
+        "/**\n * Media type registry.\n */\nprivate MediaTypeRegistry registry;"
+      ],
+      "setters": [
+        "/**\n * Sets the media type registry used to infer type relationships.\n *\n * @param registry\n * \t\tmedia type registry\n */\npublic void setMediaTypeRegistry(MediaTypeRegistry registry) {\n    this.registry = registry;\n}"
+      ],
+      "imports": [
+        "org.apache.commons.io.IOUtils",
+        "org.apache.tika.exception.TikaException",
+        "org.apache.tika.io.FileSource",
+        "org.apache.tika.io.TemporaryResources",
+        "org.apache.tika.io.TikaInputSource",
+        "org.apache.tika.io.TikaInputStream",
+        "org.apache.tika.metadata.Metadata",
+        "org.apache.tika.mime.MediaType",
+        "org.apache.tika.mime.MediaTypeRegistry",
+        "org.apache.tika.parser.ParseContext",
+        "org.apache.tika.parser.Parser",
+        "org.apache.tika.parser.multiple.AbstractMultipleParser.MetadataPolicy",
+        "org.apache.tika.sax.ContentHandlerFactory",
+        "org.apache.tika.utils.ParserUtils",
+        "org.xml.sax.ContentHandler",
+        "org.xml.sax.SAXException"
+      ],
+      "testTemplate": "package org.apache.tika.parser.multiple;\n\npublic class AbstractMultipleParser_FileSourceseekTo_IOUtilsskipFullyFikaTest {\n\n    @Test\n    public void testParse() {\n    }\n}",
+      "conditionCount": 13,
+      "callCount": 1,
+      "covered": false
+    },
+    {
+      "entryPoint": "org.apache.tika.Tika.detect(java.net.URL)",
+      "thirdPartyMethod": "org.apache.commons.io.input.CloseShieldInputStream.wrap(java.io.InputStream)",
+      "directCaller": "org.apache.tika.detect.XmlRootExtractor.extractRootElement(java.io.InputStream, boolean)",
+      "path": [
+        "org.apache.tika.Tika.detect(java.net.URL)",
+        "org.apache.tika.Tika.detect(java.io.InputStream, org.apache.tika.metadata.Metadata)",
+        "org.apache.tika.mime.ProbabilisticMimeDetectionSelector.detect(org.apache.tika.io.TikaInputStream, org.apache.tika.metadata.Metadata, org.apache.tika.parser.ParseContext)",
+        "org.apache.tika.mime.MimeTypes.getMimeType(byte[])",
+        "org.apache.tika.detect.XmlRootExtractor.extractRootElement(byte[])",
+        "org.apache.tika.detect.XmlRootExtractor.extractRootElement(java.io.InputStream, boolean)",
+        "org.apache.commons.io.input.CloseShieldInputStream.wrap(java.io.InputStream)"
+      ],
+      "methodSources": [
+        "/**\n * Detects the media type of the resource at the given URL. The type\n * detection is based on the document content and a potential known\n * file extension included in the URL.\n * <p>\n * Use the {@link #detect(String)} method when you want to detect the\n * type of the document without actually accessing the URL.\n *\n * @param url\n * \t\tthe URL of the resource\n * @return detected media type\n * @throws IOException\n * \t\tif the resource can not be read\n */\npublic String detect(URL url) throws IOException {\n    Metadata metadata = new Metadata();\n    try (InputStream stream = TikaInputStream.get(url, metadata)) {\n        // PATH: Test should invoke the next Tika.detect(...) [step in execution path]\n        return detect(stream, metadata);\n    }\n}",
+        "/**\n * Detects the media type of the given document. The type detection is\n * based on the content of the given document stream and any given\n * document metadata. The document stream can be <code>null</code>,\n * in which case only the given document metadata is used for type\n * detection.\n * <p>\n * If the document stream supports the\n * {@link InputStream#markSupported() mark feature}, then the stream is\n * marked and reset to the original position before this method returns.\n * Only a limited number of bytes are read from the stream.\n * <p>\n * The given document stream is <em>not</em> closed by this method.\n * <p>\n * Unlike in the {@link #parse(InputStream, Metadata)} method, the\n * given document metadata is <em>not</em> modified by this method.\n *\n * @param stream\n * \t\tthe document stream, or <code>null</code>\n * @param metadata\n * \t\tdocument metadata\n * @return detected media type\n * @throws IOException\n * \t\tif the stream can not be read\n */\npublic String detect(InputStream stream, Metadata metadata) throws IOException {\n    if (stream == null) {\n        return // PATH: Test should invoke the next ProbabilisticMimeDetectionSelector.detect(...) [step in execution path]\n        detector.detect(null, metadata, new ParseContext()).toString();\n    }\n    try (TikaInputStream tis = TikaInputStream.get(stream)) {\n        return detector.detect(tis, metadata, new ParseContext()).toString();\n    }\n}",
+        "public MediaType detect(TikaInputStream tis, Metadata metadata, ParseContext parseContext) throws IOException {\n    List<MimeType> possibleTypes = new ArrayList<>();\n    // Get type based on magic prefix\n    if (tis != null) {\n        tis.mark(mimeTypes.getMinLength());\n        try {\n            byte[] prefix = mimeTypes.readMagicHeader(tis);\n            // defensive copy\n            // PATH: Test should invoke the next MimeTypes.getMimeType(...) [step in execution path]\n            possibleTypes.addAll(mimeTypes.getMimeType(prefix));\n        } finally {\n            tis.reset();\n        }\n    }\n    MimeType extHint = null;\n    // Get type based on resourceName hint (if available)\n    String resourceName = metadata.get(TikaCoreProperties.RESOURCE_NAME_KEY);\n    if (resourceName != null) {\n        String name = null;\n        // Deal with a URI or a path name in as the resource name\n        try {\n            URI uri = new URI(resourceName);\n            String path = uri.getPath();\n            if (path != null) {\n                int slash = path.lastIndexOf('/');\n                if ((slash + 1) < path.length()) {\n                    name = path.substring(slash + 1);\n                }\n            }\n        } catch (URISyntaxException e) {\n            name = resourceName;\n        }\n        if (name != null) {\n            // MimeType hint = getMimeType(name);\n            extHint = mimeTypes.getMimeType(name);\n            // If we have some types based on mime magic, try to specialise\n            // and/or select the type based on that\n            // Otherwise, use the type identified from the name\n            // possibleTypes = applyHint(possibleTypes, hint);\n        }\n    }\n    // Get type based on metadata hint (if available)\n    MimeType metaHint = null;\n    String typeName = metadata.get(Metadata.CONTENT_TYPE);\n    if (typeName != null) {\n        try {\n            // MimeType hint = forName(typeName);\n            metaHint = mimeTypes.forName(typeName);\n            // possibleTypes = applyHint(possibleTypes, hint);\n        } catch (MimeTypeException e) {\n            // Malformed type name, ignore\n        }\n    }\n    /* the following calls the probability selection. */\n    return applyProbilities(possibleTypes, extHint, metaHint);\n}",
+        "/**\n * Returns the MIME type that best matches the given first few bytes\n * of a document stream. Returns application/octet-stream if no better\n * match is found.\n * <p>\n * If multiple matches are found, the best (highest priority) matching\n * type is returned. If multiple matches are found with the same priority,\n * then all of these are returned.\n * <p>\n * The given byte array is expected to be at least {@link #getMinLength()}\n * long, or shorter only if the document stream itself is shorter.\n *\n * @param data\n * \t\tfirst few bytes of a document stream\n * @return matching MIME type\n */\nList<MimeType> getMimeType(byte[] data) {\n    if (data == null) {\n        throw new IllegalArgumentException(\"Data is missing\");\n    } else if (data.length == 0) {\n        // See https://issues.apache.org/jira/browse/TIKA-483\n        return rootMimeTypeL;\n    }\n    // Then, check for magic bytes\n    List<MimeType> result = new ArrayList<>(1);\n    int currentPriority = -1;\n    for (Magic magic : magics) {\n        if ((currentPriority > 0) && (currentPriority > magic.getPriority())) {\n            break;\n        }\n        if (magic.eval(data)) {\n            result.add(magic.getType());\n            currentPriority = magic.getPriority();\n        }\n    }\n    if (!result.isEmpty()) {\n        for (int i = 0; i < result.size(); i++) {\n            final MimeType matched = result.get(i);\n            // When detecting generic XML (or possibly XHTML),\n            // extract the root element and match it against known types\n            if (\"application/xml\".equals(matched.getName()) || \"text/html\".equals(matched.getName())) {\n                XmlRootExtractor extractor = new XmlRootExtractor();\n                // PATH: Test should invoke the next XmlRootExtractor.extractRootElement(...) [step in execution path]\n                QName rootElement = extractor.extractRootElement(data);\n                if (rootElement != null) {\n                    for (MimeType type : xmls) {\n                        if (type.matchesXML(rootElement.getNamespaceURI(), rootElement.getLocalPart())) {\n                            result.set(i, type);\n                            break;\n                        }\n                    }\n                } else if (\"application/xml\".equals(matched.getName())) {\n                    // Our XML magic is higher than our HTML magic\n                    // So, if we got here, we might have a HTML file that's\n                    // invalid XML. So, try our HTML magics explicitly (TIKA-2419)\n                    boolean isHTML = false;\n                    for (Magic magic : magics) {\n                        if (!magic.getType().equals(htmlMimeType)) {\n                            continue;\n                        }\n                        if (magic.eval(data)) {\n                            isHTML = true;\n                            break;\n                        }\n                    }\n                    // Otherwise, downgrade from application/xml to text/plain\n                    // since the document seems not to be well-formed.\n                    if (isHTML) {\n                        result.set(i, htmlMimeType);\n                    } else {\n                        result.set(i, textMimeType);\n                    }\n                }\n            }\n        }\n        return result;\n    }\n    // Finally, assume plain text if no control bytes are found\n    try {\n        TextDetector detector = new TextDetector(getMinLength());\n        try (TikaInputStream tis = TikaInputStream.get(data)) {\n            MimeType type = forName(detector.detect(tis, new Metadata(), new ParseContext()).toString());\n            return Collections.singletonList(type);\n        }\n    } catch (Exception e) {\n        return rootMimeTypeL;\n    }\n}",
+        "public QName extractRootElement(byte[] data) {\n    // this loop should be very rare\n    while (true) {\n        try {\n            // PATH: Test should invoke the next XmlRootExtractor.extractRootElement(...) [step in execution path]\n            return extractRootElement(new UnsynchronizedByteArrayInputStream(data), true);\n        } catch (MalformedCharException e) {\n            // see TIKA-3596, try to handle truncated/bad encoded XML files\n            int newLen = data.length / 2;\n            if ((newLen % 2) == 1) {\n                newLen--;\n            }\n            if (newLen > 0) {\n                data = Arrays.copyOf(data, newLen);\n            } else {\n                break;\n            }\n        }\n    } \n    return null;\n}",
+        "private QName extractRootElement(InputStream stream, boolean throwMalformed) {\n    ExtractorHandler handler = new ExtractorHandler();\n    try {\n        // PATH: Test should invoke the next CloseShieldInputStream.wrap(...) [step in execution path]\n        XMLReaderUtils.parseSAX(CloseShieldInputStream.wrap(stream), handler, EMPTY_CONTEXT);\n    } catch (SecurityException e) {\n        throw e;\n    } catch (Exception e) {\n        if (throwMalformed && ((e instanceof CharConversionException) || (e.getCause() instanceof CharConversionException))) {\n            throw new MalformedCharException(e);\n        }\n    }\n    return handler.rootElement;\n}"
+      ],
+      "constructors": [
+        "/**\n * Creates a Tika facade using the given detector and parser instances, but the default\n * Translator.\n *\n * @param detector\n * \t\ttype detector\n * @param parser\n * \t\tdocument parser\n * @since Apache Tika 0.8\n */\npublic Tika(Detector detector, Parser parser) {\n    this.detector = detector;\n    this.parser = parser;\n    this.translator = new DefaultTranslator();\n}",
+        "/**\n * Creates a Tika facade using the given detector, parser, and translator instances.\n *\n * @param detector\n * \t\ttype detector\n * @param parser\n * \t\tdocument parser\n * @param translator\n * \t\ttext translator\n * @since Apache Tika 1.6\n */\npublic Tika(Detector detector, Parser parser, Translator translator) {\n    this.detector = detector;\n    this.parser = parser;\n    this.translator = translator;\n}",
+        "/**\n * Creates a Tika facade using the default configuration.\n */\npublic Tika() {\n    this(new DefaultDetector(), new AutoDetectParser());\n}",
+        "/**\n * Creates a Tika facade using the given detector instance, the\n * default parser configuration, and the default Translator.\n *\n * @param detector\n * \t\ttype detector\n * @since Apache Tika 0.8\n */\npublic Tika(Detector detector) {\n    this(detector, new AutoDetectParser(detector));\n}"
+      ],
+      "fieldDeclarations": [
+        "/**\n * The detector instance used by this facade.\n */\nprivate final Detector detector;",
+        "/**\n * The parser instance used by this facade.\n */\nprivate final Parser parser;",
+        "/**\n * The Translator instance used by this facade.\n */\nprivate final Translator translator;",
+        "/**\n * Maximum length of the strings returned by the parseToString methods.\n * Used to prevent out of memory problems with huge input documents.\n * The default setting is 100k characters.\n */\nprivate int maxStringLength = 100 * 1000;"
+      ],
+      "setters": [
+        "/**\n * Sets the maximum length of strings returned by the parseToString\n * methods.\n *\n * @param maxStringLength\n * \t\tmaximum string length,\n * \t\tor -1 to disable this limit\n * @since Apache Tika 0.7\n */\npublic void setMaxStringLength(int maxStringLength) {\n    this.maxStringLength = maxStringLength;\n}"
+      ],
+      "imports": [
+        "javax.xml.namespace.QName",
+        "org.apache.commons.io.input.CloseShieldInputStream",
+        "org.apache.commons.io.input.UnsynchronizedByteArrayInputStream",
+        "org.apache.tika.detect.DefaultDetector",
+        "org.apache.tika.detect.Detector",
+        "org.apache.tika.detect.TextDetector",
+        "org.apache.tika.detect.XmlRootExtractor",
+        "org.apache.tika.detect.XmlRootExtractor.ExtractorHandler",
+        "org.apache.tika.detect.XmlRootExtractor.MalformedCharException",
+        "org.apache.tika.exception.TikaException",
+        "org.apache.tika.exception.WriteLimitReachedException",
+        "org.apache.tika.io.TikaInputStream",
+        "org.apache.tika.language.translate.DefaultTranslator",
+        "org.apache.tika.language.translate.Translator",
+        "org.apache.tika.metadata.Metadata",
+        "org.apache.tika.metadata.Property",
+        "org.apache.tika.metadata.TikaCoreProperties",
+        "org.apache.tika.mime.Magic",
+        "org.apache.tika.mime.MediaType",
+        "org.apache.tika.mime.MimeType",
+        "org.apache.tika.mime.MimeTypeException",
+        "org.apache.tika.mime.MimeTypes",
+        "org.apache.tika.mime.Patterns",
+        "org.apache.tika.mime.ProbabilisticMimeDetectionSelector",
+        "org.apache.tika.parser.AutoDetectParser",
+        "org.apache.tika.parser.ParseContext",
+        "org.apache.tika.parser.Parser",
+        "org.apache.tika.sax.BodyContentHandler",
+        "org.apache.tika.sax.ContentHandlerDecorator",
+        "org.apache.tika.sax.WriteOutContentHandler",
+        "org.apache.tika.utils.XMLReaderUtils",
+        "org.xml.sax.ContentHandler",
+        "org.xml.sax.SAXException"
+      ],
+      "testTemplate": "package org.apache.tika;\n\npublic class Tika_XmlRootExtractorextractRootElement_CloseShieldInputStreamwrapFikaTest {\n\n    @Test\n    public void testDetect() {\n    }\n}",
+      "conditionCount": 27,
+      "callCount": 1,
+      "covered": false
+    }
+  ]
+}

@@ -1,0 +1,121 @@
+[ {
+  "caller" : "org.apache.tika.config.TikaActivator.addingService(org.osgi.framework.ServiceReference)",
+  "covered" : false,
+  "thirdPartyMethod" : "org.osgi.framework.ServiceReference.getProperty(java.lang.String)"
+}, {
+  "caller" : "org.apache.tika.config.TikaActivator.addingService(org.osgi.framework.ServiceReference)",
+  "covered" : false,
+  "thirdPartyMethod" : "org.osgi.framework.BundleContext.getService(org.osgi.framework.ServiceReference)"
+}, {
+  "caller" : "org.apache.tika.config.TikaActivator.removedService(org.osgi.framework.ServiceReference, java.lang.Object)",
+  "covered" : false,
+  "thirdPartyMethod" : "org.osgi.framework.BundleContext.ungetService(org.osgi.framework.ServiceReference)"
+}, {
+  "caller" : "org.apache.tika.io.CachingSource.seekTo(long)",
+  "covered" : true,
+  "thirdPartyMethod" : "org.apache.commons.io.IOUtils.skipFully(java.io.InputStream, long)"
+}, {
+  "caller" : "org.apache.tika.io.FilenameUtils.getPrefixLength(java.lang.String)",
+  "covered" : false,
+  "thirdPartyMethod" : "org.apache.commons.io.FilenameUtils.getPrefixLength(java.lang.String)"
+}, {
+  "caller" : "org.apache.tika.io.FileSource.seekTo(long)",
+  "covered" : false,
+  "thirdPartyMethod" : "org.apache.commons.io.IOUtils.skipFully(java.io.InputStream, long)"
+}, {
+  "caller" : "org.apache.tika.mime.MimeTypesReader.resolveEntity(java.lang.String, java.lang.String)",
+  "covered" : true,
+  "thirdPartyMethod" : "org.apache.commons.io.input.UnsynchronizedByteArrayInputStream.<init>(byte[])"
+}, {
+  "caller" : "org.apache.tika.io.FileSource.skip(long)",
+  "covered" : false,
+  "thirdPartyMethod" : "org.apache.commons.io.IOUtils.skip(java.io.InputStream, long)"
+}, {
+  "caller" : "org.apache.tika.config.TikaActivator.start(org.osgi.framework.BundleContext)",
+  "covered" : false,
+  "thirdPartyMethod" : "org.osgi.util.tracker.ServiceTracker.<init>(org.osgi.framework.BundleContext, java.lang.String, org.osgi.util.tracker.ServiceTrackerCustomizer)"
+}, {
+  "caller" : "org.apache.tika.config.TikaActivator.start(org.osgi.framework.BundleContext)",
+  "covered" : false,
+  "thirdPartyMethod" : "org.osgi.util.tracker.ServiceTracker.open()"
+}, {
+  "caller" : "org.apache.tika.config.TikaActivator.stop(org.osgi.framework.BundleContext)",
+  "covered" : false,
+  "thirdPartyMethod" : "org.osgi.util.tracker.ServiceTracker.close()"
+}, {
+  "caller" : "org.apache.tika.io.TikaInputStream.<init>(org.apache.tika.io.TikaInputSource, org.apache.tika.io.TemporaryResources, java.lang.String)",
+  "covered" : true,
+  "thirdPartyMethod" : "org.apache.commons.io.input.TaggedInputStream.<init>(java.io.InputStream)"
+}, {
+  "caller" : "org.apache.tika.detect.XmlRootExtractor.extractRootElement(java.io.InputStream, boolean)",
+  "covered" : false,
+  "thirdPartyMethod" : "org.apache.commons.io.input.CloseShieldInputStream.wrap(java.io.InputStream)"
+}, {
+  "caller" : "org.apache.tika.io.BoundedInputStream.transferTo(java.io.OutputStream)",
+  "covered" : false,
+  "thirdPartyMethod" : "org.apache.commons.io.IOUtils.copy(java.io.InputStream, java.io.OutputStream)"
+}, {
+  "caller" : "org.apache.tika.io.CachingSource.skip(long)",
+  "covered" : false,
+  "thirdPartyMethod" : "org.apache.commons.io.IOUtils.skip(java.io.InputStream, long)"
+}, {
+  "caller" : "org.apache.tika.sax.OfflineContentHandler.resolveEntity(java.lang.String, java.lang.String)",
+  "covered" : true,
+  "thirdPartyMethod" : "org.apache.commons.io.input.ClosedInputStream.<init>()"
+}, {
+  "caller" : "org.apache.tika.embedder.ExternalEmbedder.embed(org.apache.tika.metadata.Metadata, java.io.InputStream, java.io.OutputStream, org.apache.tika.parser.ParseContext)",
+  "covered" : false,
+  "thirdPartyMethod" : "org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream.builder()"
+}, {
+  "caller" : "org.apache.tika.embedder.ExternalEmbedder.embed(org.apache.tika.metadata.Metadata, java.io.InputStream, java.io.OutputStream, org.apache.tika.parser.ParseContext)",
+  "covered" : false,
+  "thirdPartyMethod" : "org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream.Builder.get()"
+}, {
+  "caller" : "org.apache.tika.embedder.ExternalEmbedder.embed(org.apache.tika.metadata.Metadata, java.io.InputStream, java.io.OutputStream, org.apache.tika.parser.ParseContext)",
+  "covered" : false,
+  "thirdPartyMethod" : "org.apache.commons.io.IOUtils.closeQuietly(java.io.InputStream)"
+}, {
+  "caller" : "org.apache.tika.embedder.ExternalEmbedder.embed(org.apache.tika.metadata.Metadata, java.io.InputStream, java.io.OutputStream, org.apache.tika.parser.ParseContext)",
+  "covered" : false,
+  "thirdPartyMethod" : "org.apache.commons.io.IOUtils.closeQuietly(java.io.OutputStream)"
+}, {
+  "caller" : "org.apache.tika.embedder.ExternalEmbedder.embed(org.apache.tika.metadata.Metadata, java.io.InputStream, java.io.OutputStream, org.apache.tika.parser.ParseContext)",
+  "covered" : false,
+  "thirdPartyMethod" : "org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream.toString(java.lang.String)"
+}, {
+  "caller" : "org.apache.tika.embedder.ExternalEmbedder.embed(org.apache.tika.metadata.Metadata, java.io.InputStream, java.io.OutputStream, org.apache.tika.parser.ParseContext)",
+  "covered" : false,
+  "thirdPartyMethod" : "org.apache.commons.io.IOUtils.copy(java.io.InputStream, java.io.OutputStream)"
+}, {
+  "caller" : "org.apache.tika.parser.NetworkParser.parse(org.apache.tika.io.TikaInputStream, org.xml.sax.ContentHandler, org.apache.tika.metadata.Metadata, org.apache.tika.parser.ParseContext)",
+  "covered" : false,
+  "thirdPartyMethod" : "org.apache.commons.io.input.CloseShieldInputStream.wrap(java.io.InputStream)"
+}, {
+  "caller" : "org.apache.tika.embedder.ExternalEmbedder.sendStdOutToOutputStream(java.lang.Process, java.io.OutputStream)",
+  "covered" : false,
+  "thirdPartyMethod" : "org.apache.commons.io.IOUtils.copy(java.io.InputStream, java.io.OutputStream)"
+}, {
+  "caller" : "org.apache.tika.io.TikaInputStream.skip(long)",
+  "covered" : false,
+  "thirdPartyMethod" : "org.apache.commons.io.IOUtils.skip(java.io.InputStream, long)"
+}, {
+  "caller" : "org.apache.tika.io.TikaInputStream.reset()",
+  "covered" : true,
+  "thirdPartyMethod" : "org.apache.commons.io.input.TaggedInputStream.reset()"
+}, {
+  "caller" : "org.apache.tika.io.TikaInputStream.mark(int)",
+  "covered" : true,
+  "thirdPartyMethod" : "org.apache.commons.io.input.TaggedInputStream.mark(int)"
+}, {
+  "caller" : "org.apache.tika.parser.NetworkParser.ParsingTask.run()",
+  "covered" : false,
+  "thirdPartyMethod" : "org.apache.commons.io.IOUtils.copy(java.io.InputStream, java.io.OutputStream)"
+}, {
+  "caller" : "org.apache.tika.io.CachingSource.getPath(java.lang.String)",
+  "covered" : true,
+  "thirdPartyMethod" : "org.apache.commons.io.IOUtils.skipFully(java.io.InputStream, long)"
+}, {
+  "caller" : "org.apache.tika.detect.XmlRootExtractor.extractRootElement(byte[])",
+  "covered" : true,
+  "thirdPartyMethod" : "org.apache.commons.io.input.UnsynchronizedByteArrayInputStream.<init>(byte[])"
+} ]
